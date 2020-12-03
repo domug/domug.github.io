@@ -1,7 +1,7 @@
 ---
 layout: post
 title: My very first post!
-image: 8.jpeg
+image: 2.jpeg
 date: 2020-12-03 21:30:20 +0200
 tags:
 categories: guide
