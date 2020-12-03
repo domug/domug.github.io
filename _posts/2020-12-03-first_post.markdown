@@ -1,7 +1,7 @@
 ---
 layout: post
 title: My very first post!
-image: 2.jpeg
+image: Maple-Story.jpg
 date: 2020-12-03 21:30:20 +0200
 tags:
 categories: guide
@@ -20,6 +20,11 @@ And 원기형 please 상향 shadower.
 
 ---
 
+#### My Character
+![]({{site.baseurl}}/images/2.jpeg)
+
+---
+
 #### Recent achievement
 
 ![]({{site.baseurl}}/images/3.jpeg)
@@ -28,4 +33,4 @@ And 원기형 please 상향 shadower.
 
 #### Maple Story BGM
 
-<iframe src="https://www.youtube.com/watch?v=Wp8t19rzsGo" frameborder="0" allowfullscreen></iframe>
+<iframe width="1280" height="720" src="https://www.youtube.com/watch?v=Wp8t19rzsGo" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
