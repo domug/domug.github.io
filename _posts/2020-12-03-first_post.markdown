@@ -17,6 +17,7 @@ lv. 250 is just around the corner! (Hopefully by the end of the winter break...)
 
 And 원기형 please 상향 shadower.
 
+I love Cherry.
 
 ---
 
@@ -33,4 +34,4 @@ And 원기형 please 상향 shadower.
 
 #### Maple Story BGM
 
-<iframe width="1280" height="720" src="https://www.youtube.com/watch?v=Wp8t19rzsGo" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe width="1280" height="720" src="https://www.youtube.com/embed/watch?v=Wp8t19rzsGo" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
