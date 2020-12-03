@@ -1,6 +1,6 @@
 title: Domug's Personal Blog
 description: odds and ends about data science
-baseurl: "domug.github.io" # the subpath of your site, e.g. /blog
+baseurl: "" # the subpath of your site, e.g. /blog
 url: "domug.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 
 # Author
@@ -9,11 +9,11 @@ author-image:   1.png
 author-job:     Student, Yonsei Univ of Korea
 author-email:   epdlql96@gmail.com # Add your email for contant form.
 author-twitter:  # Add your twitter account
-about-author:   English Lang&Lit / Applied Statistics / KMS Reboot2 User
+about-author:   English Lang&Lit / Applied Statistics
 
 # Social settings
 social-twitter:  
-social-facebook:  Dongwook Kim
+social-facebook:  
 social-github:    domug
 social-pinterest: 
 social-instagram: domugii__
