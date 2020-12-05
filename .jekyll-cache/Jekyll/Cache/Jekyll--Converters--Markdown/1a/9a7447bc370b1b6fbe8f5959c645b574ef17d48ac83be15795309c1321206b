@@ -1,0 +1,66 @@
+I"�!<h3 id="previous-posts">Previous Posts</h3>
+
+<p><a href="https://domug.github.io/2020/12/03/Estimation_Multicollinearity/">1. Statistical Estimation and Multicollinearity</a></p>
+
+<hr />
+
+<h1 id="variable-selection">Variable Selection</h1>
+
+<p>From previous post, we talked about the concept of multicollinearity and the problems associated with it. Statistically, there are two remedial methods to reduce multicollinearity and in this post we will be discussing about the first one - <strong>“Variable Selection”</strong>. The objective of variable selection is to find subset of variables that are most “relevant” for prediction, or in the same manner, “important” in terms of the amount of unique information in them.</p>
+
+<p>I know it may sound all of a sudden, but let’s think of our universe. Although I have little knowledge on physics, I know that our universe is sparse. Stretch out your hand in the air. Can you feel something? Well obviously there are invisible elements like oxygen and carbon but we can’t feel them nor can we see them. So when you are asked by your freinds to describe your room, you wouldn’t include the trivials such as the amount of oxygen in your room. Rather, what you will mainly be telling your friends are the nitty-gritty details that are representitive of your room, such as your recently bought PS5 or a fancy poster of Lionel Messi.</p>
+
+<p>In this sense, when we are looking at a particular dataset, we always have to keep mind that <strong>we don’t necessarily need every information in the data</strong>, because some part of information is just too trivial or redundant. In statistics, these unimportant information is called as <strong>“noise”</strong>. So by identifying relevant variables, we are able to reduce the noise contained in the data and it will improve the performance of our estimator (or fitted model) that is measured by MSPE.</p>
+
+<p>Then how can we identify these “relevant” information? The foremost and most straightforward way is by the rule of thumb. You can just exclude one variable at a time, calculate and record the MSPE, compare the MSPE scores for each of your trials and select the best subset that showed the lowest MSPE. Actually, when you use the software R and conduct regression analysis, R will return the best subset of variables by this method. This is called as <strong>“subset selection”</strong>. The strength of subset selection is that it is very easy to implement and it produces a model that is highly <strong>“interpretable”</strong> because we just discarded the irrelevant variables. There’s not much of fancy statistical technic here.</p>
+
+<p>Although this method is very straightforward and easy to implement, there are few serious drawbacks to this approach. Since it is a discrete process, meaning that variables are either selected or discarded, we lose all the information that are outside of the selected variables. Moreover, it often exhibits high variance meaning that it does not perform well when new data is fed.</p>
+
+<p>In order to improve these apparent weaknesses, the so called <strong>“shrinkage methods”</strong> had been developed, which is said to be more continuous and don’t suffer from high variability as much as the subset method. The most famous shrinkage methods include <strong>Ridge Regression</strong> and <strong>Lasso Regression</strong>, and we will briefly take a look at each of them and their implementation.</p>
+
+<hr />
+
+<h1 id="ridge-regression">Ridge Regression</h1>
+
+<p>If you are familiar with linear regressions, you will probably remember the <strong>normal equation</strong>, which is used to derive the regression coefficients(LSE) of linear regression models. Here is the formula.</p>
+
+<p><img src="/images/normal_equation.png" alt="" /></p>
+
+<p>Note that the regression coefficient beta can only be derived when the design matrix X is of <strong>full rank</strong>. And when multicollinearity exists between the columns of a matrix, then that matrix is not full rank, which implies that we can’t derive the unique Least Squares Estimate of beta.</p>
+
+<p>Ridge regression handles this problem by imposing a penalty on the size of the matrix to arbitrarily make normal equation solvable. Here’s the idea.</p>
+
+<p><img src="/images/ridge.png" alt="" /></p>
+
+<p>By adding λ to the left side of the normal equation, we can make it full rank (or equivalently invertible)</p>
+
+<hr />
+
+<h1 id="bias-variance-tradeoff">Bias Variance Tradeoff</h1>
+<p>Anyways, let’s consider we have found the optimal estimator of our parameter. Then as a next step, it is reasonable to question how effective is our estimator in terms of representing the parameter. Regarding this, the most prevalent way of evaluating estimator is by calculating the <strong>prediction error</strong>. There are several metrics, but one of the most popular is the <strong>Mean Square Prediction Error (MSPE)</strong>, which is just the expected value of the difference between predicted value by our estimator and the parameter. Here is the formula.</p>
+
+<p><img src="/images/MSPE.jpg" alt="" /></p>
+
+<p>From the second line, we can see that MSPE can be decomposed into two parts such as Bias and Variance respectively. This decomposition is very important and called <strong>Bias-Variance Tradeoff</strong>. To put it simply, the thing so called “bias” is inversely proportional to “variance”. Then what is bias and what is variance? Imagine a situation where you are at a shooting range. You see a target about 500 meters ahead and you took 8 shots with your rifle. The following is your performance.</p>
+
+<p align="center">
+  <img width="460" height="300" src="/images/bvtradeoff.svg" />
+</p>
+
+<p align="center">
+  <img width="700" height="500" src="/images/bvtradeofftable.png" />
+</p>
+
+<p>Among the four results, which one do you think is the best performance? Ideally, we would like our shots to be within the target as well as the shots be precise so that they are not scattered all over the target. In this sense, we would all agree that the very first trial, which is the top left, is the best. However, in real life, only top class snipers can achieve that. Hence, our shots will most likely be among the latter three. Therefore among the latter three, I would say the ideal performance is the bottom left.</p>
+
+<p>The above example is a nice illustration of the bias variance tradeoff. We want our estimator to be as closest as possible to the parameter while at the same time be consistent (“consistent” in here means that when we recalculate the predicted value by estimator, the estimated values does not vary much). But by the innate principle of our universe, we can’t achieve both at once. It’s like we can’t kill two birds with one stone. So we have to find a decent middle place somewhere in between the ideal and reality like the bottom left result above, and that’s where the concept of <strong>multicollinearity</strong> comes in.</p>
+
+<hr />
+
+<h1 id="multicollinearity">Multicollinearity</h1>
+
+<p>Now it’s time to talk about multicollinearity. A nice example is worth a thousand equations so let’s imagine the following situation. I am a big fan of BTS and especially the member “Jin”. Suppose I have a dataset containing information about Jin such as his height, weight, birthday, preferences, etc which are all “variables” (or features equivalently). Based on my data, I want to make a regression model on Jin’s personality by using all variables in the dataset. In other words, I’m using the information contained in the variables to explain Jin’s personality. However, let’s say that we have the following variables -  “width of eye”, “length of eye”, “color of eye”. Don’t these variables seem redundant? In other words, do we really need all these variables? These are all features of an “Eye”, so we can intuitely think there’s gotta be some information overlapped in them.</p>
+
+<p>This is multicollinearity. <strong>By formal definition, we say that multicollinearity exists when the (explanatory) variables are highly “correlated”</strong> to each other. This is a very inefficient situation in terms of the information because practically, all we need is just a few subset of variables. As there is a phenomena called <strong>“curse of dimensionality”</strong>, we would have to find a remedy for this problem. In the upcoming posts, I will introduce two statistical methods to deal with this problem, the so called <strong>“Variable Selection Method”</strong> and <strong>“Dimension Reduction Method”</strong></p>
+
+:ET
