@@ -3,7 +3,7 @@ layout: post
 title: "Variable Selection Methods"
 date: 2020-12-04 00:30:20 +0200
 image: thumbnail2.png
-tags: [statistics, dimension reduction]
+tags: [statistics, multicollinearity, ridge, lasso]
 categories: statistics
 ---
 
