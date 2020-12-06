@@ -1,0 +1,115 @@
+I")<h3 id="previous-posts">Previous Posts</h3>
+
+<p><a href="https://domug.github.io/2020/12/03/Estimation_Multicollinearity/">1. Statistical Estimation and Multicollinearity</a></p>
+
+<p><a href="https://domug.github.io/2020/12/03/Ridge_Lasso/">2. Variable Selection Methods</a></p>
+
+<hr />
+
+<h1 id="statistical-dimension-reduction">Statistical Dimension Reduction</h1>
+
+<p>Now it’s finally time to move on to the methods of dimension reduction! In this post I will introduce the basic concept of what dimension reduction is and the most renowned method - <strong>Principal Component Analysis (PCA)</strong>.</p>
+
+<p>From previous posts, I emphasized that when we are looking at a dataset we have, we don’t necessarily need all of the variables because just a subset of them might have sufficient amount of information. This was related to the issue of multicollinearity and as a one possible remedy for this problem, we’ve looked at variable selection methods including ridge and lasso regression.</p>
+
+<p>However, from now on we will use dimension reduction methods to extract new insight from the original data. As subcategory of dimension reduction, we will be talking about “principal component analysis”, “factor analysis”, “cluster analysis” and “discriminant analysis”. Although these methods are grouped together as dimension reduction methods, how each of them works and what they allows us to do are all different. So we will apply each methods on a same dataset repeatedly and perform analysis based on the results. Let’s start with the PCA!</p>
+
+<hr />
+
+<h1 id="principal-component-analysis-pca">Principal Component Analysis (PCA)</h1>
+
+<p>The goal of principal component analysis is to construct whole new variables from the originals. In other words, PCA re-expresses and describes the original data in terms of the newly defined <strong>uncorrelated</strong> variables, each of which is derived by linear combinations of the original variables. To put it simply, it’s like seeing an object from different point of view. Consider the following graph.</p>
+
+<p align="center">
+	<img width="400" height="300" src="/images/pca/pca_illustration.gif" />
+</p>
+
+<p>About is a scatter plot of two varibles which seem to have <strong>positive linear correlation</strong>. Each individual observations are marked as circle and is represented by coordinates in terms of x and y axis. Now let’s focus our attention to the green lines. Tilt your head a little to the left and try to think of the two green lines as new x and y axis. Then it will be something like the following.</p>
+
+<p align="center">
+	<img width="400" height="300" src="/images/pca/pca_illustration2.png" />
+</p>
+
+<p>If we consider the two orthogonal green lines as our new x and y axis, we can see that the observations seem to have <strong>no linear correlation</strong>! They are scattered randomly without distinct patterns or trend.</p>
+
+<p>What we have just done is PCA itself. We have <strong>re-expressed the data in terms of two uncorrelated varibles - PC1 and PC2</strong>. Note that if you look the length of two green lines which are principal components(PC), then the first PC is way longer then the second PC. This indicates that the variance of the first PC is the greater than that of the second PC and it is equivalent to saying that the <strong>first PC retains more information of the original data than the second PC</strong>. Therefore in PCA, the principal components have to be aligned in decreasing order by their variances and the first PC is a linear combination of X and a norm vector u that maximizes the variance.</p>
+
+<p>Then how can we find the PCs? There are two ways for this and they are:</p>
+
+<ul>
+  <li>Using Spectral Decomposition of the sample correlation matrix</li>
+  <li>Using Singular Value Decomposition of the original matrix</li>
+</ul>
+
+<p>In either ways, we can prove that the PCs correspond to the <strong>eigen vectors</strong> of the matrix that we are using. I will not go into details of mathematical proof and focus more on the intuition and application <del>(not that I’m too lazy to type the equations in latex)</del>.</p>
+
+<p>Some practical tips on performing PCA is as follows:</p>
+
+<ul>
+  <li>When measurement units are different in the variables, standardize the variables by using correlation matrix.</li>
+  <li>With same measurement units, it’s okay to use covariance matrix.</li>
+  <li>If you want to reduce the dimensionality of the original dataset,
+    <ul>
+      <li>das</li>
+    </ul>
+  </li>
+</ul>
+
+<hr />
+
+<p>car dataset which consists of 74 different car types with 13 variables (features) measured for each.</p>
+
+<hr />
+
+<h1 id="ridge-regression">Ridge Regression</h1>
+
+<p>If you are familiar with linear regressions, you will probably remember the <strong>normal equation</strong>, which is used to derive the regression coefficients(LSE) of linear regression models. Here is the formula.</p>
+
+<p><img src="/images/Variable_Selection/normal_equation.png" alt="" /></p>
+
+<p>Note that the regression coefficient beta can only be derived when the design matrix X is of <a href="https://en.wikipedia.org/wiki/Rank_(linear_algebra)#:~:text=A%20matrix%20is%20said%20to,does%20not%20have%20full%20rank.">full rank</a>. When multicollinearity exists between the columns of a matrix, then that matrix is not full rank, which implies that we can’t derive the unique Least Squares Estimate of beta.</p>
+
+<p>Ridge regression handles this problem by imposing a <strong>penalty</strong> on the size of the matrix to arbitrarily make normal equation solvable. Here’s the idea.</p>
+
+<p><img src="/images/Variable_Selection/ridge.png" alt="" /></p>
+
+<p>By adding λ to the left side of the normal equation, we can make the matrix as full rank (or equivalently invertible). Here, λ is called as <strong>complexity parameter</strong> and it controls the amount of <strong>“shrinkage”</strong>, meaning that the regression coefficients of irrelevant variables converges to 0. Important point here is that in ridge regression, the coefficients just infinitely converges to 0 and doesn’t become exactly 0. Thus the larger the value of λ, the greater the amount of shrinkage. We can also see that the ridge regression coefficient can be derived precisely in a closed form because it is a linear combination of matrix X and Y.</p>
+
+<p>Another importance point is that, the normal equation for ridge regression can be expressed explicitly in terms of the constraint as the last part of the equation above. As can be seen, the constraint for ridge regression is the <strong>square</strong> of the norm of β, so this panelty is often called as <strong>L2 panelty</strong>. Also, as ridge regression sort of manages, or “regularizes” β to control variance, another name for ridge regression is <strong>L2 Regularization</strong>.</p>
+
+<p align="center">
+	<img src="/images/Variable_Selection/ridge_ols.png" />
+	<img width="600" height="500" src="/images/Variable_Selection/ridge2.png" />
+</p>
+
+<p>The graph above is a comparison between OLS (Ordinary Least Squares) coefficients and the ridge coefficients based on optimal λ suggested by R. Each regression was fitted on a randomly created data from the multivariate normal distribution. The y-axis represents ordinary regression coefficients and the x-axis is ridge coefficients. You can clearly see that most of the ridge coefficients have converged near to 0, while in the ordinary linear regression the coefficients are all over the place.</p>
+
+<hr />
+
+<h1 id="lasso-regression">Lasso Regression</h1>
+
+<p>Now let’s take a took at another famous shrinkage method as known as lasso regression. The general idea is similar to the ridge regression, while the only crucial difference being that lasso uses <strong>L1 panelty</strong>. In fact, lasso is an abbreviation for <strong>“Least Absolute Shrinkage and Selection Operator”</strong>. As it is explicitly mentioned in its name, lasso uses absolute panelty and although this might seem trivial, it creates a lot of difference and complexity compared to the ridge method.</p>
+
+<p align="center">
+  <img src="/images/Variable_Selection/ridge_lasso.png" />
+</p>
+
+<p>Because of the absolute panelty, we cannot derive the estimated coefficients of β in a closed form since the normal equation is non-linear in X and Y. Therefore we need to use numerical optimization methods such as <a href="https://en.wikipedia.org/wiki/Newton%27s_method">Newton Rhapson Method</a>. Conveniently, R or Python automatically does all of the calculation for us so let’s focus more on its implication.</p>
+
+<p align="center">
+  <img src="/images/Variable_Selection/lasso_ols.png" />
+</p>
+
+<p>By fitting lasso regression to the same data used in ridge regression, we can clearly see that some of the coefficients have disappeared completely. This is because unlike ridge regression where we used square panelty, the absolute panelty of lasso regression makes the regression coefficients of “insignificant” variables exactly 0. If we visualize this result we get the following graph.</p>
+
+<p align="center">
+  <img width="600" height="500" src="/images/Variable_Selection/lasso.png" />
+</p>
+
+<p>The x-axis corresponds to the log scaled values of λ, which is the shrinkage parameter that we discussed earlier and y-axis is the corresponding lasso coefficients. The vertical red line is the best λ suggested by R. We can visually examine that for the best λ, most of the coefficients became 0. Hence, we can conclude that those variables with 0 coefficients are insignificant in terms of our linear regression model.</p>
+
+<p>We have just conducted a variable selection! Keep in mind that the purpose of variable selection is to define only a subset of important variables which will be used in further analysis. Thus variable selection itself is not the ultimate goal, but rather a first step in a complete statistical analysis procedure.</p>
+
+<p>Although lasso and ridge methods can be used to reduce multicollinearity, variable selection methods have inherent limitations as they merely tell us which variables to be used or not. In other words, these methods are subordinated to the original data - they don’t provide new insight or new viewpoint of the data. It’ll probably not be clear for now, but it will soon make sense after we talk about <strong>dimension reduction methods</strong> in the following posts, so let’s call it a day for now.</p>
+
+:ET

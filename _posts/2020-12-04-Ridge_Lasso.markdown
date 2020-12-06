@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Variable Selection Methods"
-date: 2020-12-04 00:30:20 +0200
+date: 2020-12-04 00:00:00
 image: thumbnail2.png
 tags: [statistics, multicollinearity, ridge, lasso]
 categories: statistics

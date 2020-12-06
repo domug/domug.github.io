@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Statistical Estimation and Multicollinearity"
-date: 2020-12-03 00:30:20 +0200
+date: 2020-12-03 00:00:00
 image: thumbnail1.png
 tags: [statistics, estimation, multicollinearity]
 categories: statistics
