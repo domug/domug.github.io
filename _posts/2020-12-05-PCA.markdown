@@ -11,7 +11,7 @@ categories: statistics
 
 [1. Statistical Estimation and Multicollinearity](https://domug.github.io/2020/12/03/Estimation_Multicollinearity/)
 
-[2. Variable Selection Methods](https://domug.github.io/2020/12/03/Ridge_Lasso/)
+[2. Variable Selection Methods](https://domug.github.io/2020/12/04/Ridge_Lasso/)
 
 ---
 
@@ -91,7 +91,7 @@ The number of principal components to be used can also be examined by the follow
 
 In scree plot, we have to choose the point where the decreasing trend becomes gentle. After the second principal component, we can see that the trend is smoothed so it verifies that using the first two PCs would be enough.
 
-As we have decided to use two principal components to describe our data, as a next step, it's time to interpret the results. Since we are using just two PCs, a very efficient way of visually understanding the result is by drawing a "biplot". Here's a biplot for our dataset. The codes will be available in my github and I will post the link in the bottom.
+As we have decided to use two principal components to describe our data, as a next step, it's time to interpret the results. Since we are using just two PCs, a very efficient way of visually understanding the result is by drawing a "biplot". Here's a biplot for our dataset. The codes are available in my [github][code].
 
 <p align="center">
 	<img width="500" height="400" src="{{site.baseurl}}/images/pca/biplot.png">
@@ -114,7 +114,7 @@ In fact, the interpretation of the results may vary by people because each peopl
 This is the end of the first statistical dimention reduction series! In the next post, we will continue to talk about another useful dimension reduction method known as "Factor Analysis".
 
 
-
+[code]: https://github.com/domug/Codes-for-blogs/blob/master/Dimension%20Reduction/PCA.R
 
 
 
