@@ -1,0 +1,124 @@
+---
+layout: post
+title: "Principal Component Analysis"
+date: 2020-12-05 00:00:00
+image: thumbnail_pca.png
+tags: [statistics, dimensionreduction, pca]
+categories: statistics
+---
+
+### Previous Posts
+
+[1. Statistical Estimation and Multicollinearity](https://domug.github.io/2020/12/03/Estimation_Multicollinearity/)
+
+[2. Variable Selection Methods](https://domug.github.io/2020/12/04/Ridge_Lasso/)
+
+---
+
+
+# Statistical Dimension Reduction
+
+Now it's finally time to move on to the methods of dimension reduction! In this post I will introduce the basic concept of what dimension reduction does and the most renowned method - **Principal Component Analysis (PCA)**, focusing on the intuition and application.
+
+From previous posts, I emphasized that when we are looking at a dataset we have, we don't necessarily need all of the variables because just a subset of them might be enough to retain relevant information of the original data. This was related to the issue of multicollinearity and as a one possible remedy for this problem, we've looked at variable selection methods including ridge and lasso regression. 
+
+However, from now on we will use dimension reduction methods to extract new insight from the original data. As subcategory of dimension reduction, we will be talking about "principal component analysis", "factor analysis", "cluster analysis" and "discriminant analysis". Although these methods are grouped together as dimension reduction methods, how each of them works and what they allows us to do are all different. So we will apply each methods on a dataset and perform analysis based on the results. Let's start with the PCA!
+
+---
+
+# Principal Component Analysis (PCA)
+
+The goal of principal component analysis is to construct whole new variables from the originals. In other words, PCA re-expresses and describes the original data in terms of the newly defined **uncorrelated** variables, each of which is derived by linear combinations of the original variables. 
+
+To put it simply, it's like seeing an object with different point of view. As an example, let's say you are walking down the street and found a friend of yours walking ahead of you. If he was a close friend of yours, then you would recognize him just by looking at his back, although what you are mostly familiar about him is his front view like his face. So even if there is a little bit of variation of what you actually "see", you can still recognize him as your friend. 
+
+Let's bring this example to the dataset. Normally, there are two ways of looking at a typical matrix-like data - row-wise and column-wise. **Row-wise viewpoint** is looking at the data from the **perspective of individual observations**, while **column-wise viewpoint** is by the **perspective of features**. A critical point here is that regardless of which view point we take, the **data itself is unique**. In other words, the data never changes regardless of how we see it. Although we need some knowledge on the linear algebra to fully understand this, this idea is very intuitive and natural. It would be weird if the personality of your friend changes depending on the direction you're talking to right?
+
+Let's visually see what we've been talking. Consider the following graph.
+
+<p align="center">
+	<img width="400" height="300" src="{{site.baseurl}}/images/pca/pca_illustration.gif">
+</p>
+
+Above is a scatter plot of two varibles which seem to have **positive linear correlation**. Each individual observations are marked as circle and is represented by coordinates in terms of x and y axis. Now let's focus our attention to the green lines. Tilt your head a little to the left and try to think of the two green lines as new x and y axis. Then it will be something like the following.
+
+<p align="center">
+	<img width="400" height="300" src="{{site.baseurl}}/images/pca/pca_illustration2.png">
+</p>
+
+If we consider the two orthogonal green lines as our new x and y axis, we can see that the observations seem to have **no linear correlation**! They are scattered randomly without distinct pattern or trend. What we have just done is PCA itself. We have **re-expressed the data in terms of two uncorrelated varibles - PC1 and PC2**. That is, we now decided to look at the data from different perspective (axis). 
+
+Note that if we look the length of two green lines which are principal components(PC), then the first PC is way longer then the second PC. This indicates that the variance of the first PC is the greater than that of the second PC and it is equivalent to saying that the **first PC retains more information of the original data than the second PC**. Therefore in PCA, the principal components have to be aligned in decreasing order by their variances and the first PC is a linear combination of X and a norm vector u that maximizes the variance. 
+
+Then how can we find the PCs? There are two ways for this and they are:
+
+- Using Spectral Decomposition of the sample correlation matrix
+- Using Singular Value Decomposition of the original matrix
+
+In either ways, we can prove that the PCs correspond to the **eigen vectors** of the matrix that we are using. I will not go into details of mathematical derivations but rather we will see how PCA can be implemented in a dataset using R. ~~(not because I'm too lazy to type the equations in latex)~~
+
+Some practical tips on performing PCA is as follows:
+
+- When measurement units are different in the variables, standardize the variables by using correlation matrix.
+- With same measurement units, it's fine to use covariance matrix.
+
+---
+
+# PCA example
+
+Now let's actually perform PCA on a real dataset. We'll be using car dataset which consists of 74 different car types with 13 variables (features) measured for each. Here's the data dictionary.
+
+<p align="center">
+	<img width="900" height="600" src="{{site.baseurl}}/images/pca/datadict.png">
+</p>
+
+
+We'll be using functions in R. In the following code, some basic preprocessing of the data was done and pca was applied afterwards. 
+
+<p align="center">
+	<img width="900" height="600" src="{{site.baseurl}}/images/pca/pca_code1.png">
+</p>
+
+From the summarized result of PCA, we got 12 principal components derived from the original data. 
+
+Let's take a look at the proportion of variance in each PC. What it implies is the **amount of variation (or information) each PCs explain**. So only by the first two principal components, around 71.7% of total information is retained. This means that the rest of PCs from 3 to 12 only have less than 30% of total information. In practice, there is a tendency to choose number of PCs to be used by where the cumulative variance is between 70% to 90%, so I would say just using 2 PCs would be enough for our car dataset.
+
+The number of principal components to be used can also be examined by the following scree plot.
+
+<p align="center">
+	<img width="900" height="600" src="{{site.baseurl}}/images/pca/screeplot.png">
+</p>
+
+In scree plot, we have to choose the point where the decreasing trend becomes gentle. After the second principal component, we can see that the trend is smoothed so it verifies that using the first two PCs would be enough.
+
+As we have decided to use two principal components to describe our data, as a next step, it's time to interpret the results. Since we are using just two PCs, a very efficient way of visually understanding the result is by drawing a "biplot". Here's a biplot for our dataset. The codes are available in my [github][code].
+
+<p align="center">
+	<img width="500" height="400" src="{{site.baseurl}}/images/pca/biplot.png">
+</p>
+
+We can see that most of the variables are negatively correlated with the second PC, while the first PC seperates variables dichotomically. Since the texts are sort of overlapped, let's try to understand the result from a numerical point of view by looking at **"principal component loadings"**. It is a matrix which expresses the correlation between the original variables and PC variables.
+
+<p align="center">
+	<img width="900" height="600" src="{{site.baseurl}}/images/pca/pcloadings.png">
+</p>
+
+The first PC is positively correlated with variables such as ["Price", "Size of Headroom", "Seat Clearance", "Trunk Space", "Weight", "Length", "Diameter", "Displacement"]. Do you see some common attributes in them? Referring to the data dictionary above, the first PC seems like something to do with the **"size of a car"**. On the other hand, the second PC is negatively correlated with most of the varibles but among them repair records show greatest negative correlation. By this information, I would say it has something to do with the **"stability of a car"**. 
+
+So if we can name the two PC variables accordingly, now we are able to interpret the biplot. In the biplot above, the cars in category 1, which is labeled as blue, indicates cars made by US companies. Therefore, we can conclude that USA cars are generally big in size, but show relatively bad stability compared to the cars in category 2 and 3, which are Japan and Europe respectively.
+
+---
+
+In fact, the interpretation of the results may vary by people because each people have different amount of domain knowledge on the dataset. As I don't have any profound knowledge on cars, my interpretation above would probably not be decent, but just to note that we can possibly name the PC variables and "interpret" the results based on them. This is one of the advantage of using statistical models over machine learning models.
+
+This is the end of the first statistical dimention reduction series! In the next post, we will continue to talk about another useful dimension reduction method known as "Factor Analysis".
+
+
+[code]: https://github.com/domug/Codes-for-blogs/blob/master/Dimension%20Reduction/PCA.R
+
+
+
+
+
+
+---
