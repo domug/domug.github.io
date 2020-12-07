@@ -1,0 +1,38 @@
+I"<h3 id="previous-posts">Previous Posts</h3>
+
+<p><a href="https://domug.github.io/2020/12/03/Estimation_Multicollinearity/">1. Statistical Estimation and Multicollinearity</a></p>
+
+<p><a href="https://domug.github.io/2020/12/04/Ridge_Lasso/">2. Variable Selection Methods</a></p>
+
+<p><a href="https://domug.github.io/2020/12/05/PCA/">3. Principal Component Analysis</a></p>
+
+<hr />
+
+<h1 id="factor-analysis">Factor Analysis</h1>
+
+<p>In line with PCA, Factor Analysis (FA) is another famous dimension reduction method widely used for finding <strong>latent variables</strong>. Latant variable refers to variables that are hidden. Let’s go back the example about BTS Jin that I illustrated when talking about multicollinearity. I said when there are variables about Jin’s appearance like “width of eye”, “length of eye”, “color of eye”, these variables can be compressed into a single variable - “eye”, which is a latent variable hidden behind those three variables.</p>
+
+<p>Often the goal of factor analysis is to summarize the original dataset which has a lot of varibles by extracting some hidden commonalities in the variables. These commonalities are called as <strong>“factors”</strong> and they are used throughout subsequent statiscal analysis. So it is easy to think the factors as some groups of original variables. In mathematical sense, it is to reduce a p-dimensional random vector X into a fewer “k” latent variables.</p>
+
+<p>Usually it is most common to use continuous &amp; quantitative variables as our example will be so, but keep in mind that sometimes qualitative can also be used. For example, we might have nominal data such as [0, 1] where each number represents gender. In this case we can use factor analysis to find out gender characteristics or so.</p>
+
+<p>Then let’s dig into the details of factor analysis. You might wonder, “then what is the difference between PCA and FA?”. This can formally be understood by looking at an equation of factor analysis.</p>
+
+<p align="center">
+	<img src="/images/fa/fa_equation.png" />
+</p>
+
+<p>The above is the equational definition of orthogonal factor model. We can see that the original data matrix is decomposed into 3 parts. The first part is related to the unknown factors and the matrix Q and F are unknowns to be estimated. The second part is the error term, which accounts for individual variations of each variable. The third part is the mean of each variables, but since it’s a custom to standardize each variable before analysis, this term is often ignored.</p>
+
+<p>Recall that PCA was a linear transformation of X using all of the variables to create new principal components. In factor analysis, however, we decompose the original matrix into predefined factors that are <strong>limited in numbers</strong>. Therefore, since we are only using only a few factors, there’s inevitably some noise, or error term associated with each variables. This is the main difference of PCA and FA. To put it simply, unlike PCA where we use all the variables to re-express original dataset, FA is like a regression on the original data by few factors</p>
+
+<hr />
+
+<h1 id="statistical-dimension-reduction">Statistical Dimension Reduction</h1>
+
+<p align="center">
+	<img width="400" height="300" src="/images/pca/pca_illustration.gif" />
+</p>
+
+<hr />
+:ET

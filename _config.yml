@@ -3,6 +3,8 @@ description: life of π
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "domug.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 
+category_list: [Statistics]
+
 # Author
 author-name:    Dongwook Kim
 author-image:   1.png

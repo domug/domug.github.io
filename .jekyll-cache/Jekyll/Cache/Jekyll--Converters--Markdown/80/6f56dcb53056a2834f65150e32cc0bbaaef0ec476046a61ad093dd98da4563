@@ -1,0 +1,56 @@
+I"6<h3 id="previous-posts">Previous Posts</h3>
+
+<p><a href="https://domug.github.io/2020/12/03/Estimation_Multicollinearity/">1. Statistical Estimation and Multicollinearity</a></p>
+
+<p><a href="https://domug.github.io/2020/12/04/Ridge_Lasso/">2. Variable Selection Methods</a></p>
+
+<p><a href="https://domug.github.io/2020/12/05/PCA/">3. Principal Component Analysis</a></p>
+
+<hr />
+
+<h1 id="factor-analysis-fa">Factor Analysis (FA)</h1>
+
+<p>In line with PCA, Factor Analysis (FA) is another famous dimension reduction method widely used for finding <strong>latent variables</strong>. Latant variable refers to variables that are hidden. Let’s go back the example about BTS Jin that I illustrated when talking about multicollinearity. I said when there are variables about Jin’s appearance like “width of eye”, “length of eye”, “color of eye”, these variables can be compressed into a single variable - “eye”, which is a latent variable hidden behind those three variables.</p>
+
+<p>Often the goal of factor analysis is to summarize the original dataset which has a lot of varibles by extracting some hidden commonalities in the variables. These commonalities are called as <strong>“factors”</strong> and they are used throughout subsequent statiscal analysis. So it is easy to think the factors as some groups of original variables. In mathematical sense, it is to reduce a p-dimensional random vector X into a fewer “k” latent variables.</p>
+
+<p>Usually it is most common to use continuous &amp; quantitative variables as our example will be so, but keep in mind that sometimes qualitative can also be used. For example, we might have nominal data such as [0, 1] where each number represents gender. In this case we can use factor analysis to find out gender characteristics or so.</p>
+
+<p>Then let’s dig into the details of factor analysis. You might wonder, “then what is the difference between PCA and FA?”. This can formally be understood by looking at an equation of factor analysis.</p>
+
+<p align="center">
+	<img src="/images/fa/fa_equation.png" />
+</p>
+
+<p>The above is the equational definition of orthogonal factor model. We can see that the original data matrix is decomposed into 3 parts. The first part is related to the unknown factors and the matrix Q and F are unknowns which are to be estimated. The second part is the error term, which accounts for individual variations of each variable. The third part is the mean of each variables, but since it’s a custom to standardize each variable before analysis, this term is often ignored.</p>
+
+<p>Recall that PCA was a linear transformation of X using all of the variables to create new principal components. In factor analysis, however, we decompose the original matrix into predefined factors that are <strong>limited in numbers</strong>. Therefore, since we are only using only a few factors, there’s inevitably some noise, or error term associated with each variables. This is the main difference of PCA and FA. To put it simply, unlike PCA where we use all the variables to re-express original dataset, FA is like a regression on the original data by a few factors.</p>
+
+<p>Then how are we going to find matrix Q and F? The most commonly used are “Principal Component Method”, “Maximum Likelihood Method” and “Common Factor Method”, and there is no absolute criterion to ensure which one is best. Since R conveniently does that for us, we will not go detail into each methods.</p>
+
+<p>The last theoritical part to look at before going into the implementation is <strong>Factor Loadings</strong>. After performing FA, most often we will get factor loadings matrix that tells us which factor is related to which original variables. The elements of factor loadings matrix are simply the correlations between every factors and variables.</p>
+
+<p>During this process, the technic so called <strong>“Factor Rotation”</strong> is often used to maximize the relationship between factors and original variables. What it does is that it rotates the axes of each factors at the origin until each factor loadings values become close to 0 and 1. We will see how it works in a minute, so don’t worry even if the idea doesn’t come right into your head.</p>
+
+<hr />
+
+<h1 id="fa-example">FA example</h1>
+
+<p>We will use the same car data that we used for PCA. I will skip the data preprocessing steps as it will be the same as we did in the PCA, so if you are interested check out the <a href="https://domug.github.io/2020/12/05/PCA/">previous post</a>. We will use <code class="language-plaintext highlighter-rouge">factanal</code> function in R. Here’s the result.</p>
+
+<p align="center">
+	<img width="900" height="700" src="/images/fa/fa.png" />
+</p>
+
+<p>Above is factor loadings matrix for a factor analysis using 4 factors with no factor rotation. The number of factors to be used is a hyper parameter that we have to choose for ourselves, and there is no rule for that. Actually after performing factor analysis, if we just execute the variable that contains the result of the factor analysis (which in our case is <code class="language-plaintext highlighter-rouge">fa</code>), then at the bottom some result of statiscal hypothesis tesing will be presented like the following.</p>
+
+<p align="center">
+	<img width="700" height="500" src="/images/fa/fa_test.png" />
+</p>
+
+<p>Here, the null hypothesis is “The number of factors that we have used is sufficient”. So if the p-value is larger than 0.05 (or 0.01 based on your preference) we can “statistically” say that the number of factors we used is decent. However this is just a reference and not to have blind faith on it. In our example, the p-value was a little bit less than 0.05, but as having 5 factors seem too much, I would conclude to use 4 factors for our dataset.</p>
+
+<p>Anyways, back to our factor loadings matrix. It seems like we have a problem. Most of the elements in the loadings matrix have values larger than 0.3. This is problematic because in this situation, we can’t really distinguish which factor is closely related to which variables. In other words, we can’t marginalize the characteristics of each factors. To deal with this problem, let’s use “factor rotation”. There are various rotation methods, but among them the so called <strong>“varimax”</strong> rotation is mostly widely used so we will stick to that for our example.</p>
+
+<hr />
+:ET
