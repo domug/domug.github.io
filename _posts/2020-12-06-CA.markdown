@@ -2,7 +2,7 @@
 layout: post
 title: "Cluster Analysis"
 date: 2020-12-06 00:20:00
-image: thumbnail_ca.jpeg
+image: thumbnail_ca.png
 tags: [statistics, dimensionreduction, ca]
 categories: [statistics]
 ---

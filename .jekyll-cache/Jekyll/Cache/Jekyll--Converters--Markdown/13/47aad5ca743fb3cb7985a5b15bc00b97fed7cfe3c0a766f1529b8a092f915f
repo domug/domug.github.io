@@ -1,0 +1,33 @@
+I"�	<h3 id="previous-posts">Previous Posts</h3>
+
+<p><a href="https://domug.github.io/2020/12/03/Estimation_Multicollinearity/">1. Statistical Estimation and Multicollinearity</a></p>
+
+<p><a href="https://domug.github.io/2020/12/04/Ridge_Lasso/">2. Variable Selection Methods</a></p>
+
+<p><a href="https://domug.github.io/2020/12/05/PCA/">3. Principal Component Analysis</a></p>
+
+<p><a href="https://domug.github.io/2020/12/06/FA/">4. Factor Analysis</a></p>
+
+<p><a href="https://domug.github.io/2020/12/06/CA/">5. Cluster Analysis</a></p>
+
+<hr />
+
+<h1 id="discriminant-analysis-da">Discriminant Analysis (DA)</h1>
+
+<p>As a final topic of this series, we will talk about <strong>discriminant analysis</strong> and what it exactly does.</p>
+
+<p>By now, you would have probably felt that there are lots of different methods regarding statistical dimension reduction and they might be tangled up inside your head because they all seem to be doing similar stuffs. To be honest, it’s the reason why I’ve decided to write blog posts on these issues because I personally wanted to make the concepts clear. So before going into the details on the discriminant analysis, I want to spend some time on figuring out the subtle differences in the methods we’ve studied so far.</p>
+
+<p>Well, since the goal of CA is evidently straightforward in that it tries to make clusters,</p>
+
+<p>To make a long story short, Discriminant Analysis and the two previous methods, PCA and FA, are very similar by their nature. All three methods try to find the <strong>linear combination</strong> of the original variables to re-express the data. Nevertheless even if they share the same concept, their main focus on the implementation are all different.</p>
+
+<p>For instance, if we can borrow the term from machine learning, PCA and FA are <strong>“unsupervised models”</strong> while DA is a <strong>“supervised model”</strong>. That is, unlike PCA and FA where we don’t need any output variables, Discriminant Analysis requires output classes to be supplied. This is because DA focuses on maximizing the separability between each classes. On the other hand, PCA merely aims to re-express the data in terms of components that can maximize the variance in the data, and FA tries to reveal the latent variables by focusing on the shared variance between the original variables.</p>
+
+<hr />
+
+<p align="center">
+	<img width="700" height="500" src="/images/ca/distances.pn" />
+</p>
+
+:ET

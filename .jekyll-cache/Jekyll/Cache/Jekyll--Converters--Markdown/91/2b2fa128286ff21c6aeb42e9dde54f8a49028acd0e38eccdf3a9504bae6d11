@@ -1,0 +1,89 @@
+I"j<h3 id="previous-posts">Previous Posts</h3>
+
+<p><a href="https://domug.github.io/2020/12/03/Estimation_Multicollinearity/">1. Statistical Estimation and Multicollinearity</a></p>
+
+<p><a href="https://domug.github.io/2020/12/04/Ridge_Lasso/">2. Variable Selection Methods</a></p>
+
+<p><a href="https://domug.github.io/2020/12/05/PCA/">3. Principal Component Analysis</a></p>
+
+<p><a href="https://domug.github.io/2020/12/06/FA/">4. Factor Analysis</a></p>
+
+<p><a href="https://domug.github.io/2020/12/06/CA/">5. Cluster Analysis</a></p>
+
+<hr />
+
+<h1 id="discriminant-analysis-da">Discriminant Analysis (DA)</h1>
+
+<p>As a final topic of this series, we will talk about <strong>discriminant analysis</strong> and what it exactly does.</p>
+
+<p>By now, you might be puzzled by different statistical dimension reduction methods which seem to be doing similar stuffs. When I first studied this topic, all these methods were tangled inside my head and I couldn’t figure out their differences. So before going into the details on the discriminant analysis, I want to spend some time to figure out the subtle differences in the methods we’ve studied so far.</p>
+
+<p>So far we’ve looked at PCA, FA and CA. Let’s focus on the main goal of each. First of all, CA is evidently straightforward in that it tries to group the variables by making clusters based on the distances. On the other hand, PCA, FA and DA, which is today’s topic, aim to find a <strong>linear combination</strong> of the original variables for their distinctive purposes. So these three methods are very similar by their nature, though their main focus is different.</p>
+
+<p>To illustrate the difference, let’s borrow some concepts from machine learning discipline. PCA and FA are <strong>“unsupervised models”</strong> while DA is a <strong>“supervised model”</strong>. That is, unlike PCA and FA where we don’t need any output variables, Discriminant Analysis requires output classes to be supplied. This is because DA focuses on <strong>maximizing the separability between each classes</strong>. On the other hand, PCA merely aims to re-express the data in terms of components that can maximize the variance in the data, and FA tries to reveal the latent variables by focusing on the shared variance between the original variables.</p>
+
+<p>To put it simply, we can summarize the differences as follows:</p>
+
+<p align="center">
+	<img width="700" height="500" src="/images/lda/lda_table.png" />
+</p>
+
+<p>Hope this makes you a little less confused on the distinction between each methods.</p>
+
+<p>With this in mind, it’s time to really talk about discriminant analysis. In fact, I’ve already demonstrated some of the details. The keyword of discriminant analysis is <strong>“separation”</strong>, so we want to find some decent rule that can separate and classify the observations according to their classes. In this post we will focus on <strong>“Linear Discriminant Analysis (LDA)”</strong>, which is a major branch of DA that tries to separate observations using linear functions. However, keep in mind that in situations where our observations are intertwined and cannot be separated by lines, we have to use more complicated separation rule beyond simple lines and this is called “Quadratic Discriminant Analysis”.</p>
+
+<p>Anyways, an example of discriminant analysis is “credit evaluation model”. If we have data on a specific person’s financial activities such as “number of loans”, “delinquency rate” et cetera, we want to classify that person into one of the classes from 1 ~ 10. So if a person has good traits, by LDA that person is likely to be classified into higher classes like 1 or 2.</p>
+
+<p>Important point here is that LDA must have some amount of <strong>“training dataset”</strong> with output groups specified in order to find the separation rule. These rules are obtained by using <strong>“Discriminant Function”</strong> and LDA is all about how to define and find this function.</p>
+
+<p>The most famous rules include “Maximum Likelihood Discriminant Rule”, “Bayes Discriminant Rule” and “Fisher’s Linear Discrimination Rule”, and each methods uses different discrimination functions. However, their basic ideas are the same. That is, each rules aim to minimize the classification error.</p>
+
+<p align="center">
+	<img width="200" height="100" src="/images/lda/lda_figure.png" />
+</p>
+
+<p>Consider above figure. The dotted line represents a linear discriminant function which serves as a milestone to separate observations into groups A and B. In the distribution presented at the bottom, we see a <strong>grey zone</strong> in the middle where the two distributions gets overlapped. The area of this grey zone corresponds to missclassification error. So we want a discriminant function which can minimize this area.</p>
+
+<p>This is the overall concept of discriminant analysis and the various rules mentioned above are just diffrent ways to achieve this purpose. Hence we won’t go into the details of each methods as it requires lot of formulaic deployment. In the following example, we will use <code class="language-plaintext highlighter-rouge">lda</code> function in R, which uses maximum likelihood discriminant rule.</p>
+
+<hr />
+
+<h1 id="lda-example">LDA Example</h1>
+
+<p>Let’s apply linear discriminant analysis to our car dataset to make a model which classifies each cars according to the company label. The detailed codes can be found on my <a href="https://github.com/domug/Codes-for-blogs/blob/master/Dimension%20Reduction/LDA.R">github</a>.</p>
+
+<p>I’ve used <code class="language-plaintext highlighter-rouge">lda</code> function in R and the result is the following.</p>
+
+<p align="center">
+	<img width="900" height="700" src="/images/lda/lda_result.png" />
+</p>
+
+<p>We can see that our model uses two discriminant functions, “LD1” and “LD2” and each of them are linear combinations of the original variable. For example, the formula of the first discriminant function, “LD1” is <code class="language-plaintext highlighter-rouge">0.0003*PRICE - 0.078*MILEAGE + 0.761*REPAIR1978 + ... + 0.0002*DISPLACEMENT + 2.344*GEARRATIO</code>.</p>
+
+<p>Based on these functions, our original data can be classified according to the company label as follows.</p>
+
+<p align="center">
+	<img width="700" height="500" src="/images/lda/lda_graph.png" />
+</p>
+
+<p>Although there is a little bit of overlap in company 1 and 2, it looks like we can adequately classify the cars by using linear discriminant function. If we actually calculate the missclassification rate, our model showed about 3% error, which is pretty impressive (but is it really?).</p>
+
+<p align="center">
+	<img src="/images/lda/error.png" />
+</p>
+
+<p>In this example, I’ve used the entire dataset as a training data since we only had around 60 observations. However if the size of the dataset is sufficiently large, I strongly recommend you to divide the dataset into train and test dataset with a ratio of around 80:20. This way, you can evaluate your model using the data that are not used while calculating the discriminant function and the missclassification error calculated based on those will be an objective performance of your LDA model.</p>
+
+<p>If we actually divide the original dataset into train/test data and run the LDA, the missclassification error for the test dataset it as follows.</p>
+
+<p align="center">
+	<img src="/images/lda/error_test.png" />
+</p>
+
+<p>We can see that it jumped to about 14%. But I would say 14% is still impressive so I would say LDA is adequate.</p>
+
+<p>As a last reminder, using fancy model doesn’t guarentee good performance. Even if we used quadratic discriminant analysis in the cars dataset, there is no guarentee that the missclassification error on the test dataset will decrease. This is because our model found a discriminant rule which best suits our train dataset.</p>
+
+<p>how well our model performs on the data that we used to train it doesn’t</p>
+
+:ET
