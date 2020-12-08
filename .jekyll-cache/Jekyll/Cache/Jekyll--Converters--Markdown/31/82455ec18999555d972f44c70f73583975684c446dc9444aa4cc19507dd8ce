@@ -1,0 +1,49 @@
+I"{<h3 id="previous-posts">Previous Posts</h3>
+
+<p><a href="https://domug.github.io/2020/12/03/Estimation_Multicollinearity/">1. Statistical Estimation and Multicollinearity</a></p>
+
+<p><a href="https://domug.github.io/2020/12/04/Ridge_Lasso/">2. Variable Selection Methods</a></p>
+
+<p><a href="https://domug.github.io/2020/12/05/PCA/">3. Principal Component Analysis</a></p>
+
+<p><a href="https://domug.github.io/2020/12/06/FA/">4. Factor Analysis</a></p>
+
+<hr />
+
+<h1 id="cluster-analysis-ca">Cluster Analysis (CA)</h1>
+
+<p>In this post, we will be talking about <strong>Cluster Analysis</strong>. Until now we have seen PCA and FA which reduced dimensionality of the original data in terms of its “variables”. Both methods decomposed data matrix by its column vectors, so we were able to find a subset of variables that accounts for enough information of the original data. However, cluster analysis performs dimension reduction on <strong>observations</strong>, that is, by <strong>row vectors</strong>. This difference very important so always keep in mind!</p>
+
+<p>The goal of cluster analysis is to find groups or clusters that can “adequately” separate and group the observations. Since the word “adequately” is a little vague in its meaning, we can define the adequacy as follows.</p>
+<ul>
+  <li><strong>observations inside the same clusters are similar as possible</strong></li>
+  <li><strong>observations within different clusters are different as possible</strong></li>
+</ul>
+
+<hr />
+
+<h3 id="distance">Distance</h3>
+
+<p>However, even in the above definition we have another ambiguousness. How are we going to measure the similarity and dissimilarity of each observations? Here’s where we need the concept of <strong>“mathematical distance”</strong>. To define distance, we foremost need a “measure” and there are various definitions of different mathematical measures to define the distance between two objects.</p>
+
+<p align="center">
+	<img width="700" height="500" src="/images/ca/distances.png" />
+</p>
+
+<p>Above is an example of lists of different distances, but all of them are defined to do one single thing - to measure the <strong>“closeness”</strong> of objects. The “closer” the objects are, the more homogeneous or similar they are. Since going into the details of all of the distances above would be tedious and time consuming, let’s focus on some of the key points of distance and move on.</p>
+
+<p>Normally when we think of distance between two things, we are mostly familiar with the <strong>“Euclidean Distance”</strong>, which is the most famous and widely used distance measure for calculating <strong>“physical distances”</strong>. “Physical distance” here literally means the distance of two physical objects. We say Tokyo is around 1,150 km apart from Seoul. This is physical distance.</p>
+
+<p>But it’s important to note that there also exist <strong>“psychological distance”</strong> as well. Like when you are asked, “How close do you think you are with your best friend?”, you will not likely to answer “Oh, it’s about 10 meters”. In this situation, we need another measurement that can account for our psychological closeness.</p>
+
+<p>Likewise, the measurement of distance can vary according to the goal of our interest and the distance measure to be used for cluster analysis should also be different with respect to the nature of our data. Although most of the data we’ll face is going to be about physical properties, it is worth noticing that we should not blindly rely on the euclidean distance regardless of situation.</p>
+
+<hr />
+
+<p>Anyways, let’s now come back to our main topic.</p>
+
+<hr />
+
+<hr />
+
+:ET
