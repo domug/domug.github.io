@@ -1,0 +1,221 @@
+I" 3<p><strong>Regular Expression</strong> is a bunch of patterns that can be used to extract specific combinations of strings in a text. It is widely used in domains like NLP (Natural Language Processing) to handle text data and has lots of usages especially in the data preprocessing steps.</p>
+
+<p>So in the following posts, we will talk about how to utilize some of the most important regular expressions in python with simple examples.</p>
+
+<hr />
+
+<h1 id="re-package-in-python">“re” package in python</h1>
+
+<p>In python, we can use regular expressions by <code class="language-plaintext highlighter-rouge">re</code> package. It is a bulit-in package in python, so we just need to import it to use it right away.</p>
+
+<p><code class="language-plaintext highlighter-rouge">import re</code></p>
+
+<p>There’s not much of a theoretical background to be explained here, but keep in mind that almost every methods in <code class="language-plaintext highlighter-rouge">re</code> package work in the following syntax:</p>
+
+<p><code class="language-plaintext highlighter-rouge">re.method_name(pattern, string)</code></p>
+
+<p>With this being said, let’s dig into each methods!</p>
+
+<hr />
+
+<h2 id="1-rematch">1. re.match()</h2>
+
+<p><code class="language-plaintext highlighter-rouge">match()</code> method searches if the provided pattern exists at the <strong>beginning</strong> of a string. This method cannot consider multiple lines.</p>
+
+<p>Here’s an example.</p>
+
+<p align="center">
+	<img src="/images/re/match.png" />
+</p>
+
+<p>The printed result of the first line of code indicates that the pattern we are looking for is at the 0th index of the string that we provided. Since indices in python starts with 0, it is equivalent to saying that the pattern is at the very beginning of the string.</p>
+
+<p>Note that the prefix “r” in front of each patterns simply indicates that it is a regular expression. It doesn’t have any functionality, so it’s up to you whether to include it for explicitation or not. The following code works exactly the same as above.</p>
+
+<p align="center">
+	<img src="/images/re/match2.png" />
+</p>
+
+<hr />
+
+<h2 id="2-research">2. re.search()</h2>
+
+<p>If <code class="language-plaintext highlighter-rouge">match()</code> method only considered a single sentence, <code class="language-plaintext highlighter-rouge">search()</code> method is an extension of <code class="language-plaintext highlighter-rouge">match()</code> and can work with multiple lines, but it only <strong>returns the first match</strong>. So basically, it searches everywhere in the provided string and returns the first element that matches your pattern. It’s commonly used for checking if a specific element is included in a sentence.</p>
+
+<p align="center">
+	<img src="/images/re/search.png" />
+</p>
+
+<p>We can see that all of our examples returned “a” and its index as it is included in all of the strings that we provided.</p>
+
+<p>Now that we have the matched result, how can we actually extract the “actual” element? Like in above examples we want to get exact “a” instead of <code class="language-plaintext highlighter-rouge">re</code> object.</p>
+
+<p>Regarding this, there are 3 methods such as <code class="language-plaintext highlighter-rouge">group()</code>, <code class="language-plaintext highlighter-rouge">start()</code>, <code class="language-plaintext highlighter-rouge">end()</code>.</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">group()</code>: <strong>returns the matched element</strong></li>
+  <li><code class="language-plaintext highlighter-rouge">start()</code>: <strong>returns the start index</strong> of matched element</li>
+  <li><code class="language-plaintext highlighter-rouge">end()</code>: <strong>returns the end index</strong> of matched element</li>
+</ul>
+
+<p align="center">
+	<img src="/images/re/group.png" />
+</p>
+
+<p>The results are presented accordingly.</p>
+
+<p>On top of this, we can also include logical expressions in patterns. For example, use <code class="language-plaintext highlighter-rouge">|</code> to indicate <strong>OR</strong> expression like the following examples.</p>
+
+<p align="center">
+	<img src="/images/re/or.png" />
+</p>
+
+<hr />
+
+<h2 id="3-refindall">3. re.findall()</h2>
+
+<p>As its name explictly suggests, <code class="language-plaintext highlighter-rouge">findall()</code> method finds and pulls out <strong>all the matched instances as a list</strong>. Since there can be multiple return values, information about index is excluded.</p>
+
+<p align="center">
+	<img src="/images/re/findall.png" />
+</p>
+
+<p>As the returned value is in a list form, we can apply all of the properties of list datatype in python like list indexing and slicing.</p>
+
+<p>Also, keep in mind that we don’t have to use methods like <code class="language-plaintext highlighter-rouge">.group()</code> to get the exact matching values since the result is returned in a list.</p>
+
+<hr />
+
+<p>The way how we found matching elements so far is called as <strong>Literal Matching</strong>. What it means is that we designate specific values inside the patterns like “a”, or “love” etc. This method can be inefficient if the pattern we are trying to search gets very complicated.</p>
+
+<p>Therefore, in more complex situations we often define regular expression patterns by <strong>Character Sets</strong> with <strong>Quantifiers</strong>. Let’s take a look at each!</p>
+
+<hr />
+
+<h2 id="4-character-sets">4. Character Sets</h2>
+
+<p><strong>Character Sets</strong>, or equivalently <strong>Character Classes</strong>, are <strong>“sets of elements”</strong> which can be used in the patterns. For instance, if we want to find alphabets in the string, we can use character set that represents alphabets instead of specifying all of the alphabets in the pattern. It might not make sense at the moment, but soon it will be clear after seeing examples.</p>
+
+<p>We are going to take a look at the most frequently used 6 character sets - <code class="language-plaintext highlighter-rouge">"\w"</code>, <code class="language-plaintext highlighter-rouge">"\W"</code>, <code class="language-plaintext highlighter-rouge">"\d"</code>, <code class="language-plaintext highlighter-rouge">"\D"</code>, <code class="language-plaintext highlighter-rouge">"\s"</code>, <code class="language-plaintext highlighter-rouge">"\S"</code>.</p>
+
+<hr />
+
+<h3 id="4-1-w-lower-case-w">4-1. \w (Lower case w)</h3>
+
+<p>In regular expression, <code class="language-plaintext highlighter-rouge">\w</code> represents any character within the set <code class="language-plaintext highlighter-rouge">[a-zA-Z0-9_]</code>. In other words, it can be <strong>any alphabet (regardless of case), number and underbar</strong>.</p>
+
+<p>Notice that it <strong>does not match any symbols except for the underbar ( <code class="language-plaintext highlighter-rouge">_</code> )</strong>.</p>
+
+<p align="center">
+	<img src="/images/re/w.png" />
+</p>
+
+<p>We can see that the first 4 consecutive combination of alphabets, numbers, and underbar is returned for each examples by <code class="language-plaintext highlighter-rouge">search()</code> method. Note that white spaces (blanks) are excluded!</p>
+
+<hr />
+
+<h3 id="4-2-w-upper-case-w">4-2. \W (Upper case w)</h3>
+
+<p>As opposite to <code class="language-plaintext highlighter-rouge">\w</code>, capital letter <code class="language-plaintext highlighter-rouge">\W</code> represents <strong>everything that is not included in <code class="language-plaintext highlighter-rouge">\w</code></strong>. So we can think of it as a complementary set in a mathematical sense.</p>
+
+<p>To be more specific, <code class="language-plaintext highlighter-rouge">\W</code> matches <strong>every non-alphabet, non-digit and non-underbar element</strong> in a string.</p>
+
+<p align="center">
+	<img src="/images/re/bigw.png" />
+</p>
+
+<p>In the first example, 4 consecutive “!” is returned and in the second example all hyphens and white spaces are returned.</p>
+
+<hr />
+
+<h3 id="4-3-d-lower-case-d">4-3. \d (Lower case d)</h3>
+
+<p><code class="language-plaintext highlighter-rouge">\d</code> stands for all <strong>digits</strong>. To put it formally, it matches every digit that is included in <code class="language-plaintext highlighter-rouge">[0-9]</code>.</p>
+
+<p align="center">
+	<img src="/images/re/d.png" />
+</p>
+
+<p>The first example tells python to return every 3 consecutive numbers in a string. Since there is no digit in the second example, the returned list contains nothing.</p>
+
+<hr />
+
+<h3 id="4-4-d-upper-case-d">4-4. \D (Upper case d)</h3>
+
+<p>Same as the case of <code class="language-plaintext highlighter-rouge">\w</code> and <code class="language-plaintext highlighter-rouge">\W</code>, capital <code class="language-plaintext highlighter-rouge">\D</code> indicates everything that is <strong>not included in <code class="language-plaintext highlighter-rouge">\d</code></strong>. Therefore, it matches <strong>any non-digit characters</strong> in a string. Here’s an example.</p>
+
+<p align="center">
+	<img src="/images/re/bigd.png" />
+</p>
+
+<p>The first example returned every sequential combination of 3 consecutive non-digit elements whereas the second example returned all non-digit characters including white spaces.</p>
+
+<hr />
+
+<h3 id="4-5-s-lower-case-s">4-5. \s (Lower case s)</h3>
+
+<p><code class="language-plaintext highlighter-rouge">\s</code> in regular expression indicates <strong>every whitespace characters</strong>. Whitespace here includes blanks, tabs, new lines etc. So it’s a good strategy to use <code class="language-plaintext highlighter-rouge">\s</code> if you want to check how many word spacings are there in a sentence for instance.</p>
+
+<p align="center">
+	<img src="/images/re/s.png" />
+</p>
+
+<p>Note that <code class="language-plaintext highlighter-rouge">tab</code> is treated as a stand alone character.</p>
+
+<hr />
+
+<h3 id="4-6-s-upper-case-s">4-6. \S (Upper case s)</h3>
+
+<p>Likewise, <code class="language-plaintext highlighter-rouge">\S</code> is a complement of <code class="language-plaintext highlighter-rouge">\s</code>. So it represents every <strong>non-whitespace characters</strong> including alphabets, numbers and even special characters.</p>
+
+<p align="center">
+	<img src="/images/re/bigs.png" />
+</p>
+
+<p>We can see that every character except blanks are returned as the result of above example.</p>
+
+<hr />
+
+<h2 id="5-quantifiers">5. Quantifiers</h2>
+
+<p>We have seen 6 different character sets so far and in practice, they are often used with <strong>quantifiers</strong>. So what are quantifiers?</p>
+
+<p>Let’s say we have a string <code class="language-plaintext highlighter-rouge">"My phone number is 000-1234-5678"</code>, and we want to extract all of the separate chunks of numbers from this. By what we know so far, we can define regular expression pattern in the following way.</p>
+
+<p align="center">
+	<img src="/images/re/quantifier_example.png" />
+</p>
+
+<p>It seems like the result is not what we desired. We wanted a list of <code class="language-plaintext highlighter-rouge">[000, 1234, 5678]</code>, but our code returned 3 digits and 4 digits separately. This is where quantifiers comes into play. By using quantifiers, we can make a pattern that accounts for “one or more numbers”.</p>
+
+<p>We will take a look at 4 prominent quantifiers and they are <code class="language-plaintext highlighter-rouge">+</code>, <code class="language-plaintext highlighter-rouge">?</code>, <code class="language-plaintext highlighter-rouge">*</code>, <code class="language-plaintext highlighter-rouge">{n,m}</code>. Let’s start with <code class="language-plaintext highlighter-rouge">+</code>.</p>
+
+<hr />
+
+<h3 id="5-1--quantifier">5-1. “+” quantifier</h3>
+
+<p>”+” quantifier is also called as <strong>greedy quantifier</strong>. It simply means “<strong>one or more times</strong>”.</p>
+
+<p>The syntax of including quantifers is to place them at the end of each set segments inside a pattern. Here’s an example of using greedy quantifier.</p>
+
+<p align="center">
+	<img src="/images/re/+.png" />
+</p>
+
+<p>Take a look at above example. By placing greedy quantifier at the end of a character set <code class="language-plaintext highlighter-rouge">\d</code>, we are able to extract all separate chunks of phone numbers as desired. Regarding the second example, our python will interpret this pattern as to find one or more digits in a string and return them all.</p>
+
+<p>The rest of the quantifiers work in similar ways, so once you can fully understand the previous example, the rest will be a free lunch.</p>
+
+<hr />
+
+<h3 id="5-2--quantifier">5-2. “?” quantifier</h3>
+
+<p>”?” quantifier indicates “<strong>zero or one times</strong>”. Consider the following example.</p>
+
+<p align="center">
+	<img src="/images/re/quantifier2.png" />
+</p>
+
+<p>Since “?” is located right next to <code class="language-plaintext highlighter-rouge">\d</code> character set, the pattern implies “find 0~1 numbers”</p>
+
+:ET
