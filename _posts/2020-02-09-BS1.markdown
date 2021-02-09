@@ -1,15 +1,33 @@
 ---
 layout: post
-title: "Regular Expression Basics"
-date: 2020-12-20 00:00:00
-image: thumbnail_re.png
-tags: [python, re]
-categories: python
+title: "Bayesian Statistics"
+date: 2021-02-09 00:00:00
+image: thumbnail_bayesian.png
+tags: [bayesian]
+categories: bayesian
 ---
+
+
+
+In the following series of posts, we will be talking about **Bayesian Statistics**, which is one of the most probable field of applied statistics in 21st century. I have been into bayesian statistics for about an year now, and ever since it has given me some valuable insights on how to quantify uncertainties with its practical and intuitive framework. 
+
+Just like any other field of study that is built upon mathematics, Bayesian Statistics is also filled with heavy amount of mathematical formulas and proofs, and I don't want to be overwhelmed by them (because I couldn't understand every single piece of the nitty-gritty mathematics in the textbooks as an undergraduate student...). For this reason, I will try to keep the rigorous mathetical proofs as minimum as possible and rather focus on the insight and the intuition Bayesian statistics can give us.
+
+Hence, we will be focusing on how to implement Bayesian inference using **pymc3**, a renowned PPL (Probabilistic Programming Language) designed to run on python. 
+
+$$ x = y^2 $$
+
+
+
+
+
+
+
+
 
 **Regular Expression** is a bunch of patterns that can be used to extract specific combinations of strings in a text. It is widely used in domains like NLP (Natural Language Processing) to handle text data and is especially useful in the data preprocessing steps. 
 
-In this post, we will talk about how to utilize some of the most important regular expressions in python with simple examples. 
+So in the following posts, we will talk about how to utilize some of the most important regular expressions in python with simple examples. 
 
 
 ---
@@ -272,9 +290,12 @@ In fact, all three quantifiers we've looked at previously can be expressed by us
 
 This is the end for now! 
 
-We've looked at the basic methods of `re` package in python and how to use character sets and quantifiers. 
+Until now we've looked at the basic methods of `re` package in python and how to use character sets and quantifiers to describe patterns efficiently. Just by using these, we can already handle lots of complex text data. So in the next post, we will take a look at some of the exercises together.
 
-Hope this post shed a light on how to handle text data with regular expressions.
+
+
+
+
 
 
 
