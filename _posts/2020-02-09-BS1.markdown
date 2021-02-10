@@ -124,7 +124,7 @@ In conclusion, for our example we derived MLE of $p$ to be the sample mean, whic
 
 - ***Considering our observed results, the coin is not fair***.
 
-This seems to make sense, but let's say that we have already tossed coin and we are yet to see the outcome. In this situation the probability of heads is either 0 or 1. It's a bit awkward right? We would normally expect the answer to be in a probabilistic sense like 0.3, but in frequentist paradigm our parameter $p$ is a **fixed constant**, so the state of the outcome being a head and a tail can't co-exist at the same time.
+This seems to make sense, but don't you think it is a bit too irresponsible? The result is pretty lame and obvious. There's not much of a new information gained by doing the inference in the first place. This is because frequentists consider parameter $p$ as a **deterministic variable (fixed constant)**. Since there is no space for variability in the conclusion, the result is either fair / not fair. These two constrasting state of outcome can't co-exist at the same time. With this in mind, let's take Bayesian approach and see how it is different.
 
 &nbsp;
 
