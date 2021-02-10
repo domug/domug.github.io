@@ -201,11 +201,11 @@ The result of the bayes theorem suggests that given our observed data, the poste
 
 - ***Considering our observed results, our coin has probability of 0.226 to be fair***.
 
-This conclusion, in contrast with that of frequentists, explicitly suggests a specific probabilistic statement about the amount of uncertainty in our inference (remember that from frequentist inference the conclusion was just "The coin is unfair"). Thus it's more intuitive and informative. This is also in line with our common sense that **our prior belief about the coin being fair was 40% and after we saw an actual outcome of 30%, our posterior belief about coin being fair has decreased to be 22.6%**.
+This conclusion, in contrast with that of frequentists, explicitly suggests a specific probabilistic statement about the amount of uncertainty in our inference (remember that from frequentist inference the conclusion was just "The coin is unfair"). Thus it's more intuitive and informative. This is also in line with our common sense that **our prior belief about the coin being fair 40%, was decreased to 22.6% after we saw an actial outcome of 30%**.
 
 One of the cool part of Bayesian Statistics is that we can also update the derived posterior by another observation. Let's say that after this observation, we have conducted another set of coin tosses and got only 10% of head this time. Then our posterior probability will further be decreased from 22.6% to somewhere around 10%.
 
-This sequential updating makes Bayesian Inference more flexible and informative. However, life isn't so beautiful in practice. Above example was a really simple case where we could use binomial distribution, which makes the math easy for us to handle, where in real life situations it is often impossible to derive the posterior analytically.
+This sequential updating makes Bayesian Inference flexible and informative. However, life isn't so beautiful in practice. Above example was a really simple case where we could use binomial distribution, which makes the math easy for us to handle, where in real life situations it is often impossible to derive the posterior analytically.
 
 Luckily, there is a way to address this problem by using our cutting-edge computers! We will talk more about them in detail in the following posts. This is end for now and it the next post, we are going to take a look at **conjugacy of distributions**.
 
