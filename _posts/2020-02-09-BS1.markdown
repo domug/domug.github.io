@@ -14,7 +14,7 @@ In the following series of posts, we will be talking about **Bayesian Statistics
 
 Just like any other field of study that is built upon mathematics, Bayesian Statistics is also filled with heavy amount of mathematical formulas and proofs, and I don't want to be overwhelmed by them (because I had a hard time with those nitty-gritty mathematics in the textbooks as an undergraduate student...). For this reason, I will try to keep the rigorous mathematical proofs as minimum as possible and rather try focus on the insight and the intuition Bayesian statistics can give us.
 
-Hence, we will use **pymc3**, a renowned PPL (Probabilistic Programming Language) designed to run on python, to actually implement Bayesian inference throughout this series. As this is the very first post, let's begin with talking about some of the fundamentals that differentiates Bayesian Statistics from traditional statistics. 
+We will use **pymc3**, a renowned PPL (Probabilistic Programming Language) made for python users, to actually implement Bayesian inference throughout this series. As this is the very first post, let's begin with talking about some of the fundamentals that differentiates Bayesian Statistics from traditional statistics. 
 
 
 
@@ -46,8 +46,8 @@ What is **probability**? Defining probability is the very first step in statisti
 
 - **Bayesian**:
   - Accounts for **subjectiveness** in the probability as long as it satisfies the basic [axioms of probability](https://en.wikipedia.org/wiki/Probability_axioms).
-  - Compared to frequentist's definition, interpretation of probability is way more intuitive (ex. The probability of rain tomorrow is 0.73)
-  - We can provide exact probabilistic answers to questions that were unanswerable in frequentist paradigm. (Ex. What is the probability that woman will like me? What is the probability that Korea will be unified in 10 years?)
+  - Compared to frequentist's definition, interpretation of probability is way more intuitive and flexible (ex. The probability of rain tomorrow is 0.73).
+  - We can provide exact probabilistic answers to questions that were unanswerable in frequentist paradigm. (ex. What is the probability that Korea will be unified in the next 10 years?)
 
 &nbsp;
 
@@ -92,7 +92,7 @@ $$
 
 </center>
 
-The implication of this equation is that we can derive a particular conditional probability (left side) by marginalizing the joint probability into specific events. In a Bayesian sense, the conditional probability on the right side is called as the **posterior** and the numerator on the left side is each called as the **likelihood** and the **prior** while the denominator is evidence.
+The implication of this equation is that we can derive a particular conditional probability (left side) by marginalizing the joint probability into a conditional and marginal probabilities. In a Bayesian sense, this conditional probability on the left side is called as the **posterior** and the numerator on the right side is each called as the **likelihood** and the **prior** while the denominator is evidence.
 
 
 
@@ -112,23 +112,106 @@ For illustration, we will consider the following situation.
 
 #### Frequentist
 
-First, let's try to solve this question by frequentists' approach. Like I mentioned earlier, frequentists assume a repetition of event and it is clear that consecutive tossing of a coin follows binomial distribution. To be more specific, this example follows binomial distribution of $n$ (number of repetition) equal to 10 and our goal is to make inference on the unknown parameter $p$.
+First, let's try to solve this question by frequentists' approach. Like I mentioned earlier, frequentists assume a repetition of event and it is clear that consecutive tossing of a coin follows binomial distribution. To be more specific, this example follows binomial distribution $B(n,p)$ where $n$ (number of repetition) is equal to 10 and our goal is to make inference on the unknown parameter $p$.
 
 In frequentist paradigm, we have to define an **estimator** $\hat p$ to make inference on the true parameter $p$ (for more information about estimators check out this [post](https://domug.github.io/2020/12/03/Estimation_Multicollinearity/)). There are several ways of defining an estimator, and for now let's use the most commonly used **Maximum Likelihood Method** to derive $p$ analytically. 
 
 Maximum Likelihood Estimation in short, is assuming that our parameter is some **unknown but fixed constant** and trying to find the value that has the **highest density in the probability distribution of events** (likelihood) and use it as an estimator on behalf of the true parameter. In other words, considering our example, it is equivalent to finding $p$ that maximizes the binomial probability density $n \choose x$ $p^x (1-p)^{n-x}$. 
 
-Since our main topic is on bayesian we are going to skip ahead to the conclusion, but note that analytical solution for our example is relatively trivial in that as binomial density is a concave function, we can just set the differential equation to 0 and solve it to get the answer. Anyways, if we do the math then our MLE (Maximum Likelihood Estimator) is $\frac{\sum_{i=1}^{n} x_i}{n}$ which is a sample mean of the number of heads. 
+Since our main topic is on bayesian we are going to skip ahead to the conclusion, but note that analytical solution for our example is relatively trivial in that as binomial density is a concave function, we can just set the differential equation to 0 and solve it to get the answer. Anyways, if we do the math then our MLE (Maximum Likelihood Estimator) is $\frac{\sum_{i=1}^{n} x_i}{n}$ which is a **sample mean** of the number of heads. 
 
-In conclusion, for our example we derived MLE of $p$ to be the sample mean, which is $\frac{3}{10}$. Then as a consequent step, can we say that our coin is fair regarding this estimator? The answer is "**No**" - if we toss this coin infinitely many times, the probability of heads is only about 30% which clearly indicates this coin is somehow biased. 
+In conclusion, for our example we derived MLE of $p$ to be the sample mean, which is $\frac{3}{10}$. This indicates that if we toss the coin infinitely many times, the probability of heads is only about 30%, meaning that this coin is somehow biased (for more sophisticated justification we normally conduct [*Neyman Pearson's hypothesis testing*](https://www.statisticshowto.com/neyman-pearson-lemma/#:~:text=The%20Neyman%2DPearson%20Lemma%20is,the%20alternate%20hypothesis%20is%20true.)) . Anyhow, we can conclude as the following:
 
-This seems to make sense, but let's say that we have already tossed coin and we are yet to see the outcome. In this situation the probability of heads is either 0 or 1. It's a bit awkward right? We would normally expect the answer to be in a probabilistic sense like 0.3, but in frequentist paradigm our parameter $p$ is a **fixed constant**, so the state of the outcome as head and tail can't co-exist at the same time.
+- ***Considering our observed results, the coin is not fair***.
+
+This seems to make sense, but let's say that we have already tossed coin and we are yet to see the outcome. In this situation the probability of heads is either 0 or 1. It's a bit awkward right? We would normally expect the answer to be in a probabilistic sense like 0.3, but in frequentist paradigm our parameter $p$ is a **fixed constant**, so the state of the outcome being a head and a tail can't co-exist at the same time.
+
+&nbsp;
+
+### Bayesian
+
+Now let's take a look at Bayesian's answer to our example. To find out whether our sampled coin is biased or not, we have to conduct a **Bayesian Inference** and as a first step, we need a concept of **prior**. Here's what it is.
+
+- **Prior** literally means our **external prior knowledge about the subject**. It can be some objective findings of rigorous research papers or it can just be our subjective beliefs on the topic.
+- For example, let's say that I'm interested in the probability of raining tomorrow in Seoul (today is Feb 09). Since I've lived in Seoul for a long time, I know that it is very unlikely to rain in early Feburary. So for this problem, I would say my prior probability of raining tomorrow is 0.1.
+
+Likewise, for our example we can integrate any sort of our prior knowledge about the coin such as its physical properties (like there is a little crack on the coin) into our inference. Because of this flexibility in the inference, Bayesian Statistics can give realistic probabilities to questions that were hard to answer under Frequentist's framework. 
+
+But always keep in mind that we shouldn't abuse the use of priors. As Bayesian probabilities are innately subjective, we need some sort of formal justification of our priors for our inference to have credibility. I think we'll have more time for that in the future and for now let's move on to how Bayesian Inference is done based on priors. 
+
+---
+
+Here are the steps:
+
+1. **Set prior based on our external knowledge about the problem**. (If we don't have any knowledge we use *uninformative priors*, which will be discussed in the upcoming posts)
+2. **Use Bayes' Theorem to update prior based on the observed data**.
+3. **Derive posterior**.
+
+---
+
+Let's follow these steps to derive the posterior analytically for our example. 
+
+**<Step 1>**
+
+By inspecting our sampled coin carefully, I've found out some small cracks on the edges of the coin. I suspected that these cracks will have influence on the coin's fairness so I decided to set my prior probability of this coin to be fair as 0.4, a little less than 0.5.
+
+**<Step 2>**
+
+Based on our observation of 3 heads and 7 tails, use Bayes' Theorem to update our prior.
+
+&nbsp;
+
+<center>
+
+$$
+\begin{aligned}
+f(p|x) &= \frac{f(p,x)}{f(x)} \\[10pt]
+&= \frac{f(x|p)f(p)}{\sum_p f(x|p)f(p)} \\[10pt]
+
+&= \frac{\binom{10}{x} [(0.5)^{10} (0.4)  I_{fair} + (0.3)^x (0.7)^{10-x} (0.6) I_{unfair}]}{\binom{10}{x} [(0.5)^{10} (0.4) + (0.3)^x (0.7)^{10-x}(0.6)] } \\[10pt]
+
+\end{aligned}
+$$
+
+</center>
+
+**<Step 3>**
+
+Note that $I_{fair}$, $I_{unfair}$ are indicator functions. Since we have observed 3 heads, let's plug in the value and calculate the posterior probability.
+
+&nbsp;
+
+<center>
+
+$$
+\begin{aligned}
+f(p|x = 3) &= \frac{\binom{10}{3} [(0.5)^{10} (0.4)  I_{fair} + (0.3)^3 (0.7)^{10-3} (0.6) I_{unfair}]}{\binom{10}{3} [(0.5)^{10} (0.4) + (0.3)^3 (0.7)^{10-3}(0.6)] } \\[10pt] 
+
+&= \frac{0.046875\;I_{fair} + 0.1600968\;I_{unfair}}{0.2069718} \\[10pt]
+
+&= 0.2264802\;I_{fair} + 0.7735198\;I_{unfair}
+\end{aligned}
+$$
+
+</center>
+
+&nbsp;
+
+The result of the bayes theorem suggests that given our observed data, the posterior probability that our sampled coin is fair is only about 22.6%, which is enough to derive the following conclusion:
+
+- ***Considering our observed results, our coin has probability of 0.226 to be fair***.
+
+This conclusion, in contrast with that of frequentists, explicitly suggests a specific probabilistic statement about the amount of uncertainty in our inference (remember that from frequentist inference the conclusion was just "The coin is unfair"). Thus it's more intuitive and informative. This is also in line with our common sense that **our prior belief about the coin being fair was 40% and after we saw an actual outcome of 30%, our posterior belief about coin being fair has decreased to be 22.6%**.
+
+One of the cool part of Bayesian Statistics is that we can also update the derived posterior by another observation. Let's say that after this observation, we have conducted another set of coin tosses and got only 10% of head this time. Then our posterior probability will further be decreased from 22.6% to somewhere around 10%.
+
+This sequential updating makes Bayesian Inference more flexible and informative. However, life isn't so beautiful in practice. Above example was a really simple case where we could use binomial distribution, which makes the math easy for us to handle, where in real life situations it is often impossible to derive the posterior analytically.
+
+Luckily, there is a way to address this problem by using our cutting-edge computers! We will talk more about them in detail in the following posts. This is end for now and it the next post, we are going to take a look at **conjugacy of distributions**.
 
 
 
-
-
-
+---
 
 
 
