@@ -1,0 +1,143 @@
+---
+layout: post
+title: "[Bayesian Statistics] Conjugacy"
+date: 2021-02-15 00:00:00
+image: thumbnail_bayes.png
+tags: [bayesian]
+categories: bayesian
+use_math: true
+---
+
+### Previous Posts
+
+[1. Bayesian Statistics - Preface](https://domug.github.io/2021/02/09/BS1/)
+
+---
+
+In the previous post, we have talked about how Bayesian statistics differs from the classical statistics through an example of a coin tossing problem. Although the math was relatively simple for that example, we could sense that calculating posteriors by hand can be burdensome. 
+
+In fact, one of the fundamental limitations of Bayesian statistics lies in its complexity of calculation. Depending on our choice of prior and likelihood distribution, our posterior distribution can be intractable analytically (to be more specific, we cannot derive the denominator of the bayes theorem which includes integral). 
+
+To address this problem, scholars have came up with sets of distributions which has a desirable properties for making the math easy and they are called as **conjugate prior distributions**. We're going take a look at them in this post.
+
+
+---
+
+# Posterior Kernel
+
+To understand how conjugate priors work, we first have to consider how posterior is derived. By now, we know that posterior is
+$$
+f(\theta|x) = \frac{f(x|\theta)f(\theta)}{f(x)}
+$$
+, which is a function of our parameter of interest $\theta$. Our goal is to calculate some combination of prior $\theta$ and the likelihood $x$. Now  take a close look at the right side of equation. The denominator $f(x)$ is just a **constant** since we will always presume that $x$ is some known observed values. To put it in another words, the denomator $f(x)$ is some fixed constant that merely exists to make our posterior distribution obey the characteristic of a proper probability density (integrating up to 1) and thus it is called as **normalizing constant**. 
+
+
+
+Therefore, we can tune our attention to only the numerator while defining our posterior distribution because the posterior will only depend on the random $\theta$ of the numerator 
+$$
+f(x|\theta)f(\theta)
+$$
+. This is called as the **kernel density** of our posterior and it determines the distributional properties of the posterior. Furthermore, since 
+$$
+f(\theta)
+$$
+is by definition the prior distribution and 
+$$
+f(x|\theta)
+$$
+is the likelihood, we can summarize the calculation of the posterior as the following:
+
+<center>
+
+$$
+posterior \propto prior \cdot likelihood
+$$
+
+</center>
+
+
+
+This is the reason why I mentioned prior, likelihood and posterior are the 3 key elements of Bayesian inference.
+
+
+
+---
+
+# Conjugate Distribution
+
+As we have seen, posterior is a combination of prior and the likelihood. Regarding this fact, statisticians have thought of an idea that **deliberate choice of prior and the likelihood distribution will yield some specific distributional form of posterior**. Since it is hard to manipulate likelihood, assigning appropriate prior with respect to given likelihood distribution allows us to derive the posteriors analytically. This is the idea of **conjugate prior** in Bayesian inference and we are going to see what it is through an example. 
+
+Among the many conjugate pairs, I will illustrate one single case - *Bernoulli likelihood* + *Beta prior*.
+
+> Let's go back to our coin tossing problem again. Suppose we observed $z$ number of heads from $N$ total observations. Regarding this situation, I want to find out the posterior probability of my coin being loaded. That is, if I toss my coin what is the probability of heads considering the observations?
+
+&nbsp;
+
+First, here's the general setting of our problem.
+
+<center>
+
+$$
+likelihood \sim Bernoulli(\theta) \\
+prior \sim Beta(a,b) \\
+$$
+
+</center >
+
+Since it is evident that our coin tossing observations follow a bernoulli distribution with probability equal to $\theta$, I've deliberately set my prior for $\theta$ to be Beta distribution with parameters $a$ and $b$ which in this case we assume to be known. Let's derive the posterior under this setting.
+
+&nbsp;
+
+<center>
+
+$$
+\begin{aligned}
+p(\theta|D) &= \frac{P(\theta,D)}{p(D)} \\[10pt]
+&= \frac{p(\theta)\;p(D|\theta)}{\int p(\theta) \; p(D|\theta) \; d\theta } \\[10pt]
+&= \frac{\frac{1}{B(a,b)} \; \theta^{a-1} \; (1-\theta)^{b-1} \; \theta^z \; (1-\theta)^{N-z}}
+{\int \frac{1}{B(a,b)} \; \theta^{a-1} \; (1-\theta)^{b-1} \; \theta^z \; (1-\theta)^{N-z} \; d\theta } \\[10pt]
+&= \frac{\theta^{a-1+z} \; (1-\theta)^{N-z+b-1}}
+{B(a+z, \;b+N-z) \; \int \frac{1}{B(a+z, \;b+N-z)} \; \theta^{(a+z)-1} \; (1-\theta)^{(b+N-z)-1} \; d\theta} \\[10pt]
+&= \frac{\theta^{(a+z)-1} \; (1-\theta)^{(N-z+b)-1}}{B(a+z, \; b+N-z)} \\[10pt]
+&\sim Beta(a+z, \; b+N-z)
+
+\end{aligned}
+$$
+
+</center>
+
+&nbsp;
+
+Note that $D$ represents likelihood and $B(a,b)$ is a *Beta function.* I've used definition of the Beta distribution during the calculation.
+
+
+
+We can see that the resulting posterior is in the form of a **Beta distribution**, which certainly is very familiar to us. Hence, if we summarize what we have done above, here's what it is.
+
+
+
+<p align="center">
+	<img width="300" height="200" src="{{site.baseurl}}/images/bayesian/bayes2.png">
+</p>
+
+&nbsp;
+
+This means that when we set our prior and likelihood to be beta and bernoulli, we can easily derive the posterior in the form of a beta distribution with updated parameters. So for instance if we have 20 observations (N) with 17 heads (z), where prior parameter for beta was set to be 100 and 200 (a, b), then our posterior distribution can simply be derived as
+$$
+p(\theta | D) \sim Beta(117, 103)
+$$
+. 
+
+
+
+Apart from the *Bernoulli - Beta* conjugacy, there are lot more [other conjugate relationships](https://en.wikipedia.org/wiki/Conjugate_prior). Although it is very convinient if we use conjugacy, it has limitations as well because often in realistic situations our priors are too complicated to be estimated by conjugate distributions. But not not be disappointed here because this doesn't mean that conjugate priors have no meaning. As we will see in the upcoming posts, conjugate priors are a good starting point for our algorithmic estimation of the posterior!
+
+
+
+So again, the complexity of calculation, was the prime reason why Bayesian Statistics was under the shadow until recently even though the theoretical backgrounds existed as early as the late 19th century. However, with the recent advance of computers the table has been turned. Nowadays we can use cutting edge simulation methods with our computers to approximate our posteriors and we don't have to worry about calculating the troublesome normalizing constant of the posterior. Thus in the next post, we will talk about Monte-Carlo simulation method as a starting point for our discussion on the MCMC (Markov Chain Monte Carlo).
+
+---
+
+# References
+
+- Gelman et. al. (2013) *Bayesian Data Analysis*. 3rd ed.  CRC Press

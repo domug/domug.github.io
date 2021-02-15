@@ -1,8 +1,8 @@
 ---
 layout: post
-title: "Bayesian Statistics - Basics"
+title: "[Bayesian Statistics] Basics"
 date: 2021-02-09 00:00:00
-image: thumbnail_bayesian.png
+image: thumbnail_bayes.png
 tags: [bayesian]
 categories: bayesian
 use_math: true
@@ -10,7 +10,7 @@ use_math: true
 
 
 
-In the following series of posts, we will be talking about **Bayesian Statistics**, which is one of the most probable field of applied statistics in 21st century. I have been into bayesian statistics for about an year now, and ever since it has given me some valuable insights on how to quantify uncertainties with its practical and intuitive framework. 
+In the following series of posts, we will be talking about **Bayesian Statistics**, which is arguably one of the most probable field of applied statistics in 21st century. I have been into bayesian statistics for about an year now, and ever since it has given me some valuable insights on how to quantify uncertainties with its practical and intuitive framework. 
 
 Just like any other field of study that is built upon mathematics, Bayesian Statistics is also filled with heavy amount of mathematical formulas and proofs, and I don't want to be overwhelmed by them (because I had a hard time with those nitty-gritty mathematics in the textbooks as an undergraduate student...). For this reason, I will try to keep the rigorous mathematical proofs as minimum as possible and rather try focus on the insight and the intuition Bayesian statistics can give us.
 
@@ -144,12 +144,12 @@ But always keep in mind that we shouldn't abuse the use of priors. As Bayesian p
 Here are the steps:
 
 1. **Set prior based on our external knowledge about the problem**. (If we don't have any knowledge we use *uninformative priors*, which will be discussed in the upcoming posts)
-2. **Use Bayes' Theorem to update prior based on the observed data**.
+2. **Use Bayes' Theorem to update your prior based on observed data (likelihood)**.
 3. **Derive posterior**.
 
 ---
 
-Let's follow these steps to derive the posterior analytically for our example. 
+To put it simply, a full bayesian inference consists of 3 elements - **prior**, **likelihood**, **posterior**. Let's follow the steps and actually derive the posterior analytically. 
 
 **<Step 1>**
 
@@ -201,9 +201,13 @@ The result of the bayes theorem suggests that given our observed data, the poste
 
 - ***Considering our observed results, our coin has probability of 0.226 to be fair***.
 
-This conclusion, in contrast with that of frequentists, explicitly suggests a specific probabilistic statement about the amount of uncertainty in our inference (remember that from frequentist inference the conclusion was just "The coin is unfair"). Thus it's more intuitive and informative. This is also in line with our common sense that **our prior belief about the coin being fair 40%, was decreased to 22.6% after we saw an actial outcome of 30%**.
+This conclusion, in contrast with that of frequentists, explicitly suggests a specific probabilistic statement about the amount of uncertainty in our inference (remember that from frequentist inference the conclusion was just "The coin is unfair"). Thus it's more intuitive and informative. This is also in line with our common sense that **our prior belief about the coin being fair 40%, was decreased to 22.6% after we saw an actual outcome of 30%**.
 
-One of the cool part of Bayesian Statistics is that we can also update the derived posterior by another observation. Let's say that after this observation, we have conducted another set of coin tosses and got only 10% of head this time. Then our posterior probability will further be decreased from 22.6% to somewhere around 10%.
+<p align="center">
+	<img width="400" height="300" src="{{site.baseurl}}/images/bayesian/bayes1.png">
+</p>
+
+Can you see how the probability was updated? One of the cool part of Bayesian Statistics is that we can also update the derived posterior by another observation. Let's say that after this observation, we have conducted another set of coin tosses and got only 10% of head this time. If this is the case, our posterior probability will further be decreased from 22.6%.
 
 This sequential updating makes Bayesian Inference flexible and informative. However, life isn't so beautiful in practice. Above example was a really simple case where we could use binomial distribution, which makes the math easy for us to handle, where in real life situations it is often impossible to derive the posterior analytically.
 
@@ -215,10 +219,9 @@ Luckily, there is a way to address this problem by using our cutting-edge comput
 
 
 
+# References
 
-
-
-[code]: https://github.com/domug/Codes-for-blogs/blob/master/Dimension%20Reduction/LDA.R
+- Gelman et. al. (2013) *Bayesian Data Analysis*. 3rd ed.  CRC Press
 
 
 
