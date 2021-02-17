@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Regular Expression Basics"
+title: "Regular Expression in Python"
 date: 2020-12-20 00:00:00
 image: thumbnail_re.png
 tags: [python, re]

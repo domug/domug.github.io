@@ -108,7 +108,7 @@ $$
 
 &nbsp;
 
-Note that $D$ represents likelihood and $B(a,b)$ is a *Beta function.* I've used definition of the Beta distribution during the calculation.
+Note that $D$ represents likelihood and $B(a,b)$ is a *Beta function.* I've used definition of the Beta distribution to simplify terms during the calculation.
 
 
 
