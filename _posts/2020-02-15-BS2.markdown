@@ -10,7 +10,7 @@ use_math: true
 
 ### Previous Posts
 
-[1. Bayesian Statistics - Preface](https://domug.github.io/2021/02/09/BS1/)
+[1. Bayesian Statistics - Basics](https://domug.github.io/2021/02/09/BS1/)
 
 ---
 
@@ -140,4 +140,4 @@ So again, the complexity of calculation, was the prime reason why Bayesian Stati
 
 # References
 
-- Gelman et. al. (2013) *Bayesian Data Analysis*. 3rd ed.  CRC Press
+- Gelman et. al. 2013. *Bayesian Data Analysis*. 3rd ed.  CRC Press

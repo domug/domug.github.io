@@ -221,7 +221,7 @@ Luckily, there is a way to address this problem by using our cutting-edge comput
 
 # References
 
-- Gelman et. al. (2013) *Bayesian Data Analysis*. 3rd ed.  CRC Press
+- Gelman et. al. 2013. *Bayesian Data Analysis*. 3rd ed.  CRC Press
 
 
 
