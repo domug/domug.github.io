@@ -215,7 +215,7 @@ I tried to be as specific as possible, but for practical implementation the abov
 <p align="center">
 	<img width="500" height="400" src="{{site.baseurl}}/images/bayesian/mh.jpg">
   <br>
-  <em><span style="color:grey">Fig. 1: Simplification of MH Algorithm for implementation</span></em>
+  <em><span style="color:grey">Simplification of MH Algorithm for implementation</span></em>
 </p>
 
 &nbsp;
