@@ -161,7 +161,7 @@ $$
 
 &nbsp;
 
-We are assuming that the parameters are [exchangeable](https://en.wikipedia.org/wiki/Exchangeable_random_variables#:~:text=both%20have%20the%20same%20joint,cases%20of%20simple%20random%20sampling.) and the reason for choosing Inverse Gamma prior for the variance parameter is because it is conjugate with respect to the normal likelihood. We further assume that the hyper parameters $\nu_0$, $\beta_0$, $\mu_0$, $w_0$ are given constants.
+We are assuming that the parameters are [exchangeable](https://en.wikipedia.org/wiki/Exchangeable_random_variables#:~:text=both%20have%20the%20same%20joint,cases%20of%20simple%20random%20sampling.) and used Inverse Gamma prior, one of the most frequently used prior for variance parameter, for the $\sigma^2$. We further assume that the hyper parameters $\nu_0$, $\beta_0$, $\mu_0$, $w_0$ are given constants.
 
 An important point to consider in this setting is that the parameter distribution of $\mu$ is defined to be conditional on $\sigma^2$, which is equivalent to saying that **$\mu$ is inferred assuming $\sigma^2$ is known**. Because the parameters have dependency on the order of which they are being evaluated, this model is called as the **hierarchical model**. 
 
@@ -192,7 +192,7 @@ $$
 
 &nbsp;
 
-Regarding this equation, the game is set if the distributional kernel in the second line of equation can be approximated to one of the standard probability distributions we know such as *Normal, Gamma, Poisson* and so on. However, getting a closed-form solution gets practically impossible as we want to make inference on complicated real-world problems in which we can't use standard probability densities to describe them (although above kernel can be approximated into the t-distribution see [here](https://en.wikipedia.org/wiki/Conjugate_prior)). 
+Regarding this equation, the game is set if the distributional kernel in the second line of equation can be approximated to one of the standard probability distributions we know such as *Normal, Gamma, Poisson* and so on. However, getting a closed-form solution gets practically impossible as we want to make inference on complicated real-world problems in which we can't use standard probability densities to describe them. 
 
 Thus, instead of struggling to find analytical solutions, we can take a roundabout, which is Monte-Carlo estimation. In the next section, we will see what Monte-Carlo simulation is and in the following post we will talk about how it can be applied in Bayesian Inference to indirectly derive the posterior distribution.
 
@@ -248,14 +248,15 @@ Hence if $a=2$ and $b=\frac{1}{3}$, we have our mean of 6.
 <p align="center">
 	<img src="{{site.baseurl}}/images/bayesian/montecarlo.png">
 </p>
+<p align="center">
+	<img src="{{site.baseurl}}/images/bayesian/montecarlo2.png">
+</p>
 
-
-
-By using 100,000 random samples from $\Gamma(2,\frac{1}{3})$, we get almost the same result as 6. Why Monte-Carlo method works can be formally proved by using the [Law of Large Numbers](https://people.math.umass.edu/~lr7q/ps_files/teaching/math456/lecture17.pdf). 
+By using 100,000 random samples from $\Gamma(2,\frac{1}{3})$, we get almost the same result as 6. Moreover, we can see that the samples form a shape of the probability density of Gamma distribution. Why Monte-Carlo method works can be formally proved by using the [Law of Large Numbers](https://people.math.umass.edu/~lr7q/ps_files/teaching/math456/lecture17.pdf). 
 
 &nbsp;
 
-Likewise, as long as we have sufficient amount of samples, we can use Monte-Carlo simulation to make inference about the unknown quantities even if it cannot be derived analytically. This idea can be applied to deriving posterior as well, and the key point is how we can make samples withour knowing the exact probability distribution. Luckily, MCMC has answer to this, which is the very next topic we are going to discuss about.
+Likewise, as long as we have sufficient amount of samples, we can use Monte-Carlo simulation to make inference about the unknown quantities even if it cannot be derived analytically. This idea can be applied to deriving posterior as well, and the key point is how we can make samples without knowing the exact probability distribution. Luckily, MCMC has answer to this, which is the very next topic we are going to discuss about.
 
 
 
