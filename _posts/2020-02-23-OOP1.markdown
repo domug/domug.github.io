@@ -216,7 +216,7 @@ Now for the final, we have static methods. **Static Methods** are methods that u
 
 Until now, we have seen the very basics of how to define and use class in python. As python is a famous object-oriented high-level programming language, we can make our codes much simpler and efficient by combining sets of data with functionaliies together, which is implemented by methods and variables inside a class. 
 
-In fact, learning how to use class is the same as learing object-oriented programming (in short oop), as oop is like making a program that runs based on the "communication" between various classes.
+In fact, learning how to use class is the same as learning object-oriented programming (in short oop), as oop is like making a program that runs based on the "communication" between various classes.
 
 In the following posts, we will take a look the 4 cornerstones of oop, which are **Abstraction**, **Encapsulation**, **Inheritance** and **Polymorphism**.
 
