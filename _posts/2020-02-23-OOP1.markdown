@@ -1,0 +1,236 @@
+---
+layout: post
+title: "[OOP] Classes"
+date: 2021-02-23 00:00:00
+image: thumbnail_oop.png
+tags: [python, oop]
+categories: python
+---
+
+
+
+---
+
+&nbsp;
+
+# What is Class?
+
+&nbsp;
+
+Let's say we are developers wanting to make an SNS platform like instagram, where a lot of users interact with each other. One of the key elements we would have to implement is to define **user objects** as users are the cornerstones of a social network service. 
+
+Regarding this user object, each objects will have the **basic information** about users such as the name, email address, password and so on. Furthermore, there will be some predefined **collection of actions** that these user objects are capable of doing like "making follows", "making comments to posts" et cetera. Therefore, we would have to make some kind of a **framework** to contain all of these characteristics of user object.
+
+In python (or more broadly programming languages), ***class*** refers to this framework and ***object (or instance)*** is the realization of a class. In another words, it is easy to think of class as the **design map** and object as the **final product** made by this design map. Let's see how this happens in python.
+
+<p align="center">
+	<img src="{{site.baseurl}}/images/python/oop1.png">
+</p>
+
+We have just defined three user objects. Note that they are all **different** even if they have been made from the same class. Regarding code implementation, there are some agreed rules to be followed in the python society and I will mention them as we go along.
+
+- **Rule: Use capital letter at the beginning of the class name**
+
+
+
+---
+
+&nbsp;
+
+# Instance variable
+
+We have seen that the objects that belong to the the same class are defined in the same way. Then how are we going to distinguish each objects? 
+
+**Instance Variables** are the specific attributes that belong to a single object. For example, considering the SNS user object, each objects will have different information about the users. In other words, they will have different names, email addresses and passwords. 
+
+There are two ways of defining instance variables in class objects and for the first method we will use direct assignment. 
+
+
+
+<p align="center">
+	<img src="{{site.baseurl}}/images/python/oop2.png">
+</p>
+
+&nbsp;
+
+We have added information about *name*, *email*, *password* to each of the user objects. Now the three users have different instance variables although they stemmed from the same `User` class. At the end of the code, we can see an error as our user objects don't have any attribute such as age.
+
+Apart from directly assigning data to the instance variable, we can use `__init__` method which is way more convenient and widely used. We will talk about this in a minute but for now keep in mind that it is always better to define instance variables using `__init__` method rather than direct assignment.
+
+
+
+---
+
+&nbsp;
+
+# Method
+
+Okay, so we now know that the attributes of an object is defined by instance variables. 
+
+Likewise, the "actions" of an object can be represented by **functions** inside a class, which are called as **methods**. Thus for our user object, specific actions of users like "logging in to the account" are designated by methods inside a `User` class. Keep in mind that methods are shared by all of the objects belonging to the same class.
+
+There are three kinds of methods.
+
+- **instance method**
+- **class method** 
+- **static method**
+
+Let's see what they are and how they are different from each other.
+
+
+
+---
+
+### \<Instance Method\>
+
+Instance method is a **most commonly-applied method that uses instance variables**. 
+
+<p align="center">
+	<img src="{{site.baseurl}}/images/python/oop3.png">
+</p>
+
+&nbsp;
+
+We have defined four different instance methods. The first two methods, `__init__` and `__str__`, have two underbars attached at each sides. They are special instance methods known as **Magic Method (or dunder methods)**, which are automatically called under certain circumstances. For instance, `__init__` method is called whenever the object is defined, while `__str__` method is called whenever the object is printed. 
+
+&nbsp;
+
+Here's what each of them does.
+
+- `__init__`: defines instance variables according to the input data. In our example, it is equivalent as the above direct assignment.
+- `__str__`: represents the class objects as a string, which is to be printed.
+
+- `say_hello()`: prints out the greetings message.
+- `login()`: gets email and password as input and returns if it is correct.
+
+&nbsp;
+
+<p align="center">
+	<img src="{{site.baseurl}}/images/python/oop4.png">
+  <br>
+  <em><span style="color:grey">__init__ and __str__ method</span></em>
+</p>
+&nbsp;
+
+<p align="center">
+	<img src="{{site.baseurl}}/images/python/oop5.png">
+  <br>
+  <em><span style="color:grey">login method</span></em>
+</p>
+
+&nbsp;
+
+<p align="center">
+	<img src="{{site.baseurl}}/images/python/oop6.png">
+  <br>
+  <em><span style="color:grey">say_hello method</span></em>
+</p>
+
+&nbsp;
+
+- **Rule: `self` must be fed as the first argument of instance methods.**
+
+---
+
+### \<Class Method\>
+
+Class method is different from the instance method in that it **doesn't use any instance variables**. Hence, class itself is given as the first parameter, in contrast to the instance method where the first parameter was always `self`. 
+
+In order to understand when class method is used instead of instance method, we have to understand what **class variables** are. I mentioned that **instance variables are unique attributes of an object** - two different user objects don't share an email or password. On the other hand, **class variables are shared by all of the objects in a class**. For example, if we want to check how many users are using our service, we can use class variable.
+
+
+
+<p align="center">
+	<img src="{{site.baseurl}}/images/python/oop7.png">
+  <br>
+  <em><span style="color:grey"></span></em>
+</p>
+
+<p align="center">
+	<img src="{{site.baseurl}}/images/python/oop8.png">
+  <br>
+  <em><span style="color:grey"></span></em>
+</p>
+
+
+
+In the printed result, only `user1.count` is different from other users because we didn't change the class variable. Instead, we defined an instance variable `count` to be 5 for user1 object. The class variable `count` remains the same.
+
+&nbsp;
+
+Anyways, class methods can be used by the [decorator function](https://www.datacamp.com/community/tutorials/decorators-python) `@classmethod`.
+
+<p align="center">
+	<img src="{{site.baseurl}}/images/python/oop9.png">
+  <br>
+  <em><span style="color:grey">Using class method</span></em>
+</p>
+
+Note that we have used `cls.count` in the class method, which is a class variable. It works even if we don't have any objects.
+
+&nbsp;
+
+However, let's see what happens if we use instance method instead of class method in this setting.
+
+<p align="center">
+	<img src="{{site.baseurl}}/images/python/oop10.png">
+  <br>
+  <em><span style="color:grey">Using instance method</span></em>
+</p>
+
+We can see that an error is occuring when we don't explictly designate an object. 
+
+- **Rule: similar to `self`, `cls` is given as the first argument of class methods**.
+
+
+
+---
+
+### \<Static Method\>
+
+Now for the final, we have static methods. **Static Methods** are methods that use neither of instance variables nor class variables.  In other words, static methods is used to define methods that merely serves functional purposes rather than dealing with attributes of an object. We can specify a method to be static by using decorator function `@staticmethod` just like we did for the class method.
+
+
+
+<p align="center">
+	<img src="{{site.baseurl}}/images/python/oop11.png">
+  <br>
+  <em><span style="color:grey">static method</span></em>
+</p>
+
+<p align="center">
+	<img src="{{site.baseurl}}/images/python/oop12.png">
+  <br>
+  <em><span style="color:grey"></span></em>
+</p>
+
+&nbsp;
+
+`is_valid_email` is a static method because it doesn't make use of any instance and class variables. Thus, we can call static method by either by using object and class.
+
+---
+
+&nbsp;
+
+# Remarks
+
+Until now, we have seen the very basics of how to define and use class in python. As python is a famous object-oriented high-level programming language, we can make our codes much simpler and efficient by combining sets of data with functionaliies together, which is implemented by methods and variables inside a class. 
+
+In fact, learning how to use class is the same as learing object-oriented programming (in short oop), as oop is like making a program that runs based on the "communication" between various classes.
+
+In the following posts, we will take a look the 4 cornerstones of oop, which are **Abstraction**, **Encapsulation**, **Inheritance** and **Polymorphism**.
+
+
+
+---
+
+
+
+# Reference
+
+- https://docs.python.org/3/tutorial/classes.html
+- https://en.wikipedia.org/wiki/Object-oriented_programming
+
+
+
+
