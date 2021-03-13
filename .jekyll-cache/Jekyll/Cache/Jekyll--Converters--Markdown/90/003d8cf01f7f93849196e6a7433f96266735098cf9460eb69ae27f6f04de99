@@ -1,0 +1,544 @@
+I"]U<h3 id="previous-posts">Previous Posts</h3>
+
+<p><a href="https://domug.github.io/2021/02/09/BS1/">1. Bayesian Statistics - Basics</a></p>
+
+<p><a href="https://domug.github.io/2021/02/15/BS2/">2. Bayesian Statistics - Conjugacy</a></p>
+
+<p><a href="https://domug.github.io/2021/02/20/BS3/">3. Bayesian Statistics - Hierarchical Models and Monte Carlo Simulation</a></p>
+
+<p><a href="https://domug.github.io/2021/02/21/BS4/">4. Bayesian Statistics - Metropolis-Hastings</a></p>
+
+<hr />
+
+<p> </p>
+
+<h1 id="shortcomings-of-metropolis-hastings">Shortcomings of Metropolis-Hastings</h1>
+
+<p> </p>
+
+<p>In the <a href="https://domug.github.io/2021/02/21/BS4/">previous post</a> we have implemented Metropolis-Hastings sampler on the following example.</p>
+
+<p> </p>
+
+<center>
+
+$$
+\begin{aligned}
+prior\;predictive\;distribution:\;y_i|\mu \stackrel{iid}{\sim} N(\mu, 1)\\
+prior:\;\mu \sim t(0,1,1)\\[10pt]
+\end{aligned}
+$$
+
+</center>
+
+<p> </p>
+
+<p>We assumed that the parameter $\sigma^2$ was given for the prior predictive normal distribution because Metropolis-Hastings algorithm is designed to work well on the single-parameter unimodal distributions. In fact, its performance tends to get poorer for multi-parameter and multimodal problems.</p>
+
+<p>For example, take a look at the following simulation of Metropolis-Hastings sampling process from a bivariate-trimodal posterior distribution. The code for the simulation is written by <a href="https://chi-feng.github.io/mcmc-demo/">Chi Feng</a>.</p>
+
+<p> </p>
+
+<center>
+  <figure class="animated_gif_frame"> 	
+    <img src="/images/bayesian/MH.gif" data-source="/images/bayesian/MG.gif" width="700" height="500" /> 
+      <br />
+    <em><span style="color:grey">Metropolis-Hastings with Normal proposal distribution with sd 0.3</span></em>
+  </figure>
+</center>
+
+<p> </p>
+
+<p>We can see that our sampler cannot explore the parameter space efficiently as it tends to get stuck in the local mode. This is because the way how sampling is done strongly depends on the parameterization of the proposal distribution. That is, if we use proposal distribution with low variance, our Markov Chain cannot take big steps enough to move between different modes. Furthermore, the calculation of conditional distribution of the proposal distribution in the acceptance ratio gets complicated as we have more parameters, decreasing the speed of convergence.</p>
+
+<p>As a possible remedy for this problem, we are going to take a look at another famous MCMC method, <strong>Gibbs Sampler</strong>, which is known to be working well with multi-parameter distributions.</p>
+
+<hr />
+
+<p> </p>
+
+<h1 id="what-is-gibbs-sampling">What is Gibbs Sampling?</h1>
+
+<p> </p>
+
+<p>To account for realistic data of our world, we will most likely be using complicated models with multiple parameters. It is needless to say that we cannot derive the posteriors analytically in these models as most of them are not defined in a closed-form distribution.</p>
+
+<p>To handle this problem Gibbs sampler starts with the idea that if considering all of the parameters at once is difficult, then we can just deal with them one at a time sequentially. Before digging into the details of Gibbs Sampling method, let’s take a look at how it performs on the above posterior distribution which Metropolis-Hastings had trouble with.</p>
+
+<p> </p>
+
+<center>
+  <figure class="animated_gif_frame"> 	
+    <img src="/images/bayesian/Gibbs.gif" data-source="/images/bayesian/Gibbs.gif" width="700" height="500" /> 
+      <br />
+    <em><span style="color:grey">Gibbs Sampling</span></em>
+  </figure>
+</center>
+
+<p> </p>
+
+<p>Unlike Metropolis-Hastings sampler where it got stuck on the local mode, It is clear that the samples are withdrawn ramdomly from various modes when we use Gibbs Sampler. Let’s talk about how this magic is done.</p>
+
+<hr />
+
+<p> </p>
+
+<h1 id="steps-of-gibbs-sampling">Steps of Gibbs Sampling</h1>
+
+<p> </p>
+
+<p>Let’s say that we are interested in evaluating the following posterior distribution.</p>
+
+<center>
+
+$$
+f(\theta, \phi \;| \;y)
+$$
+
+</center>
+
+<p>Here, we have two parameters to be inferred and we will be using our samples to apply Monte-Carlo method. We will use Gibbs Sampler because applying Metropolis-Hastings for joint distribution of $\theta$ and $\phi$ is costly.</p>
+
+<p>Here’s a simplification of the <em>systematic-scan Gibbs Sampler</em> algorithm, which is the most basic Gibbs Sampler in practice.</p>
+
+<p> </p>
+
+<p align="center">
+	<img width="600" height="500" src="/images/bayesian/gibbs1.jpg" />
+  <br />
+  <em><span style="color:grey">Illustration of Gibbs Sampling Method</span></em>
+</p>
+
+<p> </p>
+
+<p>The above steps are nothing but simply evaluating one parameter at a time in a <em>d</em>-dimensional posterior distribution. Let’s take a close look at how it’s done.</p>
+
+<hr />
+
+<h4 id="step-1">&lt;Step 1&gt;</h4>
+
+<p>In the <em>t</em>-th state (iteration) of our Markov Chain, we have <em>d</em> number of parameters to be evaluated.</p>
+
+<center>
+
+$$
+x_1^t, x_2^t, x_3^t, ..., x_d^t
+$$
+
+</center>
+
+<p>Firstly, we are going to sample $x_1^{t+1}$. To do this, we <strong>marginalize $x_1$ by every other parameters</strong> and define a conditional distribution as the one following.</p>
+
+<center>
+
+$$
+x_1^{t+1} \sim p(x_1|x_2^t,x_3^t, ..., x_d^t)
+$$
+
+</center>
+
+<p>Then we sample $x_1^{t+1}$ from this conditional distribution. We have completed the sampling of a next state for a single parameter $x_1$.</p>
+
+<ul>
+  <li><strong>Next state samples: $x_1^{t+1}$</strong></li>
+</ul>
+
+<hr />
+
+<h4 id="step-2">&lt;Step 2&gt;</h4>
+
+<p>As a next step we will sample $x_2^{t+1}$.</p>
+
+<p>Likewise, we are going to marginalize every other parameters except for $x_2$ and get a conditional distribution. <strong>Note that we are using previously sampled $x_1^{t+1}$ instead of $x_1^t$</strong>.</p>
+
+<center>
+
+$$
+x_2^{t+1} \sim p(x_2|x_1^{t+1},x_3^t, ..., x_d^t)
+$$
+
+</center>
+
+<p>Then we sample $x_2^{t+1}$ from this conditional distribution. So far, we have completed the sampling of two next state samples.</p>
+
+<ul>
+  <li><strong>Next state samples: $x_1^{t+1}, x_2^{t+1}$</strong></li>
+</ul>
+
+<hr />
+
+<p> </p>
+
+<p>Repeat the above procedure for each of the next $d-3$ parameters ${ x_3, x_4, … , x_{d-1} }$.</p>
+
+<p>…</p>
+
+<p> </p>
+
+<hr />
+
+<h4 id="step-d">&lt;Step d&gt;</h4>
+
+<p>Lastly, we sample $x_d^{t+1}$ from the following conditional distribution.</p>
+
+<center>
+
+$$
+x_d^{t+1} \sim p(x_d | x_1^{t+1}, x_2^{t+1}, ..., x_{d-1}^{t+1})
+$$
+
+</center>
+
+<p>Now we have the complete $d$ samples to be used for the $(t+1)th$ state!</p>
+
+<ul>
+  <li><strong>Final samples: $x_1^{t+1}, x_2^{t+1}, …, x_d^{t+1}$</strong></li>
+</ul>
+
+<hr />
+
+<p> </p>
+
+<h1 id="principles-of-gibbs-sampling">Principles of Gibbs Sampling</h1>
+
+<p> </p>
+
+<p>In a nutshell, Gibbs Sampler works by repeating above steps. Then you might wonder how is decomposing the joint posterior into several pieces of conditional distributions possible. Here’s the reason why.</p>
+
+<p> </p>
+
+<center>
+
+$$
+\begin{aligned}
+p(x_1,x_2, ...,x_d|y) &amp;= p(x_1|x_2,...,x_d,y)p(x_2,x_3,...x_d|y) \\
+&amp;\propto p(x_1|x_2,...,x_d,y)
+\end{aligned}
+$$
+
+</center>
+
+<p> </p>
+
+<p>Above equation is from the &lt;Step 1&gt; of Gibbs Sampling process we previously looked at. Recall that our aim at this step is to sample $x_1^{t+1}$.</p>
+
+<p>Here, it is evident that the <strong>joint posterior distribution</strong> (target distribution) on the left side can be decomposed into two parts by marginalizing $x_1$ out. However, since we are only interested in sampling $x_1$, and $x_2, x_3 , … , x_d$ are withdrawn samples from the last state, we can treat 
+\(p(x_2,x_3,...x_d|y)\)
+as a <strong>deterministic variable</strong> that has nothing to do with our parameter of interest $x_1$.</p>
+
+<p>Therefore, while sampling $x_1^{t+1}$, our target distribution is only proportional to the conditional distribution 
+\(p(x_1|x_2,...,x_d,y)\)
+, which is formally defined as the <strong>full conditional distribution</strong> for $x_1$.</p>
+
+<p>An interesting point to note here is that all of the full conditional distributions for $x_1, x_2, … , x_d$ are defined from a single full poterior distribution. What this implies is that the <strong>full amount of information contained in the full posterior can be accounted by combining all of the individual pieces of information of the full conditional distributions together</strong>, which is the key idea of Gibbs Sampling algorithm.</p>
+
+<p> </p>
+
+<p>For Gibbs Sampler to be used in practice, we just need one more condition. By now we know that Gibbs Sampling is a method that <strong>collects samples from the full conditional distributions</strong>. Regarding this, our full conditional distributions have to be defined as one of the <strong>standard probability distributions</strong> (ex. Gaussian, Gamma, Beta et cetera) in which we can generate random samples from. Otherwise, we cannot use Gibbs Sampler.</p>
+
+<hr />
+
+<p> </p>
+
+<h1 id="example-of-gibbs-sampling">Example of Gibbs Sampling</h1>
+
+<p> </p>
+
+<p>Recall from the <a href="https://domug.github.io/2021/02/20/BS3/">previous post</a> that we wanted to find out the average height of male students in Yonsei university where the Bayesian setting was like the following. Note that prior of $\mu$ depends on $\sigma^2$, allowing information to flow between parameters in the hierarchical model.</p>
+
+<p> </p>
+
+<center>
+
+$$
+likelihood:\;\;\;\;y_i | \mu,\sigma^2 \stackrel{iid}{\sim} N(\mu, \sigma^2)\\
+prior\;of\;\mu: \;\;\;\; \mu|\sigma^2 \sim N(\mu_0, \frac{\sigma^2}{w_0}) \\
+prior\;of\;\sigma: \;\;\;\;\ \sigma^2 \sim IG(\nu_0, \beta_0) \\
+$$
+
+</center>
+
+<p> </p>
+
+<p>Since our interest was on the <strong>average</strong> height of students, we wanted to get the posterior distribution of $\mu$ as the result of our Bayesian Inference. However, there was no way we could accomplish our goal because the posterior was not in a closed-form. Here’s as far as we went by analytical derivation.</p>
+
+<p> </p>
+
+<center>
+
+$$
+\begin{aligned}
+f(\mu, \sigma^2 | y_1,...,y_n) &amp;\propto f(y_1,...,y_n|\mu,\sigma^2)f(\mu|\sigma^2)f(\sigma^2) \\[10pt]
+
+&amp;= \prod_{i=1}^n[N(y_i|\mu,\sigma^2)]N(\mu|\mu_0, \frac{\sigma^2}{w_0})IG(\sigma^2|\nu_0, \beta_0) \;\;\;\;\;\;\;\;\;\;\;\;\;\;,(let\;\sigma_0^2=\frac{\sigma^2}{w_0})  \\[10pt]
+
+&amp;= \prod_{i=1}^n[\frac{1}{\sqrt{2\pi\sigma^2}}exp(-\frac{1}{2\sigma^2}(y_i-\mu)^2)] 
+\{\frac{1}{\sqrt{2\pi\sigma_0^2}}exp(-\frac{1}{2\sigma_0^2}(\mu-\mu_0)^2)\}
+\{\frac{\beta_0^{\nu_0}}{\Gamma(\nu_0)}(\sigma^2)^{-(v_0+1)}exp(-\frac{\beta_0}{\sigma^2})\} \\[10pt]
+
+&amp;\propto \{(\sigma^2)^{-\frac{n}{2}}exp(-\frac{1}{2\sigma^2}\sum_{i=1}^n(y_i-\mu)^2)\}
+\{exp(-\frac{1}{2\sigma_0^2}(\mu-\mu_0)^2)\}
+\{(\sigma^2)^{-(v_0+1)}exp(-\frac{\beta_0}{\sigma^2})\}
+\end{aligned}
+$$
+
+</center>
+
+<p> </p>
+
+<p>Let’s see if we can solve this problem using Gibbs Sampling. <strong>Note that we are evaluating 2 parameters $\mu, \sigma^2$ at once</strong>. The key is to define the full conditional distributions.</p>
+
+<hr />
+
+<h4 id="full-conditional-distribution-of-mu">Full Conditional Distribution of $\mu$</h4>
+
+<p> </p>
+
+<p>Let’s rewrite the joint posterior with respect to the parameter $\mu$.</p>
+
+<p> </p>
+
+<center>
+
+$$
+\begin{aligned}
+f(\mu, \sigma^2 | y_1,...,y_n) &amp;\propto f(y_1,...,y_n|\mu,\sigma^2)f(\mu|\sigma^2)f(\sigma^2) \\[10pt]
+
+&amp;\propto \{(\sigma^2)^{-\frac{n}{2}}exp(-\frac{1}{2\sigma^2}\sum_{i=1}^n(y_i-\mu)^2)\}
+\{exp(-\frac{1}{2\sigma_0^2}(\mu-\mu_0)^2)\}
+\{(\sigma^2)^{-(v_0+1)}exp(-\frac{\beta_0}{\sigma^2})\} \\[10pt]
+
+&amp;\propto exp(-\frac{1}{2}\;(\frac{\sum (y_i-\mu)^2}{\sigma^2} + \frac{(\mu-\mu_0)^2}{\sigma_0^2}) \;)\\[10pt]
+
+&amp;= exp(-\frac{1}{2}\;(\frac{\sum (y_i^2 -2\mu y_i + \mu^2)}{\sigma^2} + \frac{(\mu^2 -2\mu \mu_0 + \mu_0^2)}{\sigma_0^2}) \;)\\[10pt]
+
+&amp;\propto exp(-\frac{1}{2}\; (\frac{-2\mu \sum y_i + \sum \mu^2}{\sigma^2} + \frac{\mu^2 -2\mu\mu_0}{\sigma_0^2}) \;) \;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\ \dots(A)\\[10pt]
+
+&amp;= exp(-\frac{1}{2} (\frac{-2\mu n\bar y + n \mu^2}{\sigma^2} + \frac{\mu^2 -2\mu\mu_0}{\sigma_0^2})\;)\\[10pt]
+
+&amp;= exp(-\frac{1}{2} \{ (\frac{n}{\sigma^2} + \frac{1}{\sigma_0^2})\mu^2 - 2\mu(\frac{n \bar y}{\sigma^2} + \frac{\mu_0}{\sigma_0^2})\}\;) \;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\ \dots(B)\\[10pt]
+
+&amp;= exp(-\frac{1}{2} \; \frac{1}{\frac{n}{\sigma^2}+\frac{1}{\sigma_0^2}} \{\mu^2 - 2\mu\frac{\frac{n \bar y}{\sigma^2}+\frac{\mu_0}{\sigma_0^2}}{\frac{n}{\sigma^2}+\frac{1}{\sigma_0^2}}\} )\\[10pt]
+
+&amp;\propto exp(-\frac{1}{2} \; \frac{1}{\frac{n}{\sigma^2}+\frac{1}{\sigma_0^2}} \;(\mu - \frac{\frac{n \bar y}{\sigma^2}+\frac{\mu_0}{\sigma_0^2}}{\frac{n}{\sigma^2}+\frac{1}{\sigma_0^2}})^2\;) \;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\dots(C)\\[10pt]
+
+&amp;\sim N \;(\;\frac{\frac{n \bar y}{\sigma^2}+\frac{\mu_0}{\sigma_0^2}}{\frac{n}{\sigma^2}+\frac{1}{\sigma_0^2}}, \;\frac{1}{\frac{n}{\sigma^2}+\frac{1}{\sigma_0^2}}\;)
+
+\end{aligned}
+$$
+
+</center>
+
+<p> </p>
+
+<ul>
+  <li>(A): removed all the terms that are independent of $\mu$</li>
+  <li>(B): Rearranged the terms in quadratic order with respect to $\mu$</li>
+  <li>(C): Added constant needed for square equation</li>
+</ul>
+
+<p>As a result, we have the following full conditional distribution for parameter $\mu$ in the form of a <strong>normal distribution</strong>, which we can easily generate random samples from.</p>
+
+<center>
+
+$$
+\therefore p(\mu|y_1,...,y_n,\sigma^2) \sim N(\frac{\frac{n\bar{y}}{\sigma^2}+\frac{\mu_0}{\sigma_0^2}}{\frac{n}{\sigma^2}+\frac{1}{\sigma_0^2}},  \frac{1}{\frac{n}{\sigma^2}+\frac{1}{\sigma_0^2}})
+$$
+
+</center>
+
+<hr />
+
+<h4 id="full-conditional-distribution-of-sigma2">Full Conditional Distribution of $\sigma^2$</h4>
+
+<p> </p>
+
+<p>Likewise, we can derive the full conditional distribution for $\sigma^2$.</p>
+
+<p> </p>
+
+<center>
+
+$$
+\begin{aligned}
+
+p(\sigma^2 | y_1, y_2, ..., y_n,\mu) &amp;\propto (\sigma^2)^{-\frac{1}{2}} \; exp(-\frac{\sum (y_i-\mu)^2}{2\sigma^2}) \; (\sigma^2)^{-(\nu_0 + 1)} \; exp(-\frac{\beta_0}{\sigma^2}) \; I_{\sigma^2&gt;0}\{\sigma^2\} \\[10pt]
+
+&amp;= (\frac{1}{\sigma^2})^{\frac{n}{2}+\nu_0+1} \; exp(-\frac{1}{\sigma^2}(\frac{\sum (y_i-\mu)^2}{2} + \beta_0) )\;I_{\sigma^2&gt;0}\{\sigma^2\} \\[10pt]
+
+&amp;\sim IG(\;\frac{n}{2} + \nu_0, \frac{\sum (y_i-\mu)^2}{2} + \beta_0)
+
+\end{aligned}
+$$
+
+</center>
+
+<p> </p>
+
+<p>The final line of the equation holds by adding constant $\nu_o$ and $\beta_0$ to match the parameterization of <strong>inverse gamma distribution</strong>.</p>
+
+<p> </p>
+
+<center>
+
+$$
+Inverse\; Gamma:\; f(x|\alpha, \beta) = \frac{\beta^\alpha}{\Gamma(\alpha)}\;(\frac{1}{x})^{\alpha+1}\;exp(-\frac{\beta}{x})
+$$
+
+</center>
+
+<p> </p>
+
+<p>Since either of full conditional distributions for each parameters are defined as a standard probability distribution, we can use Gibbs Sampler to get posterior samples! It’s time to implement Gibbs Sampler using python.</p>
+
+<hr />
+
+<h4 id="code-implementation">Code implementation</h4>
+
+<p> </p>
+
+<p>Using our results, let’s define functions for each full conditional distributions.</p>
+
+<p align="center">
+	<img src="/images/bayesian/gibbs2.png" />
+  <br />
+  <em><span style="color:grey">full conditional distribution</span></em>
+</p>
+
+<p> </p>
+
+<p>Then we will define the Gibbs sampler using above functions.</p>
+
+<p align="center">
+	<img src="/images/bayesian/gibbs3.png" />
+  <br />
+  <em><span style="color:grey">Gibbs sampler</span></em>
+</p>
+
+<p> </p>
+
+<hr />
+
+<h4 id="application">Application</h4>
+
+<p> </p>
+
+<p>Now let’s check if our code works properly by plugging in some actual values to our example.</p>
+
+<p>Suppose we have assumed that the average height of male students would roughly be around 175cm, with some amount of uncertainty enough to cover all the way from 160cm to 190cm. Note that we are using relatively <strong>informative prior</strong> because we have common sense on the height of male students - we know it can’t be something like 250cm. In situations where we don’t have any prior knowledge on the subject, we can use non-informative prior (or flat prior). The choice of the prior can be very sensitive especially when we have small observations so we always have to be ready for justification.</p>
+
+<p>Here’s the visualization of our prior belief.</p>
+
+<p> </p>
+
+<p align="center">
+	<img width="400" height="300" src="/images/bayesian/gibbs4.png" />
+  <br />
+  <em><span style="color:grey">Prior distribution of $\mu$</span></em>
+</p>
+
+<p> </p>
+
+<p>In this setting, let’s suppose we interviewed 10 random male students and their height was [182.4, 188.1, 188.3, 185.2, 183.7, 192.5, 189.5, 188.7, 187.9, 186.3, 195.3, 189.4], which is generally larger than our prior belief of 175cm. If this was the case, we can intuitively guess that our posterior would have to move from 175cm to the observation mean 188.1cm. Let’s see if this actually happens.</p>
+
+<p align="center">
+	<img src="/images/bayesian/gibbs5.png" />
+  <br />
+  <em><span style="color:grey">Setting prior and likelihood</span></em>
+</p>
+
+<p> </p>
+
+<p>Just to make sure our Markov Chain converges to a proper stationary distribution, let’s initialize our Gibbs Sampler from 4 different starting points. If all of the chains converge to a similar point, we can say that we have correctly found the stationary distribution.</p>
+
+<p align="center">
+	<img src="/images/bayesian/gibbs9.png" />
+  <br />
+  <em><span style="color:grey">Running Gibbs Sampler</span></em>
+</p>
+
+<p> </p>
+
+<p>We can assess the convergence by plotting trace plot.</p>
+
+<p align="center">
+	<img src="/images/bayesian/gibbs7.png" />
+  <br />
+  <em><span style="color:grey">Trace Plot</span></em>
+</p>
+
+<p> </p>
+
+<p>It appears that all of the chains have converged to the same stationary distribution and the trace plot looks just fine. We can also use <code class="language-plaintext highlighter-rouge">az.summary()</code> function to get some numerical information of our posterior samples.</p>
+
+<p align="center">
+	<img src="/images/bayesian/gibbs8.png" />
+</p>
+
+<p> </p>
+
+<p>In the very right column we see <code class="language-plaintext highlighter-rouge">rhat</code>, which is a numerical measure of convergence. The closer it is to 1, the better the convergence. So by various evidence we can conclude that our samples converged to the posterior distribution.</p>
+
+<hr />
+
+<h4 id="posterior-analysis">Posterior Analysis</h4>
+
+<p> </p>
+
+<p>As a last part, let’s diagnose the <strong>quality</strong> of our posterior samples.</p>
+
+<p>For posterior inference, we normally have to discard some amount of the earlier samples as they can be inaccurate samples withdrawn from the Markov Chain that are yet to have converged. This is called as the <strong>burn-in period</strong> and in general we decide how many samples to be discarded by looking at the trace plot. For our example it would be unnecessary, but keep in mind that using earlier samples can possibly distort our inference.</p>
+
+<p>For assessing the quality of our posterior samples, we will consider <strong>autocorrelation</strong> among the samples. Note that we have used Markov Chain so that our samples are inherently dependent on each other to some extent. Autocorrelation is a metric that measures the dependency among samples. If autocorrelation is close to zero, it means that the samples are independent, which is good thing.</p>
+
+<p> </p>
+
+<p align="center">
+	<img src="/images/bayesian/gibbs10.png" />
+  <br />
+  <em><span style="color:grey">Autocorrelation Plot</span></em>
+</p>
+
+<p> </p>
+
+<p>By autocorrelation plot, we can see that we have some amount of dependency among samples within 5~6 states. This is equivalent to saying that information is redundant among samples, hence it will reduce the amount of total information in our posterior samples. This is related to the concept <strong>effective sample size (ESS)</strong>.</p>
+
+<p align="center">
+	<img src="/images/bayesian/gibbs11.png" />
+</p>
+
+<p> </p>
+
+<p>For our posterior samples, we have ESS of around 1490. Thus we can conclude that we have information that is equivalent to 1490 i.i.d. samples from the true posterior distribution. I believe results inferred from Monte-Carlo estimation using 1490 samples is sufficient to be validified, so we can finally derive answer to our original question.</p>
+
+<p> </p>
+
+<blockquote>
+  <p>Conclusion: Concerning 10 observed samples, average height of male students in Yonsei university is roughly around 185.7 cm.</p>
+</blockquote>
+
+<p> </p>
+
+<p align="center">
+	<img width="600" height="500" src="/images/bayesian/gibbs12.png" />
+  <br />
+  <em><span style="color:grey">Result of Bayesian inference</span></em>
+</p>
+
+<p> </p>
+
+<p>It is interesting to see from the above figure that posterior is somewhere in the middle of prior and the observations. In fact, <strong>posterior is a compromise between prior and the likelihood</strong>. The amount being compromised depends on the amount of observations and information in the prior. That is, if we use highly informative prior with small amount of observation, our posterior will be formed closer to the prior distribution. On the other hand, if we have lots of samples say 100,000, our posterior will be pulled strongly closer to the observations with very high kurtosis (distribution is highly centered around the mean).</p>
+
+<hr />
+
+<h1> </h1>
+
+<h1 id="references">References</h1>
+
+<ul>
+  <li><a href="https://chi-feng.github.io/mcmc-demo/">https://chi-feng.github.io/mcmc-demo/</a></li>
+  <li><a href="https://en.wikipedia.org/wiki/Gibbs_sampling">Wikipedia: Gibbs Sampling</a></li>
+  <li>Gelman et. al. 2013. <em>Bayesian Data Analysis</em>. 3rd ed. CRC Press.</li>
+</ul>
+
+:ET

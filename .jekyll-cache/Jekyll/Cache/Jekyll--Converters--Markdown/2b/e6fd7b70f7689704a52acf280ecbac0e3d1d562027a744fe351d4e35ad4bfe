@@ -1,0 +1,243 @@
+I"�0<p>I first came across with the concept of entropy while reading a short fiction named “<em>Entropy</em>” by <em>Thomas Pynchon</em>. As far as I remember, the main plot of the story was something to do with the current state of “disorder” slowly converging to “equilibrium” and back then, I just thought entropy is some abstract concept related to the chaotic status quo (plus I really had a hard time writing report about it for my homework).</p>
+
+<p>Anyways, now that I have encountered entropy again while studying machine learning, I realized that the seemingly abstract concept could be simplified by understanding entropy as a <strong>measure of uncertainty</strong>. In this post, I’m going to talk about what entropy does in terms of machine learning lingo.</p>
+
+<hr />
+
+<h1 id="what-is-entropy">What is Entropy?</h1>
+
+<p>In <a href="https://en.wikipedia.org/wiki/Information_theory">information theory</a>, <em>Entropy</em> is a formal measure of disorder defined by <em>Claude Shannon</em> in his paper “<em>A Mathematical Theory of Communication</em>” in 1948. Although it originally stemmed from physics, it is widely used in various applied fields of study and machine learning is one of them.</p>
+
+<p>To make the long story short, <strong>entropy is a minimum expected amount of resources required for describing a specific information</strong>. If you are not convinced, let’s talk through with an example.</p>
+
+<p> </p>
+
+<p align="center">
+	<img width="300" height="200" src="/images/ml/entropy1.png" />
+</p>
+
+<p> </p>
+
+<p>Suppose you are a weather forecaster in Africa. You want to represent weather information by <a href="https://en.wikipedia.org/wiki/Bit"><em>byte</em></a>, which is a specific combination of zeros and ones.  For simplicity, let’s suppose that we have 6 possible weathers for prediction as presented by the above image. Since we are using byte to represent each weathers, the possible choices are [<em>0</em>, <em>1</em>, <em>00</em>, <em>01</em>, <em>10</em>, <em>11</em>] and we have to assign each combination to indicate specific weather condition. Let’s further assume that our weather forecast for the upcoming week is 7 sunny days in a row (this makes sense because rain is rare in Africa). In this situation, how would decide to allocate which combination of byte to be used for each weathers?</p>
+
+<p>For the first possibility, let’s say that you have decided to represent <em>sunny</em> as the byte “11”. To represent the predicted weather information by this, it will be “11-11-11-11-11-11-11”, which consists of <strong>14 byte</strong> (let’s ignore the hyphens). Now consider another possibillity that you decided to represent <em>sunny</em> as “1”. In this setting, the forcasted weather will be represented as “1-1-1-1-1-1-1”, which consists of only <strong>7 byte</strong>.</p>
+
+<p>Can you catch the difference here? Which one do you think is more <strong>efficient</strong> in terms of the amount of byte being used? It is unarguably the second one because it used only half the amount of byte to convey the same weather information compared to the first one. Thus, it is important to note that <strong>highly likely events be represented by shorter byte</strong>, while <strong>less likely events be allocated to longer byte</strong>.</p>
+
+<p>If we want to represent this relationship between <em>length of byte (cost)</em> and <em>probability (likelihood)</em> by some functional form, we want some function that returns higher values for possibilities near the lower boundary 0 and lower values near the upper boundary 1. And this happens to be the negative of the log function! The base for the log is set to 2 because bit is binary. The x-axis represents probability while the y-axis indicates length of byte (roughly speaking).</p>
+
+<p align="center">
+	<img width="300" height="200" src="/images/ml/entropy2.png" />
+</p>
+
+<p> </p>
+
+<p>With this in mind, now we are ready to take a look at the formulaic definition of the entropy.</p>
+
+<p> </p>
+
+<hr />
+
+<h1 id="definition-of-entropy">Definition of entropy</h1>
+
+<p>The <strong><em>Shannon Entropy</em></strong> is defined as the following formula:</p>
+
+<center>
+
+$$
+H(X) = -\sum_{i=1}^{n} \; p_i \; log_{2}\;p_i
+$$
+
+</center>
+
+<p>Note that $p_i$ is a probability of an event and recall that $-log_2 \;p_i$ is the length of byte. Hence, entropy is the <strong>expectation of the length of byte</strong>, which is the amount of resource required for representing information. Furthermore, Shannon have proved in his paper that this expected value is the minimum, so no matter how hard you try, you cannot find an alternative way to describe a piece of information more efficiently than this.</p>
+
+<p>So naturally we can interpret the shannon entropy as the <strong>optimal state of describing an information</strong>. It is considered as a  <strong>measure of uncertainty</strong> because our information, which are to be described by byte, are uncertain and probabilistic. Thus, small entropy indicates less uncertainty in the information and in machine learning problems, this is what we generally aim for.</p>
+
+<p>Now let’s actually calculate entropy based on a simple example. Suppose we toss a coin that might possibly be loaded and see how entropy is calculated for various loaded possibilities.</p>
+
+<p> </p>
+
+<p align="center">
+	<img width="500" height="400" src="/images/ml/entropy3.png" />
+</p>
+
+<p> </p>
+
+<p>Above table shows different statement regarding the probability of the coin and the corresponding entropy.</p>
+
+<p>Let’s consider <em>“information 1”</em>, which conveys the information that the probability of coin being loaded was 50%. Intuitively, if the probability is 50%, then it means the outcome is a result of a completly random process. Why? Because the probability of two binary outcomes are equally likely! Thus it is equivalent to saying that our information is most uncertain and we can infer that the corresponding entropy will be the largest. If we actually plug in the value in the entropy formula, we get the following result.</p>
+
+<p> </p>
+
+<center>
+
+$$
+H(X_1) = -(0.5 \; log_20.5) \;- (0.5\;log_20.5)  = 1
+$$
+
+</center>
+
+<p> </p>
+
+<p>Generally, for an information that has $k$ possible state of outcome, $0 \leq H(X) \leq log_2k$. Thus in our example 1 is the maximum entropy.</p>
+
+<p>Now if we do the same for <em>“information 2”</em> and <em>“information 3”</em>, the corresponding entropy is calculated like the following.</p>
+
+<p> </p>
+
+<center>
+
+$$
+H(X_2) = -(1 \; log_21) \;- (0\;log_20) = 0 \\[10pt]
+H(X_3) = -(0.9 \; log_20.9) \;- (0.1\;log_20.1) = 0.47
+$$
+
+</center>
+
+<p> </p>
+
+<p><em>“Information 2”</em> indicates that there is 100% chance of event happening so entropy in this case is 0 because there is no uncertainty in the statement. On the other hand, <em>“Information 3”</em> conveys 90% chance of probability, which is highly likely but still contains some uncertainty, hence the entropy is calculated to be 0.47. We can clearly see that the calculated result matches our intuition for both cases.</p>
+
+<p> </p>
+
+<hr />
+
+<h1 id="cross-entropy">Cross Entropy</h1>
+
+<p>Now that we have seen what entropy is, it’s time to move on to <strong><em>Cross Entropy</em></strong>. If you are familiar with machine learning, then you will mostly likely be heard of cross entropy as a cost funtion for multi-label classification tasks. Indeed, cross entropy is widely utilized for that purpose so let’s figure out why and how.</p>
+
+<p>If you understood what entropy is, cross entropy is a free lunch because it is just a slight extension of entropy. Here’s the formula.</p>
+
+<p> </p>
+
+<center>
+
+$$
+H(P,Q) = -\sum_{i=1}^n \; p_i\;log_2q_i
+$$
+
+</center>
+
+<p> </p>
+
+<p>The only difference from the entropy is that we are considering <strong>two information</strong> this time. To put it simply, $p_i$ is the probability of true statement, and $q_i$ is the probability of the statement to be tested against $p_i$.</p>
+
+<p>Think about a classification problem in supervised machine learning. Our classifier will return a prediction on a subject and we want to examine how our model performed by comparing the result with the actual output. In this situation, cross entropy is quantifying the amount of uncertainty that our prediction has with respect to the true label. In other words, <strong>cross entropy is an entropy that is calculated for uncertain information</strong> (“uncertain” meaning that information might possibly be wrong).</p>
+
+<p>For this reason, entropy serves as the lower bound for cross entropy because like I mentioned, entropy is the optimal number of resource to describe an information.</p>
+
+<center>
+
+$$
+Cross\;Entropy \geq Entropy
+$$
+
+</center>
+
+<p> </p>
+
+<p align="center">
+	<img width="700" height="500" src="/images/ml/entropy4.png" />
+</p>
+
+<p>Same as before, let’s walk through an example. Suppose we have made a model to classify images for three flowers in the above image. As a result we have our prediction, and we want to measure how well our model did based on cross entropy.</p>
+
+<hr />
+
+<h3 id="prediction-1">&lt;Prediction 1&gt;</h3>
+
+<p align="center">
+	<img width="500" height="400" src="/images/ml/entropy5.png" />
+</p>
+
+<p>Considering above result, we can see that our model has managed to correctly classify the input image as sunflower. However, our model has a confidence of about 80% that the given image is sunflower. In this situation let’s calculate cross entropy to quantify our model’s performance.</p>
+
+<center>
+
+$$
+H(Prediction,\;True) = -\{(1\;log_20.8) \;+\; (0\;log_20.1) \;+\; (0\;log_20.1) \} = 0.32
+$$
+
+</center>
+
+<p>We have the result of 0.32, meaning that our model’s prediction has this amount of uncertainty in its prediction.</p>
+
+<hr />
+
+<h3 id="prediction-2">&lt;Prediction 2&gt;</h3>
+
+<p>This time we have the following prediction.</p>
+
+<p align="center">
+	<img width="500" height="400" src="/images/ml/entropy6.png" />
+</p>
+
+<p>Same as previous prediction our model managed to correctly classify image as a sunflower, but in this case our model is absolutely sure about its prediction. Cross Entropy in this case is the following.</p>
+
+<center>
+
+$$
+H(Prediction,\;True) = -\{(1\;log_21) \;+\; (0\;log_20) \;+\; (0\;log_20) \} = 0
+$$
+
+</center>
+
+<p>We can see that it is 0, meaning that there is no uncertainty in the model’s prediction. In real problems though, this is extremely unlikely and if so we have to doubt whether the input data was accidentally included in the training set or not.</p>
+
+<hr />
+
+<h3 id="prediction-3">&lt;Prediction 3&gt;</h3>
+
+<p align="center">
+	<img width="500" height="400" src="/images/ml/entropy7.png" />
+</p>
+
+<p>Unlike the above two predictions, this time our model misclassfied sunflower image as dandelion. This is bad and we can intuitively think that corresponding cross entropy will be large. Let’s see how it is calculated.</p>
+
+<center>
+
+$$
+H(Prediction,\;True) = -\{(1\;log_20.2) \;+\; (0\;log_0.7) \;+\; (0\;log_20.1) \} = 1
+$$
+
+</center>
+
+<p>In this case the cross entropy is 1, which is clearly larger compared for correct classfication.</p>
+
+<p> </p>
+
+<hr />
+
+<h1 id="kullbackleibler-divergence">Kullback–Leibler divergence</h1>
+
+<p>By now I believe you get the sense of why cross entropy is used as a cost function for machine learning problems. As a last part of this post I’m going to briefly talk about KL divergence.</p>
+
+<p>KL divergence is a measure of how two probability distributions are different from each other. You can think of it as the “distance” between two distributions. In fact, the mathematical formula for KL divergence is really simple if we use concept of entropy. It is just the difference between cross entropy and entropy!</p>
+
+<p> </p>
+
+<center>
+
+$$
+\begin{aligned}
+KL \;Divergence &amp;= \;Cross\;Entropy\;-\;Entropy \\[10pt]
+&amp;= -\{\sum_{i=1}^np_i\;log\;q_i - \sum_{i=1}^np_i\;log\;p_i\} \\[10pt]
+&amp;= \sum_{i=1}^n p_i\;log\;(\frac{p_i}{q_i})
+\end{aligned}
+$$
+
+</center>
+
+<p> </p>
+
+<p>Hence, KL divergence gets large for misclassified predictions because if misclassified, the distribution of the prediction and label will be very different.</p>
+
+<hr />
+
+<h1 id="references">References</h1>
+
+<ul>
+  <li>Aurelien Geron. 2017. <em>Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow: Concepts, Tools, and Techniques to Build Intelligent Systems</em>. 2nd ed. O’Reilly</li>
+</ul>
+:ET
