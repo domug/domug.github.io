@@ -27,9 +27,9 @@ use_math: true
 
 # Overcoming MH & Gibbs
 
-So far, we talked about [Metropolis-Hastings algorithm](https://domug.github.io/2021/02/21/BS4/) and [Gibbs Sampler](https://domug.github.io/2021/02/25/BS5/) as a roundabout solution for unsolvable posterior distributions. Although they worked well with our examples, problems exist when we want to deal with more complicated posteriors that are often high dimensional and correlated. Thus, we are going to take a look at a more advanced MCMC algorithm **Hamiltonian Monte Carlo (HMC)** , which extends to the state of the art MCMC sampling method No U-Turn Sampler (NUTS).
+So far, we talked about [Metropolis-Hastings algorithm](https://domug.github.io/2021/02/21/BS4/) and [Gibbs Sampler](https://domug.github.io/2021/02/25/BS5/) as a roundabout solution for unsolvable posterior distributions. Although they worked well with our examples, problems exist when we want to deal with more complicated posteriors that are often high dimensional and correlated. Thus, we are going to take a look at a more advanced MCMC algorithm  known as the **Hamiltonian Monte Carlo (HMC)** , which extends to the state of the art MCMC sampling method No U-Turn Sampler (NUTS).
 
-Before we talk about the details of HMC, let's first justify the necessity of HMC in place of MH and Gibbs. By now we know how the latter two algorithms work to get samples from our target distribution - both of them uses **random walk Markov Chain**. However, this is where we might have to endure some possible inefficiency in the sampling process. Because the way how the samples are proposed is completely random, our sampler might re-explore the same points of target distribution over and over, making redundant samples. Moreover, it will strongly reduce the acceptance rate of the MH algorithm for trickier target distributions, hence wasting lot time doing nothing at all. 
+Before we talk about the details of HMC, let's first justify the necessity of HMC in place of MH and Gibbs. By now, we know how the latter two algorithms work to get samples from our target distribution - both of them uses **random walk Markov Chain**. However, this is where we might have to endure some possible inefficiency in the sampling process. Because the way how the samples are proposed is completely random, our sampler might re-explore the same points of target distribution over and over, making redundant samples. Moreover, it will strongly reduce the acceptance rate of the MH algorithm for trickier target distributions, which results in wasting a lot of time doing nothing at all. 
 
 This weakness of MH algorithm especially stands out for highly correlated target distribution. Let's say that our target distribution is a donut-shaped and see how MH sampler performs.
 
@@ -53,7 +53,7 @@ We can visually examine that most of the proposed samples are getting rejected a
 
 # Hamiltonian Monte Carlo
 
-To reduce this local random walk behaviour of previous MCMC algorithms, Hamiltonian Monte Carlo (HMC) burrows a concept of **"momentum"** from physics. By including momentum variable $\phi$, the **samples are withdrawn towards the direction of higher likelihood in the target distribution**, rather than moving at random. How this is possible is by using **gradient** of the log density of the target distribution. Recall that the gradient is a vector pointing towards the direction of the steepest (highest likelihood) slope at the current point. 
+To reduce this local random walk behaviour of previous MCMC algorithms, Hamiltonian Monte Carlo (HMC) burrows a concept of **"momentum" (velocity)** from physics. By including momentum variable $\phi$, the **samples are withdrawn towards the direction of higher likelihood in the target distribution**, rather than moving at random. How this is done is by using **gradient** of the log density of the target distribution. Recall that the gradient is a vector pointing towards the direction of the steepest (highest likelihood) slope at the current point. 
 
 &nbsp;
 
@@ -65,7 +65,7 @@ To reduce this local random walk behaviour of previous MCMC algorithms, Hamilton
 
 &nbsp;
 
-So in a nutshell, the direction of the HMC sampler is effected by the likelihood, allowing us to get reliable samples that realistically represents the target distribution. This might sound gibbserish at the moment, so let's take a look at the step by step details of HMC algorithm.
+So in a nutshell, the direction of the HMC sampler is manipulated to move towards the more probable area of our target, allowing us to get reliable samples that realistically represents the target distribution. This might sound gibbserish at the moment, but don't worry as we will take a look at the step by step details of HMC algorithm.
 
 &nbsp;
 
@@ -75,7 +75,7 @@ So in a nutshell, the direction of the HMC sampler is effected by the likelihood
 
 In HMC, there are two key components that we have to keep in mind. 
 
-First, **the leapfrog step ($L$)** is the number of step that our sampler is allowed to explore the parameter space at a single iteration. Recall that in the MH and GIbbs sampler, the next state sample was a **single move** from the current state. In contrast, the next state of HMC sampler is the **point moved $L$ times from the previous state**. What this implies is that it allows the sampler to move farther in the parameter space where the path is governed by the likelihood of the target density. Thus during the $L$ steps in a single iteration, the movement of our sampler will be fully encouraged if it is going in the right direction, whereas the movement will be suppressed vice versa.  Let's visually examine this process.
+First, **the leapfrog step ($L$)** is the number of step that our sampler is allowed to explore the parameter space at a single iteration. Recall that in the MH and GIbbs sampler, the next state sample was a **single move** from the current state. In contrast, the next state of HMC sampler is the **point moved $L$ times from the previous state**. What this implies is that it allows the sampler to explore the parameter space farther where the path is sailed by the likelihood of the target density. Thus during the $L$ steps in a single iteration, the movement of our sampler will be encouraged (with increased momentum) if it is going in the right direction, whereas the movement will be suppressed (decreased momentum) vice versa.  Let's visually examine this process.
 
 &nbsp;
 
@@ -89,9 +89,11 @@ First, **the leapfrog step ($L$)** is the number of step that our sampler is all
 
 &nbsp;
 
-Above is the HMC sampler applied in the donut-shaped target distribution with leapfrog step size set to 20. For each iteration, the sampler can move 20 steps from the current position and its path is effected by the donut-shaped likelihood.
+Above is a HMC sampler applied in the donut-shaped target distribution with leapfrog step size set to 20. For each iteration, the sampler can move 20 steps from the current position and its path is effected by the donut-shaped likelihood. So when the sampler tries to move outside of the donut ring, the momentum gets decreased to shift the direction towards the ring. On the other hand if it is correctly moving inside the ring, the momentum is increased (or at least remains the same) to maintain status quo.
 
-From above illustration, we can also see that the total distance moved differs from time to time. Regarding this, the **momentum variable $\phi$** controls this distance. To be more specific, it controls the **speed of movement in each steps**. It is an auxiliary variable (hyperparameter) introduced to enhance the speed and efficiency of the sampling process, so $\phi$ is not a concern of direct observation. In general, we assign multivariate normal distribution with diagonal covariance matrix as a prior distribution for $\phi$. It's dimension ($d$) is the same as the number of parameters.
+
+
+From above illustration, we can also see that the total distance moved differs from time to time. Regarding this, the **momentum variable $\phi$** controls this distance. To be more specific, it controls the **speed of movement in each steps**. It is an auxiliary variable (hyperparameter) introduced to enhance the speed and efficiency of the sampling process, so $\phi$ is not a concern of direct observation. In general, we assign multivariate normal distribution with diagonal covariance matrix as a prior distribution for $\phi$. Its dimension ($d$) is the same as the number of parameters being inferenced.
 
 <center>
 
@@ -109,13 +111,13 @@ For implementation, the covariance matrix $M$ is set during the burn-in period a
 
 # Steps of Hamiltonian Monte Carlo
 
-Now we are ready to talk about the nitty-gritty details of how sampling is done in HMC algorithm. Suppose we are at the i-th state of the sampling process with the parameter vector $\theta^i$ and momentum vector $\phi^i$.
+Now let's dig in to the nitty-gritty details of how sampling is done in HMC algorithm. Suppose we are at the i-th state of the sampling process with the parameter vector $\theta^i$ and momentum vector $\phi^i$.
 
 &nbsp;
 
 #### <Step 1>
 
-Randomly sample $\phi_i$ from its posterior distribution $N(0,M)$. This determines the initial direction of the sampler.
+Randomly sample $\phi^i$ from its posterior distribution $N(0,M)$. This determines the initial direction of the sampler.
 
 <center>
 
@@ -147,11 +149,11 @@ $$
 
 </center>
 
-$\epsilon$ is an another hyperparameter that controls the amount of update. If you are familiar with Machine Learing models, it is similar to the learning rate.
+$\epsilon$ is an another hyperparameter that controls the amount of update. If you are familiar with Machine Learing models, it serves similar purposes as the learning rate.
 
 
 
-**(b) Update $\theta_i$**
+**(b) Update $\theta^i$**
 
 <center>
 
@@ -165,7 +167,7 @@ $$
 
 &nbsp;
 
-By the end of this iteration, we will have next state candidate sample $\theta_i^*$ for our parameter.
+By the end of this iteration, we will have the next state candidate sample $\theta^{i*}$ for our parameters.
 
 &nbsp;
 
@@ -173,33 +175,33 @@ Before we move on, let's try to understand the intuition behind this updating pr
 
 
 
-1. **$\theta_i$ (position vector) is moving in relatively flat area of target density.**
+1. **$\theta$ (position vector) is moving in relatively flat area of target density.**
 
    - If this is the case, 
      $$
-     \frac{d\;log\;p(\theta^i|y)}{d\theta^i} \approx 0
+     \frac{d\;log\;p(\theta|y)}{d\theta} \approx 0
      $$
-     and in (a), $\phi^i$ will not be updated at all. This is equivalent to saying that our sampler is moving at a constant speed. 
+     and in (a), $\phi$ will not be updated at all. This is equivalent to saying that our sampler is moving at a constant speed. 
 
 
 
-2. **$\theta_i$ is moving towards the sparser area of the target density.**
+2. **$\theta$ is moving towards the sparser area of the target density.**
 
    - In this case, 
      $$
-     \frac{d\;log\;p(\theta^i|y)}{d\theta^i} < 0
+     \frac{d\;log\;p(\theta|y)}{d\theta} < 0
      $$
-     and $\phi^i$ will be decreased in (a). The decrease in the momentum will suppress our sampler's movement to the current direction.
+     and $\phi$ will be decreased in (a). The decrease in the momentum will suppress our sampler's movement towards the current direction.
 
 
 
-3. **$\theta^i$ is moving towards the denser area of the target density.**
+3. **$\theta$ is moving towards the denser area of the target density.**
    
    - In this case, 
      $$
-     \frac{d\;log\;p(\theta^i|y)}{d\theta^i} > 0
+     \frac{d\;log\;p(\theta|y)}{d\theta} > 0
      $$
-     and $\phi^i$ will be increased, further speeding up the movement of our sampler to the current direction. The momentum will start to slow down after it passes the local mode.
+     and $\phi$ will be increased, further speeding up the movement of our sampler to the current direction. The momentum will start to slow down after it passes the local mode.
 
 &nbsp;
 
@@ -251,11 +253,11 @@ Note that we do not record the update for the auxiliary variable $\phi$ since it
 
 # Remarks on HMC
 
-Hamiltonian Monte Carlo is designed to work with all **positive, continuous target distributions**. If at any point during an iteration the algorithm reaches a point of zero posterior density, the current step is discarded and the iteration restarts from the previous position, forcing the sampler to stay in the positive parameter space. Also it is proved that **HMC preserves the detailed balance condition**, thus our sampler is guarenteed to converge to the target distribution.
+Hamiltonian Monte Carlo is designed to work with all **positive, continuous target distributions**. If at any point during an iteration the algorithm reaches a point of zero posterior density, the current step is discarded and the iteration restarts from the previous position, forcing the sampler to stay in the positive parameter space. Also it is proved that **HMC preserves the detailed balance condition**, thus our sampler is guarenteed to converge to the target distribution for sufficient amount of iteration.
 
 In case we are dealing with a constrained parameter, we can use transformation on the parameter such as the logit transformation for parameter space in [0, 1] and log transformation for parameter constrained to be positive. Moreover for the discrete parameter space, we can think of using poisson regression.
 
-For the last part, emphirical results tell us that the **optimal acceptance ratio should be somewhere close to 65%** (Note that this specific value is just a rough guideline!). Thus when implementing HMC in practice, it's typical to set the hyperparameter $\epsilon$ and $L$ with the condition $\epsilon L = 1$. Based on this condition, for too small acceptance ratio we should increase $\epsilon$ as it controls the amount of update. Intuitively, small $\epsilon$ indicates that our sampler will take small steps for its movement in the parameter space meaning that it is moving cautiously. On the other hand, if the acceptance ratio is too big, then we should consider decreasing $\epsilon$, allowing our sampler to take relatively ambitious steps in the parameter space.
+For the last part, emphirical results propose that the **optimal acceptance ratio should be somewhere close to 65%** (Note that this specific value is just a rough guideline). Thus when implementing HMC in practice, it's typical to set the hyperparameter $\epsilon$ and $L$ with the condition $\epsilon L = 1$. Based on this condition, for too small acceptance ratio, we should consider increasing $\epsilon$ as it controls the amount of update. On the other hand, if the acceptance ratio is too big, then we should consider decreasing $\epsilon$. Intuitively, small $\epsilon$ indicates that our sampler is moving cautiously taking small steps for its movement in the parameter space, while large $\epsilon$ indicates that our sampler is taking relatively ambitious steps.
 
 &nbsp;
 
@@ -265,7 +267,7 @@ For the last part, emphirical results tell us that the **optimal acceptance rati
 
 As the last part of this post I will briefly mention about the **NUTS**, which is the mostly widely used MCMC algorithm in practice. As a matter of fact, it is a default MCMC sampler for pymc3. 
 
-So it is easy to think of the NUTS as an **improved version of HMC**, with the biggest improvement being that the leapfrog step size $L$ is determined automatically. Because we had to manually define the number of leapfrog steps (iterations), in case if it is set too large then our sampler might eventually return to the nearby area where it started (see below illustration taken from [this blog](http://elevanth.org/blog/2017/11/28/build-a-better-markov-chain/)).
+So it is easy to think of the NUTS as an **improved version of HMC**, with the biggest improvement being that the leapfrog step size $L$ is determined automatically. Note that as we had to manually define the number of leapfrog steps (iterations), in case if it is set too large then our sampler might eventually return to the nearby area where it started (see below illustration taken from [this blog](http://elevanth.org/blog/2017/11/28/build-a-better-markov-chain/)).
 
 &nbsp;
 
@@ -279,7 +281,9 @@ So it is easy to think of the NUTS as an **improved version of HMC**, with the b
 
 &nbsp;
 
-To address this issue, **NUTS allows the sampler to travel as far as it can go and when the sampler trys to make U-turn it stops the iteration**. In a mathematical sense, this U-turn is equvalent to when the **inner product of the momentum variable $\phi$ and the position vector $\theta$** becomes negative. As a matter of fact, NUTS is a lot more trickier and sophisticated algorithm. So in addition to the U-turn property, NUTS has some additional settings to make it satisfy the detailed balance condition and the hyperparameters are defined during the burn-in period and fixed afterwards. Below is an illustration of the NUTS sampler in practice. 
+To address this issue, **NUTS allows the sampler to travel as far as it can go and when the sampler trys to make U-turn it stops the trajectory**. In a mathematical sense, this **U-turn is synonymous as the inner product of the momentum variable $\phi$ and the position vector $\theta$ becoming negative**. In fact, NUTS is a lot more trickier and sophisticated algorithm so in addition to the this property, NUTS has some additional settings to make it satisfy the detailed balance condition and the hyperparameters are defined during the burn-in period and fixed afterwards. But like I mentioned the key idea of NUTS is that it suppresses the U-turn behaviour of HMC and we don't have to care about the rest of the subtle details while using predefined MCMC modules like pymc3. 
+
+Below is an illustration of the NUTS sampler in practice. 
 
 &nbsp;
 
