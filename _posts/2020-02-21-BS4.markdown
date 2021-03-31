@@ -4,7 +4,7 @@ title: "[Bayesian Statistics] Metropolis-Hastings"
 date: 2021-02-21 00:00:00
 image: thumbnail_bayes.png
 tags: [bayesian]
-categories: bayesian
+categories: statistics
 use_math: true
 ---
 
@@ -228,7 +228,9 @@ $$
 
 &nbsp;
 
-6. Repeat above steps until our Markov Chain converges.
+
+
+And for the rest of the iterations, repeat above steps until our Markov Chain converges to the target distribution.
 
 ---
 

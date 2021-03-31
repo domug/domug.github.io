@@ -4,7 +4,7 @@ title: "[Bayesian Statistics] Conjugacy"
 date: 2021-02-15 00:00:00
 image: thumbnail_bayes.png
 tags: [bayesian]
-categories: bayesian
+categories: statistics
 use_math: true
 ---
 

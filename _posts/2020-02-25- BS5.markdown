@@ -4,7 +4,7 @@ title: "[Bayesian Statistics] Gibbs Sampling"
 date: 2021-02-25 00:00:00
 image: thumbnail_bayes.png
 tags: [bayesian]
-categories: bayesian
+categories: statistics
 use_math: true
 ---
 
@@ -76,7 +76,9 @@ As a possible remedy for this problem, we are going to take a look at another fa
 
 To account for realistic data of our world, we will most likely be using complicated models with multiple parameters. It is needless to say that we cannot derive the posteriors analytically in these models as most of them are not defined in a closed-form distribution. 
 
-To handle this problem Gibbs sampler starts with the idea that if considering all of the parameters at once is difficult, then we can just deal with them one at a time sequentially. Before digging into the details of Gibbs Sampling method, let's take a look at how it performs on the above posterior distribution which Metropolis-Hastings had trouble with.
+To handle this problem Gibbs sampler starts with the idea that if considering all of the parameters at once is difficult, then we can just deal with them one at a time sequentially. Formally speaking, the main idea of Gibbs Sampling is to **reduce multidimensional sampling to a sequence of 1-dimensional samplings**, which can be regarded as a kind of dimension reduction.
+
+Before digging into the details of Gibbs Sampling method, let's take a look at how it performs on the above posterior distribution which Metropolis-Hastings had trouble with.
 
 &nbsp;
 
@@ -90,7 +92,7 @@ To handle this problem Gibbs sampler starts with the idea that if considering al
 
 &nbsp;
 
-Unlike Metropolis-Hastings sampler where it got stuck on the local mode, It is clear that the samples are withdrawn ramdomly from various modes when we use Gibbs Sampler. Let's talk about how this magic is done.
+Unlike Metropolis-Hastings sampler where it got stuck on the local mode, It is clear that the Gibbs Sampler works well as samples are withdrawn randomly from various modes when we use Gibbs Sampler. Let's talk about how this magic is done.
 
 ---
 
@@ -112,7 +114,7 @@ $$
 
 Here, we have two parameters to be inferred and we will be using our samples to apply Monte-Carlo method. We will use Gibbs Sampler because applying Metropolis-Hastings for joint distribution of $\theta$ and $\phi$ is costly.
 
-Here's a simplification of the *systematic-scan Gibbs Sampler* algorithm, which is the most basic Gibbs Sampler in practice.
+Here's a simplification of the *systematic-scan Gibbs Sampler* algorithm, which is the basic Gibbs Sampler in practice.
 
 &nbsp;
 
@@ -142,7 +144,7 @@ $$
 
 </center>
 
-Firstly, we are going to sample $x_1^{t+1}$. To do this, we **marginalize $x_1$ by every other parameters** and define a conditional distribution as the one following.
+Firstly, we are going to sample $x_1^{t+1}$. To do this, we **marginalize $x_1$ by every other parameters** and define a conditional distribution as the following.
 
 <center>
 
@@ -247,13 +249,13 @@ Therefore, while sampling $x_1^{t+1}$, our target distribution is only proportio
 $$
 p(x_1|x_2,...,x_d,y)
 $$
-, which is formally defined as the **full conditional distribution** for $x_1$.
+, which is formally called as the **full conditional distribution** for $x_1$.
 
-An interesting point to note here is that all of the full conditional distributions for $x_1, x_2, ... , x_d$ are defined from a single full poterior distribution. What this implies is that the **full amount of information contained in the full posterior can be accounted by combining all of the individual pieces of information of the full conditional distributions together**, which is the key idea of Gibbs Sampling algorithm.
+An interesting point to note here is that all of the full conditional distributions for $x_1, x_2, ... , x_d$ are defined from a single full poterior distribution. What this implies is that the **full amount of information contained in the full posterior can be accounted by combining all of the individual pieces of information of the full conditional distributions together**, which is again, the key idea of Gibbs Sampling algorithm.
 
 &nbsp;
 
-For Gibbs Sampler to be used in practice, we just need one more condition. By now we know that Gibbs Sampling is a method that **collects samples from the full conditional distributions**. Regarding this, our full conditional distributions have to be defined as one of the **standard probability distributions** (ex. Gaussian, Gamma, Beta et cetera) in which we can generate random samples from. Otherwise, we cannot use Gibbs Sampler.
+For Gibbs Sampler to be used in practice, we just need one more condition. By now we know that Gibbs Sampling is a method that **collects samples from the full conditional distributions**. Regarding this, our full conditional distributions have to be defined as one of the **standard probability distributions** (ex. Gaussian, Gamma, Beta et cetera) in which we can generate random samples from. Otherwise, we cannot use Gibbs Sampler. 
 
 
 
@@ -515,7 +517,7 @@ It appears that all of the chains have converged to the same stationary distribu
 
 &nbsp;
 
-In the very right column we see `rhat`, which is a numerical measure of convergence. The closer it is to 1, the better the convergence. So by various evidence we can conclude that our samples converged to the posterior distribution.
+In the very right column we see `rhat`, which is a numerical measure of convergence. The closer it is to 1, the better the convergence. So by various evidence we can conclude that our samples have converged to the posterior distribution.
 
 
 
@@ -553,7 +555,7 @@ By autocorrelation plot, we can see that we have some amount of dependency among
 
 &nbsp;
 
-For our posterior samples, we have ESS of around 1490. Thus we can conclude that we have information that is equivalent to 1490 i.i.d. samples from the true posterior distribution. I believe results inferred from Monte-Carlo estimation using 1490 samples is sufficient to be validified, so we can finally derive answer to our original question. 
+For our posterior samples, we have ESS of around 1490. What this means is that our withdrawn 4,000 MCMC samples contain information equivalent to that of 1490 i.i.d. samples from the true posterior distribution. I believe results inferred from Monte-Carlo estimation using 1490 samples is sufficient to be validified, so we can finally answer our original question. 
 
 &nbsp;
 
@@ -570,6 +572,22 @@ For our posterior samples, we have ESS of around 1490. Thus we can conclude that
 &nbsp;
 
 It is interesting to see from the above figure that posterior is somewhere in the middle of prior and the observations. In fact, **posterior is a compromise between prior and the likelihood**. The amount being compromised depends on the amount of observations and information in the prior. That is, if we use highly informative prior with small amount of observation, our posterior will be formed closer to the prior distribution. On the other hand, if we have lots of samples say 100,000, our posterior will be pulled strongly closer to the observations with very high kurtosis (distribution is highly centered around the mean).
+
+&nbsp;
+
+---
+
+# Remarks on Gibbs Sampling
+
+&nbsp;
+
+Great. So we made it to the end of a full Bayesian inference using Gibbs Sampling. However, there is no free lunch as there are some obvious downsides of using the Gibbs Sampler. 
+
+Although it is really easy to implement and universally applicable, the most prevalent problem of Gibbs Sampler is that it produces **highly correlated samples**. Recall from our example that the effective sample size was less than half the size of our posterior samples. This can be troublesome as we are dealing with more complicated posteriors. In the worst scenario, the total information of our samples can be less than like 10% or even around 1~2%. If this is the case, we might have to withdraw millions of samples. 
+
+Moreover, as Gibbs sampling marginalizes the posterior by sequence of full conditional distributions, it **consumes enormous amount of computer memory** so inherently it is not suitable for large datasets. In general, batch training on Gibbs Sampler is inefficient, although there are some variations of Gibbs Sampling which makes it possible (for more information, check [this article](https://par.nsf.gov/servlets/purl/10112579)).
+
+In the next post, we will take a look at the cutting edge MCMC algorithm HMC (Hamiltonian Monte Carlo) which can arguably overcome the limitations of Gibbs Sampling.
 
 
 
