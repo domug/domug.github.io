@@ -140,7 +140,7 @@ Because of the *normalizing constant* $1+\mu^2$ of the denominator, we cannot de
 
    &nbsp;
 
-4. Define an **acceptance ratio** which is a probability to accept the proposed state $\mu_{t+1}$.
+4. In [rejection sampling scheme](https://en.wikipedia.org/wiki/Rejection_sampling), we define an **acceptance ratio** which is a probability to accept the proposed state $\mu_{t+1}$. (I will not go into the details of rejection sampling here, but note that Metropolis Hastings algorithm is an application of rejection sampling)
 
    <center>
 
@@ -150,19 +150,20 @@ Because of the *normalizing constant* $1+\mu^2$ of the denominator, we cannot de
 
    </center>
 
-   This ratio being greater than 1 means that we accept the candidate because it is more likely to have been sampled from our target distribution as
+   This ratio being equal to 1 means that we accept the candidate because the sample is just as likely to have came from the proposal distribution as the target distribution (Note that in rejection sampling, $q$ is an upper bound of our target distribution so the acceptance ratio cannot be greater than 1).
+
+   <center>
+
    $$
-   f(\mu_{t+1} | \mu_t)
+   f(\mu_{t+1} | \mu_t) = q(\mu_{t+1} | \mu_t)
    $$
-   is  greater than 
-   $$
-   q(\mu_{t+1} | \mu_t)
-   $$
-   . However, if vice versa, it means that we are not sure about the candidate, so in this case we "probabilistically" accept our candidate to be the next sample.
+   </center>
+
+   However, for most of the time it will be vice versa, that the acceptance ratio will be less than 1. In this case we are not sure about our candidate sample, so we "probabilistically" accept our candidate to be the next sample.
 
    &nbsp;
 
-5. Meanwhile, for our Markov Chain to be stationary, it has to satisfy the *Detailed Balance Condition*.
+5. Likewise, we need to define an acceptance ratio for our Metropolis Hastings algorithm in a way that our Markov Chain satisfies the *Detailed Balance Condition*.
 
    <center>
 
@@ -173,36 +174,61 @@ Because of the *normalizing constant* $1+\mu^2$ of the denominator, we cannot de
 
    </center>
 
+   &nbsp;
+
+ The transition probabilty can be represented as following.
+
    <center>
 
-   $$
-   \begin{aligned}
-   \frac{\alpha_{t, t+1}}{\alpha_{t+1, t}}  &= \frac{\frac{f(\mu_{t+1}|\mu_t)}{q(\mu_{t+1}|\mu_t)}}{\frac{f(\mu_t|\mu_{t+1})}{q(\mu_t|\mu_{t+1})}} \\[10pt]
-   &= \frac{f(\mu_{t+1}|\mu_t)}{f(\mu_t|\mu_{t+1})} \frac{q(\mu_t|\mu_{t+1})}{q(\mu_{t+1}|\mu_t)} \\[10pt]
-   &= \frac{f(\mu_{t+1})}{f(\mu_t)}\frac{q(\mu_t|\mu_{t+1})}{q(\mu_{t+1}|\mu_t)} \\[10pt]
-   &= \frac{g(\mu_{t+1})}{g(\mu_t)}\frac{q(\mu_t|\mu_{t+1})}{q(\mu_{t+1}|\mu_t)} \\[10pt]
+$$
+\begin{aligned}
+   f(\mu_{t+1}|\mu_t) &= q(\mu_{t+1}|\mu_t) \alpha_{t,t+1} \\[10pt]
+   
+   
+   
+   f(\mu_t|\mu_{t+1}) &= q(\mu_t | \mu_{t+1})\alpha_{t+1, t}
    \end{aligned}
-   $$
+$$
 
    </center>
 
    &nbsp;
 
-6. Modify acceptance ratio to be 
-   $$
-   \alpha_{t, t+1} = min(1, \frac{g(\mu_{t+1})}{g(\mu_t)}\frac{q(\mu_t|\mu_{t+1})}{q(\mu_{t+1}|\mu_t)})
-   $$
-   , which satisfies detailed balance condition in step (5) because either $\alpha_{t, t+1}$ or $\alpha_{t+1, t}$ is always 1. 
+   Plug this equation to the detailed balance condition and we get
 
-   Note that if we use **symmetric** proposal distribution, the calculation gets much simpler because 
-   $$
-   q(\mu_t | \mu_{t+1}) = q(\mu_{t+1}|\mu_t)
-   $$
-   . In fact, this is the **Metropolis algorithm**, and Metropolis Hastings can be seen as a extension of Metropolis algorithm.
+   <center>
+
+$$
+\frac{f(\mu_t)}{f(\mu_{t+1})} = \frac{q(\mu_t | \mu_{t+1})\;\alpha_{t+1, t}}{q(\mu_{t+1}|\mu_t)\;\alpha_{t,t+1}} \\[20pt]
+\Leftrightarrow \\[10pt]
+\begin{aligned}
+   \frac{\alpha_{t,t+1}}{\alpha_{t+1,t}} &= \frac{f(\mu_{t+1})q(\mu_{t}|\mu_{t+1})}{f(\mu_t)q(\mu_{t+1}|\mu_{t})}\\[10pt]
+   &= \frac{g(\mu_{t+1})q(\mu_{t}|\mu_{t+1})}{g(\mu_t)q(\mu_{t+1}|\mu_{t})}
+   
+   \end{aligned}
+$$
+
+   </center>
 
    &nbsp;
 
-7. Repeat above steps until our Markov Chain converges.
+   Thus if we define acceptance ratio 
+$$
+\alpha_{t, t+1} = min(1, \frac{g(\mu_{t+1})}{g(\mu_t)}\frac{q(\mu_t|\mu_{t+1})}{q(\mu_{t+1}|\mu_t)})
+$$
+, then it satisfies the detailed balance condition because either $\alpha_{t, t+1}$ or $\alpha_{t+1, t}$ is always 1. 
+
+
+
+Note that if we use **symmetric** proposal distribution, the calculation gets much simpler because 
+$$
+q(\mu_t | \mu_{t+1}) = q(\mu_{t+1}|\mu_t)
+$$
+. In fact, this is the **Metropolis algorithm**, and Metropolis Hastings can be seen as a extension of Metropolis algorithm.
+
+&nbsp;
+
+6. Repeat above steps until our Markov Chain converges.
 
 ---
 
