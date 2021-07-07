@@ -2,12 +2,17 @@
 layout: post
 title: "[Bayesian Statistics] Gibbs Sampling"
 date: 2021-02-25 00:00:00
-image: thumbnail_bayes.png
+image: 11.jpg
 tags: [bayesian]
-categories: statistics
+categories: bayesian
 use_math: true
 ---
 
+&nbsp;
+
+This post is a gentle introduction to the Gibbs Sampling algorithm which is a MCMC method designed for high dimensional posteriors.
+
+&nbsp;
 
 ### Previous Posts
 
@@ -19,11 +24,11 @@ use_math: true
 
 [4. Bayesian Statistics - Metropolis-Hastings](https://domug.github.io/2021/02/21/BS4/)
 
-
+&nbsp;
 
 ---
 
-&nbsp;
+
 
 # Shortcomings of Metropolis-Hastings
 
@@ -66,13 +71,13 @@ We can see that our sampler cannot explore the parameter space efficiently as it
 
 As a possible remedy for this problem, we are going to take a look at another famous MCMC method, **Gibbs Sampler**, which is known to be working well with multi-parameter distributions. 
 
+&nbsp;
+
 ---
 
-&nbsp;
+
 
 # What is Gibbs Sampling?
-
-&nbsp;
 
 To account for realistic data of our world, we will most likely be using complicated models with multiple parameters. It is needless to say that we cannot derive the posteriors analytically in these models as most of them are not defined in a closed-form distribution. 
 
@@ -100,9 +105,9 @@ Unlike Metropolis-Hastings sampler where it got stuck on the local mode, It is c
 
 # Steps of Gibbs Sampling
 
-&nbsp;
-
 Let's say that we are interested in evaluating the following posterior distribution.
+
+&nbsp;
 
 <center>
 
@@ -111,6 +116,8 @@ f(\theta, \phi \;| \;y)
 $$
 
 </center>
+
+&nbsp;
 
 Here, we have two parameters to be inferred and we will be using our samples to apply Monte-Carlo method. We will use Gibbs Sampler because applying Metropolis-Hastings for joint distribution of $\theta$ and $\phi$ is costly.
 
@@ -210,15 +217,13 @@ Now we have the complete $d$ samples to be used for the $(t+1)th$ state!
 
 - **Final samples: $x_1^{t+1}, x_2^{t+1}, ..., x_d^{t+1}$**
 
-
+&nbsp;
 
 ---
 
-&nbsp;
+
 
 # Principles of Gibbs Sampling
-
-&nbsp;
 
 In a nutshell, Gibbs Sampler works by repeating above steps. Then you might wonder how is decomposing the joint posterior into several pieces of conditional distributions possible. Here's the reason why.
 
@@ -257,15 +262,15 @@ An interesting point to note here is that all of the full conditional distributi
 
 For Gibbs Sampler to be used in practice, we just need one more condition. By now we know that Gibbs Sampling is a method that **collects samples from the full conditional distributions**. Regarding this, our full conditional distributions have to be defined as one of the **standard probability distributions** (ex. Gaussian, Gamma, Beta et cetera) in which we can generate random samples from. Otherwise, we cannot use Gibbs Sampler. 
 
-
+&nbsp;
 
 ---
 
-&nbsp;
+
 
 # Example of Gibbs Sampling
 
-&nbsp;
+
 
 Recall from the [previous post](https://domug.github.io/2021/02/20/BS3/) that we wanted to find out the average height of male students in Yonsei university where the Bayesian setting was like the following. Note that prior of $\mu$ depends on $\sigma^2$, allowing information to flow between parameters in the hierarchical model.
 
@@ -311,7 +316,7 @@ $$
 
 Let's see if we can solve this problem using Gibbs Sampling. **Note that we are evaluating 2 parameters $\mu, \sigma^2$ at once**. The key is to define the full conditional distributions. 
 
-
+&nbsp;
 
 ---
 
@@ -372,7 +377,7 @@ $$
 
 </center>
 
-
+&nbsp;
 
 ---
 
@@ -418,7 +423,7 @@ $$
 
 Since either of full conditional distributions for each parameters are defined as a standard probability distribution, we can use Gibbs Sampler to get posterior samples! It's time to implement Gibbs Sampler using python.
 
-
+&nbsp;
 
 ---
 
@@ -521,7 +526,7 @@ In the very right column we see `rhat`, which is a numerical measure of converge
 
 
 
-
+&nbsp;
 
 ---
 
@@ -579,7 +584,7 @@ It is interesting to see from the above figure that posterior is somewhere in th
 
 # Remarks on Gibbs Sampling
 
-&nbsp;
+
 
 Great. So we made it to the end of a full Bayesian inference using Gibbs Sampling. However, there is no free lunch as there are some obvious downsides of using the Gibbs Sampler. 
 

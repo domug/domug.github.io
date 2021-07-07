@@ -2,18 +2,25 @@
 layout: post
 title: "[Bayesian Statistics] Modeling and Monte Carlo Estimation"
 date: 2021-02-20 00:00:00
-image: thumbnail_bayes.png
+image: 8.jpg
 tags: [bayesian]
-categories: statistics
+categories: bayesian
 use_math: true
 ---
 
+&nbsp;
+
+This post is an introduction to how Monte Carlo method can be used for Bayesian models.
+
+&nbsp;
 
 ### Previous Posts
 
 [1. Bayesian Statistics - Basics](https://domug.github.io/2021/02/09/BS1/)
 
 [2. Bayesian Statistics - Conjugacy](https://domug.github.io/2021/02/15/BS2/)
+
+&nbsp;
 
 ---
 
@@ -26,6 +33,8 @@ Let's briefly review what we've been doing so far.
 &nbsp;
 
 **(a) Conditional probability**
+
+&nbsp;
 
 <center>
 
@@ -40,6 +49,8 @@ $$
 
 **(b) Joint probability can be marginalized into a specific event.**
 
+&nbsp;
+
 <center>
 
 $$
@@ -52,7 +63,10 @@ $$
 
 **(c) Using (a) and (b), we have the following Bayes' Theorem.**
 
+&nbsp;
+
 <center>
+
 
 $$
 \begin{aligned}
@@ -80,9 +94,9 @@ In this setting, Bayesian Inference can be thought of as **updating** a prior be
 
 Hence as an alternative, we will be using computer simulations to indirectly derive the posteriors by using a statistical method known as **Monte-Carlo estimation** with algorithmic simulation technic known as **MCMC**. In this post, we'll take a look at the bayesian modeling procedure and Monte-Carlo method as a buliding block of MCMC.
 
----
-
 &nbsp;
+
+---
 
 # Statistical Modeling
 
@@ -101,9 +115,9 @@ Unlike machine learning models where its primal focus is on the accuracy of the 
 
 In Bayesian Inference, we use the posterior distribution to draw our conclusions about our questions. Once we manage to find the posterior distribution, we can reproduce lot of important statistics such as the moments and quantile values and so on. A very promising aspect of using this kind of *Interpretable* or *White-Box* model is that the results are **fully explanable**. It's like having a blueprint! It allows you to understand and explain why and how your model has produced the result, as opposed to *Black-Box* models such as neural networks.
 
----
-
 &nbsp;
+
+---
 
 # Bayesian Hierarchical Modeling
 
@@ -111,7 +125,11 @@ Now let's see how Bayesians implement statistical models for inferences. The ver
 
 Let's consider an example. Suppose we are interested in the following problem.
 
+&nbsp;
+
 > **Goal: We want to know the average height of male students in Yonsei Univerity, which is assumed to be normally distributed.**
+
+&nbsp;
 
 In this setting, our goal is to find the parameters $\mu$ and $\sigma$ of our normal distribution $N(\mu, \sigma)$ (especially $\mu$). Let's take a look at how the Bayes' Theorem is applied in our problem.
 
@@ -136,7 +154,7 @@ We can see that the posterior is proportional to the product of likelihood, cond
 
 &nbsp;
 
-**\<likelihood\>**
+- **likelihood**
 
 <center>
 
@@ -148,7 +166,7 @@ $$
 
 &nbsp;
 
-**\<prior\>**
+- **prior**
 
 <center>
 
@@ -196,11 +214,9 @@ Regarding this equation, the game is set if the distributional kernel in the sec
 
 Thus, instead of struggling to find analytical solutions, we can take a roundabout, which is Monte-Carlo estimation. In the next section, we will see what Monte-Carlo simulation is and in the following post we will talk about how it can be applied in Bayesian Inference to indirectly derive the posterior distribution.
 
-
+&nbsp;
 
 ---
-
-&nbsp;
 
 # Monte-Carlo Simulation
 
@@ -214,11 +230,12 @@ and we want to find the mean of $\theta$.
 
 &nbsp;
 
-#### 1. Deriving analytically
+#### 1. Analytical Derivation
 
 &nbsp;
 
 <center>
+
 
 $$
 \begin{aligned}
@@ -254,11 +271,9 @@ Hence if $a=2$ and $b=\frac{1}{3}$, we have our mean of 6.
 
 By using 100,000 random samples from $\Gamma(2,\frac{1}{3})$, we get almost the same result as 6. Moreover, we can see that the samples form a shape of the probability density of Gamma distribution. Why Monte-Carlo method works can be formally proved by using the [Law of Large Numbers](https://people.math.umass.edu/~lr7q/ps_files/teaching/math456/lecture17.pdf). 
 
-&nbsp;
-
 Likewise, as long as we have sufficient amount of samples, we can use Monte-Carlo simulation to make inference about the unknown quantities even if it cannot be derived analytically. This idea can be applied to deriving posterior as well, and the key point is how we can make samples without knowing the exact probability distribution. Luckily, MCMC has answer to this, which is the very next topic we are going to discuss about.
 
-
+&nbsp;
 
 ---
 

@@ -2,11 +2,18 @@
 layout: post
 title: "[Bayesian Statistics] Hamiltonian Monte Carlo"
 date: 2021-03-12 00:00:00
-image: thumbnail_bayes.png
+image: 3.jpg
 tags: [bayesian]
-categories: statistics
+categories: bayesian
 use_math: true
 ---
+
+&nbsp;
+
+This post is a gentle introduction to the Hamiltonian Monte Carlo, an highly efficient MCMC algorithm designed to overcome the weaknesses of Gibbs Sampling and Metropolis Hastings algorithm.
+
+&nbsp;
+
 
 
 ### Previous Posts
@@ -27,11 +34,9 @@ use_math: true
 
 # Overcoming MH & Gibbs
 
-&nbsp;
-
 So far, we talked about [Metropolis-Hastings algorithm](https://domug.github.io/2021/02/21/BS4/) and [Gibbs Sampler](https://domug.github.io/2021/02/25/BS5/) as a roundabout solution for unsolvable posterior distributions. Although they worked well with our simple examples, problems exist when we want to deal with more complicated posteriors that are often high dimensional and correlated. Thus, we are going to take a look at a more advanced MCMC algorithm **Hamiltonian Monte Carlo (HMC)** , which extends to the state of the art MCMC sampling method **No U-Turn Sampler (NUTS)**.
 
-Before we talk about the details of HMC, let's first justify the necessity of HMC in place of MH and Gibbs. By now we know how the latter two algorithms work to get samples from our target distribution - both of them uses **random walk Markov Chain**. However, this is where we might have to endure some possible inefficiency in the sampling process. Because the way how the samples are proposed is completely random, our sampler might re-explore the same points of target distribution over and over, making redundant and highly correlated samples. In general, this behaviour strongly reduces the acceptance rate of the MH algorithm for trickier target distributions, hence wasting lot time doing nothing at all. 
+Before we talk about the details of HMC, let's first justify the necessity of HMC in place of MH and Gibbs. By now we know how the latter two algorithms work to get samples from our target distribution - Metropolis Hastings uses **random walk property** of a Markov Chain and Gibbs Sampler uses **conditional probabilities**. However, this is where we might have to endure some possible inefficiency in the sampling process. For example when using a Metropolis Hastings algorithm, because the way how the samples are proposed is completely random, our sampler might re-explore the same points of target distribution over and over, making redundant and highly correlated samples. In general, this behaviour strongly reduces the acceptance rate of the MH algorithm for trickier target distributions, hence wasting lot time doing nothing at all. 
 
 The weakness of MH algorithm especially stands out for highly correlated target distribution. Let's say that our target distribution is a donut-shaped and see how MH sampler performs.
 
@@ -56,8 +61,6 @@ We can visually examine that most of the proposed samples are getting rejected a
 
 # Hamiltonian Monte Carlo
 
-&nbsp;
-
 To reduce this local random walk behaviour of previous MCMC algorithms, Hamiltonian Monte Carlo (HMC) burrows a concept of **"momentum"** from physics. By including momentum variable $\phi$, the **samples are withdrawn towards the direction of higher likelihood in the target distribution**, rather than moving at random. This is made possible by using the concept of **gradient**. Recall that the gradient is a vector pointing towards the direction of the steepest (highest likelihood) slope at the current point. 
 
 &nbsp;
@@ -79,9 +82,9 @@ So in a nutshell, the direction of the HMC sampler is effected by the gradient o
 
 # Leapfrog steps and momentum
 
-&nbsp;
 
-In HMC, there are two key components that we have to keep in mind. 
+
+In HMC, there are two key components to be kept in mind. 
 
 First, **the leapfrog step ($L$)** is the number of step that our sampler is allowed to explore the parameter space at a single iteration. Recall that in the MH and GIbbs sampler, the next state sample was a **single move** from the current state. In contrast, the next state of HMC sampler is the **point moved $L$ times from the previous state**. What this implies is that it allows the sampler to move farther in the parameter space where the path is governed by the likelihood of the target density. Thus during the $L$ steps in a single iteration, the movement of our sampler will be fully encouraged if it is going in the right direction, whereas the movement will be suppressed vice versa.  Let's visually examine this process.
 
@@ -101,6 +104,8 @@ Above is the HMC sampler applied in the donut-shaped target distribution with le
 
 From above illustration, we can also see that the total distance moved differs from time to time. Regarding this, the **momentum variable $\phi$** controls this distance. To be more specific, it controls the **speed of movement in each steps**. It is an auxiliary variable (hyperparameter) introduced to enhance the speed and efficiency of the sampling process, so $\phi$ is not a direct concern of our observation. In general, we assign multivariate normal distribution with diagonal covariance matrix as a prior distribution for $\phi$. It's dimension ($d$) is the same as the number of parameters.
 
+&nbsp;
+
 <center>
 
 $$
@@ -108,6 +113,8 @@ $$
 $$
 
 </center>
+
+&nbsp;
 
 For implementation, the covariance matrix $M$ is set during the burn-in period and held fixed afterwards. Also, the posterior of $\phi$ is set to be the same as the prior for calculation simplicity.
 
@@ -117,7 +124,7 @@ For implementation, the covariance matrix $M$ is set during the burn-in period a
 
 # Steps of Hamiltonian Monte Carlo
 
-&nbsp;
+
 
 Now we are ready to talk about the nitty-gritty details of how sampling is done in HMC algorithm. Suppose we are at the i-th state of the sampling process with the parameter vector $\theta_i$ and momentum vector $\phi_i$.
 
@@ -143,7 +150,7 @@ $$
 
 With the predefined leapfrog step size $L$, sImultaneously update $\theta_i$ and $\phi_i$ for $L$ times.
 
-
+&nbsp;
 
 **(a) Update $\phi_i$**
 
@@ -157,9 +164,9 @@ $$
 
 </center>
 
-$\epsilon$ is an another hyperparameter that controls the amount of update. If you are familiar with Machine Learing models, it is similar to the learning rate.
+$\epsilon$ is an another hyperparameter that controls the amount of update. If you are familiar with Machine Learning models, it is similar to the learning rate.
 
-
+&nbsp;
 
 **(b) Update $\theta_i$**
 
@@ -171,17 +178,17 @@ $$
 
 </center>
 
+&nbsp;
+
 **(c) Repeat (a) & (b) for remaining L-1 times.** 
 
 &nbsp;
 
 By the end of this iteration, we will have next state candidate sample $\theta_i^*$ for our parameter.
 
-&nbsp;
-
 Before we move on, let's try to understand the intuition behind this updating procedure. Like I mentioned, $\phi$ is a variable indicating speed (momentum). Hence there are 3 possibilities of how the variables get updated with respect to $\phi$.
 
-
+&nbsp;
 
 1. **$\theta_i$ (position vector) is moving in relatively flat area of target density.**
 
@@ -234,7 +241,7 @@ $$
 
 #### <Step 4>
 
-Decide wheter to accept/reject the candidate based on the acceptance ratio $r$.
+Decide whether to accept/reject the candidate based on the acceptance ratio $r$.
 
 
 
@@ -261,8 +268,6 @@ Note that we do not record the update for the auxiliary variable $\phi$ since it
 
 # Remarks on HMC
 
-&nbsp;
-
 Hamiltonian Monte Carlo is designed to work with all **positive, continuous target distributions**. If at any point during an iteration the algorithm reaches a point of zero posterior density, the current step is discarded and the iteration restarts from the previous position, forcing the sampler to stay in the positive parameter space. Also it is proved that **HMC preserves the detailed balance condition**, thus our sampler is guarenteed to converge to the target distribution.
 
 In case we are dealing with a constrained parameter, we can use transformation on the parameter such as the logit transformation for parameter space in [0, 1] and log transformation for parameter constrained to be positive. Moreover for the discrete parameter space, we can think of using poisson regression.
@@ -274,8 +279,6 @@ For the last part, emphirical results tell us that the **optimal acceptance rati
 ---
 
 # No U-Turn Sampler (NUTS)
-
-&nbsp;
 
 As the last part of this post I will briefly mention about the **NUTS**, which is the mostly widely used MCMC algorithm in practice. As a matter of fact, it is a default MCMC sampler for continuous posterior densities in pymc3. 
 
@@ -309,13 +312,11 @@ To address this issue, **NUTS allows the sampler to travel as far as it can go a
 
 Hence as long as we don't have any clear reason to use other MCMC samplers, it is always better and safe to use NUTS for withdrawing samples for our posteriors as pymc3 makes everything handy for us.
 
-
+&nbsp;
 
 
 
 ---
-
-# &nbsp;
 
 # References
 

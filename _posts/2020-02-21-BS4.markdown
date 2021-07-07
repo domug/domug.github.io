@@ -2,11 +2,18 @@
 layout: post
 title: "[Bayesian Statistics] Metropolis-Hastings"
 date: 2021-02-21 00:00:00
-image: thumbnail_bayes.png
+image: 4.jpg
 tags: [bayesian]
-categories: statistics
+categories: bayesian
 use_math: true
 ---
+
+&nbsp;
+
+This post briefly explains the Metropolis-Hastings algorithm, which is a algorithmic methodology of MCMC in a Bayesian posterior inference.
+
+&nbsp;
+
 
 
 ### Previous Posts
@@ -17,9 +24,9 @@ use_math: true
 
 [3. Bayesian Statistics - Hierarchical Models and Monte Carlo Simulation](https://domug.github.io/2021/02/20/BS3/)
 
----
-
 &nbsp;
+
+---
 
 # When and why do we need MCMC?
 
@@ -69,11 +76,11 @@ From the last part of the equation, we have a very complicated form of the poste
 
 On the other hand, even under the circumstances, we can use Monte-Carlo simulation and approximate our sample distribution to the posterior like I introduced in the previous post. This methodology is called as **MCMC** and let's now see how it works.
 
-
+&nbsp;
 
 ---
 
-&nbsp;
+
 
 # Principle of MCMC
 
@@ -85,11 +92,11 @@ Using this principle of Markov Chain, MCMC defines a Markov Chain whose stationa
 
 In summary, we are using MCMC to approximate the posterior distribution from a well-defined Markov Chain by moving around the states and getting samples to apply the Monte-Carlo method. Thus, the success or failure of a MCMC critically depends on the **quality of the samples**, which is determined by how effieciently the Markov Chain can explore our parameter space. There are various MCMC algorithms and for now, we will focus on the most basic and fundamental sampling method known as *Metropolis-Hastings* algorithm.
 
-
+&nbsp;
 
 ---
 
-&nbsp;
+
 
 # Metropolis-Hastings Algorithm
 
@@ -116,65 +123,79 @@ Because of the *normalizing constant* $1+\mu^2$ of the denominator, we cannot de
 
 **\<Steps of MH\>**
 
-1. Define a function $g(\mu)$ that is proportional to our target distribution $f(\mu)$.
+&nbsp;
 
-   &nbsp;
+##### (1)
 
-2. Furthermore, define a conditional probability distribution 
-   $$
-   q(\mu' | \mu)
-   $$
-   , which is easy to get samples from. In general, standard distributions like normal distribution is used. This distribution is called as **proposal distribution**.
+Define a function $g(\mu)$ that is proportional to our target distribution $f(\mu)$.
 
-   &nbsp;
+&nbsp;
 
-3. Since we don't know the transition probability of our Markov Chain, randomly draw a **candidate** $\mu_{t+1}$ from the proposal distribution and decide whether to accept the candidate as our next sample or not by comparing the difference between 
-   $$
-   q(\mu_{t+1} | \mu_t)
-   $$
-   and 
-   $$
-   f(\mu_{t+1} | \mu_t)
-   $$
-    by **acceptance ratio $\alpha_{t, t+1}$**.
 
-   &nbsp;
 
-4. In [rejection sampling scheme](https://en.wikipedia.org/wiki/Rejection_sampling), we define an **acceptance ratio** which is a probability to accept the proposed state $\mu_{t+1}$. (I will not go into the details of rejection sampling here, but note that Metropolis Hastings algorithm is an application of rejection sampling)
+##### (2)
 
-   <center>
+Furthermore, define a conditional probability distribution 
+$$
+q(\mu' | \mu)
+$$
+, which is easy to get samples from. In general, standard distributions like normal distribution is used. This distribution is called as **proposal distribution**.
 
-   $$
-   \alpha_{t, t+1} = \frac{f(\mu_{t+1}|\mu_t)}{q(\mu_{t+1}|\mu_t)}
-   $$
+&nbsp;
 
-   </center>
+##### (3)
 
-   This ratio being equal to 1 means that we accept the candidate because the sample is just as likely to have came from the proposal distribution as the target distribution (Note that in rejection sampling, $q$ is an upper bound of our target distribution so the acceptance ratio cannot be greater than 1).
+Since we don't know the transition probability of our Markov Chain, randomly draw a **candidate** $\mu_{t+1}$ from the proposal distribution and decide whether to accept the candidate as our next sample or not by comparing the difference between 
+$$
+q(\mu_{t+1} | \mu_t)
+$$
+and 
+$$
+f(\mu_{t+1} | \mu_t)
+$$
+ by **acceptance ratio $\alpha_{t, t+1}$**.
 
-   <center>
+&nbsp;
 
-   $$
-   f(\mu_{t+1} | \mu_t) = q(\mu_{t+1} | \mu_t)
-   $$
-   </center>
+##### (4)
 
-   However, for most of the time it will be vice versa, that the acceptance ratio will be less than 1. In this case we are not sure about our candidate sample, so we "probabilistically" accept our candidate to be the next sample.
+In [rejection sampling scheme](https://en.wikipedia.org/wiki/Rejection_sampling), we define an **acceptance ratio** which is a probability to accept the proposed state $\mu_{t+1}$. (I will not go into the details of rejection sampling here, but note that Metropolis Hastings algorithm is an application of rejection sampling)
 
-   &nbsp;
+<center>
 
-5. Likewise, we need to define an acceptance ratio for our Metropolis Hastings algorithm in a way that our Markov Chain satisfies the *Detailed Balance Condition*.
+$$
+\alpha_{t, t+1} = \frac{f(\mu_{t+1}|\mu_t)}{q(\mu_{t+1}|\mu_t)}
+$$
 
-   <center>
+</center>
 
-   $$
-   detailed\;balance\;condition: \;\;\;\;
-   \frac{f(x|x')}{f(x'|x)} = \frac{f(x)}{f(x')}
-   $$
+This ratio being equal to 1 means that we accept the candidate because the sample is just as likely to have came from the proposal distribution as the target distribution (Note that in rejection sampling, $q$ is an upper bound of our target distribution so the acceptance ratio cannot be greater than 1).
 
-   </center>
+<center>
 
-   &nbsp;
+$$
+f(\mu_{t+1} | \mu_t) = q(\mu_{t+1} | \mu_t)
+$$
+</center>
+
+However, for most of the time it will be vice versa, that the acceptance ratio will be less than 1. In this case we are not sure about our candidate sample, so we "probabilistically" accept our candidate to be the next sample.
+
+&nbsp;
+
+##### (5)
+
+Likewise, we need to define an acceptance ratio for our Metropolis Hastings algorithm in a way that our Markov Chain satisfies the *Detailed Balance Condition*.
+
+<center>
+
+$$
+detailed\;balance\;condition: \;\;\;\;
+\frac{f(x|x')}{f(x'|x)} = \frac{f(x)}{f(x')}
+$$
+
+</center>
+
+&nbsp;
 
  The transition probabilty can be represented as following.
 
@@ -228,15 +249,15 @@ $$
 
 &nbsp;
 
+##### (6)
 
-
-And for the rest of the iterations, repeat above steps until our Markov Chain converges to the target distribution.
+Repeat above steps until our Markov Chain converges.
 
 ---
 
 
 
-I tried to be as specific as possible, but for practical implementation the above steps can be simplified as the following.
+Above is a specific step-by-step illustration of the algorithm, but for practical implementation these steps can be simplified as the following.
 
 &nbsp;
 
@@ -250,11 +271,11 @@ I tried to be as specific as possible, but for practical implementation the abov
 
 Now it's time to actually implement Metropolis Hastings algorithm using Python! 
 
-
+&nbsp;
 
 ---
 
-&nbsp;
+
 
 # Metropolis-Hastings in Python
 

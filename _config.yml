@@ -1,15 +1,15 @@
 title: Domug's Blog
-description: statistics and machine learning
+description: Statistics & Data Science
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "domug.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 
 # Author
 author-name:    Dongwook Kim
 author-image:   profile.png
-author-job:     Student, Yonsei Univ of Korea
+author-job:     Graduate Student, Yonsei Univ of Korea
 author-email:   epdlql96@gmail.com # Add your email for contant form.
 author-twitter:  # Add your twitter account
-about-author:   English Lang&Lit / Applied Statistics
+about-author:    Statistics & Data Science
 
 # Social settings
 social-twitter:  

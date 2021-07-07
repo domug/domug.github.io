@@ -2,11 +2,19 @@
 layout: post
 title: "[Bayesian Statistics] Conjugacy"
 date: 2021-02-15 00:00:00
-image: thumbnail_bayes.png
+image: 12.jpg
 tags: [bayesian]
-categories: statistics
+categories: bayesian
 use_math: true
 ---
+
+&nbsp;
+
+This post is a gentle introduction of when and how to use conjugate priors for numerically-solvable posteriors in Bayesian statistics.
+
+&nbsp;
+
+
 
 ### Previous Posts
 
@@ -19,6 +27,8 @@ In the previous post, we have talked about how Bayesian statistics differs from 
 In fact, one of the fundamental limitations of Bayesian statistics lies in its complexity of calculation. Depending on our choice of prior and likelihood distribution, our posterior distribution can be intractable analytically (to be more specific, we cannot derive the denominator of the bayes theorem which includes integral). 
 
 To address this problem, scholars have came up with sets of distributions which has a desirable properties for making the math easy and they are called as **conjugate prior distributions**. We're going take a look at them in this post.
+
+&nbsp;
 
 
 ---
@@ -47,6 +57,8 @@ f(x|\theta)
 $$
 is the likelihood, we can summarize the calculation of the posterior as the following:
 
+&nbsp;
+
 <center>
 
 $$
@@ -55,11 +67,11 @@ $$
 
 </center>
 
-
+&nbsp;
 
 This is the reason why I mentioned prior, likelihood and posterior are the 3 key elements of Bayesian inference.
 
-
+&nbsp;
 
 ---
 
@@ -69,11 +81,15 @@ As we have seen, posterior is a combination of prior and the likelihood. Regardi
 
 Among the many conjugate pairs, I will illustrate one single case - *Bernoulli likelihood* + *Beta prior*.
 
+&nbsp;
+
 > Let's go back to our coin tossing problem again. Suppose we observed $z$ number of heads from $N$ total observations. Regarding this situation, I want to find out the posterior probability of my coin being loaded. That is, if I toss my coin what is the probability of heads considering the observations?
 
 &nbsp;
 
 First, here's the general setting of our problem.
+
+&nbsp;
 
 <center>
 
@@ -83,6 +99,8 @@ prior \sim Beta(a,b) \\
 $$
 
 </center >
+
+&nbsp;
 
 Since it is evident that our coin tossing observations follow a bernoulli distribution with probability equal to $\theta$, I've deliberately set my prior for $\theta$ to be Beta distribution with parameters $a$ and $b$ which in this case we assume to be known. Let's derive the posterior under this setting.
 
@@ -114,7 +132,7 @@ Note that $D$ represents likelihood and $B(a,b)$ is a *Beta function.* I've used
 
 We can see that the resulting posterior is in the form of a **Beta distribution**, which certainly is very familiar to us. Hence, if we summarize what we have done above, here's what it is.
 
-
+&nbsp;
 
 <p align="center">
 	<img width="300" height="200" src="{{site.baseurl}}/images/bayesian/bayes2.png">
@@ -135,6 +153,8 @@ Apart from the *Bernoulli - Beta* conjugacy, there are lot more [other conjugate
 
 
 So again, the complexity of calculation, was the prime reason why Bayesian Statistics was under the shadow until recently even though the theoretical backgrounds existed as early as the late 19th century. However, with the recent advance of computers the table has been turned. Nowadays we can use cutting edge simulation methods with our computers to approximate our posteriors and we don't have to worry about calculating the troublesome normalizing constant of the posterior. Thus in the next post, we will talk about Monte-Carlo simulation method as a starting point for our discussion on the MCMC (Markov Chain Monte Carlo).
+
+&nbsp;
 
 ---
 

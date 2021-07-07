@@ -4,28 +4,32 @@ title: "[Bayesian Statistics] Basics"
 date: 2021-02-09 00:00:00
 image: thumbnail_bayes.png
 tags: [bayesian]
-categories: statistics
+categories: bayesian
 use_math: true
 ---
 
+&nbsp;
+
+This post is a gentle introduction to the field of Bayesian Statistics focusing on its difference from the traditional frequentist statistics.
+
+&nbsp;
+
+In the following series of posts, we will be talking about **Bayesian Statistics**, which is arguably one of the most probable field of applied statistics in 21st century for its practical and intuitive framework of quantifying the uncertainties. 
+
+Just like any other field of study that is built upon mathematics, Bayesian Statistics is also filled with heavy amount of mathematical formulas and proofs, and I don't want to be overwhelmed by them. For this reason, I will try to keep the rigorous mathematical proofs as minimum as possible and rather try focus on the insight and the intuition Bayesian statistics can give us.
+
+In latter posts, a renowned PPL (Probabilistic Programming Language) *pymc3* made for python environment will be used to actually implement algorithms for Bayesian inferences. As a first post of this series, we'll begin by talking about some of the fundamentals that differentiates Bayesian Statistics from traditional statistics. 
 
 
-In the following series of posts, we will be talking about **Bayesian Statistics**, which is arguably one of the most probable field of applied statistics in 21st century. I have been into bayesian statistics for about an year now, and ever since it has given me some valuable insights on how to quantify uncertainties with its practical and intuitive framework. 
 
-Just like any other field of study that is built upon mathematics, Bayesian Statistics is also filled with heavy amount of mathematical formulas and proofs, and I don't want to be overwhelmed by them (because I had a hard time with those nitty-gritty mathematics in the textbooks as an undergraduate student...). For this reason, I will try to keep the rigorous mathematical proofs as minimum as possible and rather try focus on the insight and the intuition Bayesian statistics can give us.
-
-We will use **pymc3**, a renowned PPL (Probabilistic Programming Language) made for python users, to actually implement Bayesian inference throughout this series. As this is the very first post, let's begin with talking about some of the fundamentals that differentiates Bayesian Statistics from traditional statistics. 
-
-
-
-
+&nbsp;
 
 
 ---
 
 # 1. Defining Probability
 
-What is **probability**? Defining probability is the very first step in statistics as it is a field of study that tries to quantify the uncertainties in our lives by making use of probabilities. Refering to wikipedia, definition of probability is "*numerical descriptions of **how likely an event is to occur*** ". Although this definition might sound trivial, formally defining "**likeliness of an event**" (don't get confused with the *likelihood* in statistical sense) isn't actually that simple. Let me introduce three different perspectives on defining probability.
+What is **probability**? Defining probability is the very first step in statistics as it is a field of study that tries to quantify the uncertainties in our lives by making use of probabilities. One definition of probability is "numerical descriptions of **how likely an event is to occur**". Although this definition might sound trivial, formally defining "**likeliness of an event**" (don't get confused with the *likelihood* in statistical sense) isn't actually that simple. Let me introduce three different perspectives on defining probability.
 
 &nbsp;
 
@@ -39,7 +43,7 @@ What is **probability**? Defining probability is the very first step in statisti
 
 - **Frequentist (Classical Statistics)**: 
   - Assuming **infinite sequence of events**, probability is defined as the **relative frequency** of each events. For example, by infinitely repeating the tossing of a coin, heads and tails appear half&half.
-  - By this perspective, definition of probability is somewhat **consequential** and this can sometimes contradict to our intuition (common sense) when we cannot assume infinite replication of events.
+  - By this perspective, definition of probability is **consequential** and this can sometimes contradict to our intuition (common sense) when we cannot assume infinite replication of events.
   - For example, we want to know whether it will rain tomorrow or not. Considering these binary outcomes, the probability is either 0/1 (it rained / it didn't rained). Why? - because we can observe "tomorrow" only once.
 
 &nbsp;
@@ -57,7 +61,7 @@ This might sound confusing, but the keyword here is that Bayesian's probability 
 
 Then how exactly are we going to calculate probability in Bayesian sense? Here's a good news. In Bayesian Statistics, a single theorem solves everything! Let's take a look at Bayes' Theorem.
 
-
+&nbsp;
 
 ---
 
@@ -75,14 +79,14 @@ $$
 
 </center>
 
-Let's interpret its meaning.
+Let's try to interpret its meaning.
 
 - Left side of equation: **probability of event A happening, presuming that event B had already happened**.
 - Right side of equation: **probability of event A and B happening at the same time divided by probability of event B happening**.
 
 From this equation, if we marginalize the numerator of the right side we have the following equation:
 
-
+&nbsp;
 
 <center>
 
@@ -92,13 +96,15 @@ $$
 
 </center>
 
+&nbsp;
+
 The implication of this equation is that we can derive a particular conditional probability (left side) by marginalizing the joint probability into a conditional and marginal probabilities. In a Bayesian sense, this conditional probability on the left side is called as the **posterior** and the numerator on the right side is each called as the **likelihood** and the **prior** while the denominator is evidence.
 
 
 
 These three components - posterior, likelihood and prior - are the building blocks of Bayesian Statistics. In fact, the probability I mentioned to be calculated in Bayesian inference refers to posterior. Let's consider a simple example and see how it's done.
 
-
+&nbsp;
 
 ---
 
@@ -151,9 +157,13 @@ Here are the steps:
 
 To put it simply, a full bayesian inference consists of 3 elements - **prior**, **likelihood**, **posterior**. Let's follow the steps and actually derive the posterior analytically. 
 
+&nbsp;
+
 **<Step 1>**
 
 By inspecting our sampled coin carefully, I've found out some small cracks on the edges of the coin. I suspected that these cracks will have influence on the coin's fairness so I decided to set my prior probability of this coin to be fair as 0.4, a little less than 0.5.
+
+&nbsp;
 
 **<Step 2>**
 
@@ -174,6 +184,8 @@ f(p|x) &= \frac{f(p,x)}{f(x)} \\[10pt]
 $$
 
 </center>
+
+&nbsp;
 
 **<Step 3>**
 
@@ -199,13 +211,20 @@ $$
 
 The result of the bayes theorem suggests that given our observed data, the posterior probability that our sampled coin is fair is only about 22.6%, which is enough to derive the following conclusion:
 
-- ***Considering our observed results, our coin has probability of 0.226 to be fair***.
+&nbsp;
+
+> **Considering our observed results, our coin has probability of 0.226 to be fair**.
+
+&nbsp;
 
 This conclusion, in contrast with that of frequentists, explicitly suggests a specific probabilistic statement about the amount of uncertainty in our inference (remember that from frequentist inference the conclusion was just "The coin is unfair"). Thus it's more intuitive and informative. This is also in line with our common sense that **our prior belief about the coin being fair 40%, was decreased to 22.6% after we saw an actual outcome of 30%**.
+
+&nbsp;
 
 <p align="center">
 	<img width="400" height="300" src="{{site.baseurl}}/images/bayesian/bayes1.png">
 </p>
+&nbsp;
 
 Can you see how the probability was updated? One of the cool part of Bayesian Statistics is that we can also update the derived posterior by another observation. Let's say that after this observation, we have conducted another set of coin tosses and got only 10% of head this time. If this is the case, our posterior probability will further be decreased from 22.6%.
 
@@ -222,7 +241,6 @@ Luckily, there is a way to address this problem by using our cutting-edge comput
 # References
 
 - Gelman et. al. 2013. *Bayesian Data Analysis*. 3rd ed.  CRC Press
-
 
 
 

@@ -7,9 +7,13 @@ tags: [python, re]
 categories: python
 ---
 
-**Regular Expression** is a bunch of patterns that can be used to extract specific combinations of strings in a text. It is widely used in domains like NLP (Natural Language Processing) to handle text data and is especially useful in the data preprocessing steps. 
+&nbsp;
 
 In this post, we will talk about how to utilize some of the most important regular expressions in python with simple examples. 
+
+**Regular Expression** is a bunch of patterns that can be used to extract specific combinations of strings in a text. It is widely used in domains like NLP (Natural Language Processing) to handle text data and is especially useful in the data preprocessing steps. 
+
+&nbsp;
 
 
 ---
@@ -24,8 +28,9 @@ There's not much of a theoretical background to be explained here, but keep in m
 
 ``re.method_name(pattern, string)``
 
-
 With this being said, let's dig into each methods!
+
+&nbsp;
 
 ---
 
@@ -51,6 +56,8 @@ Note that the prefix "r" in front of each patterns simply indicates that it is a
 <p align="center">
 	<img src="{{site.baseurl}}/images/re/match2.png">
 </p>
+&nbsp;
+
 
 ---
 
@@ -87,6 +94,8 @@ On top of this, we can also include logical expressions in patterns. For example
 <p align="center">
 	<img src="{{site.baseurl}}/images/re/or.png">
 </p>
+&nbsp;
+
 
 ---
 
@@ -281,7 +290,6 @@ Hope this post shed a light on how to handle text data with regular expressions.
 
 
 [code]: https://github.com/domug/Codes-for-blogs/blob/master/Dimension%20Reduction/LDA.R
-
 
 
 
