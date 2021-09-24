@@ -1,0 +1,231 @@
+---
+layout: post
+title: "Data Analysis in SQL (Part 4)"
+date: 2021-09-24 00:00:00
+image: mysql.png
+tags: [sql]
+categories: sql
+use_math: true
+---
+
+&nbsp;
+
+이제 본격적으로 헬스장 데이터를 분석해보도록 하자. 이번 포스트에서는 데이터를 일정한 기준으로 분류하는 그루핑에 대해 살펴볼 것이다.
+
+
+
+&nbsp;
+
+## 목차
+
+1. [결측치 처리](#결측치-처리)
+2. [기술 통계량](#기술-통계량)
+3. [문자열 처리](#문자열-처리)
+
+
+
+---
+
+## 그루핑
+
+
+
+그루핑 (Grouping) 이란, 특정한 테이블에서 row 들을 여러개의 그룹으로 나누는 것을 의미한다. 파이썬이나 R의 groupby 를 생각하면 편할 것 같다. 
+
+SQL에서 그루핑은 `GROUP BY` 명령어를 이용해 진행할 수 있는데, 이는 데이터 분석에서 굉장히 자주 사용되기 때문에 이번 기회에 확실히 알아두도록 하자. 복잡한 설명보다는 구체적인 예시들을 통해서 어떻게 그루핑을 할 수 있는지 알아보도록 하겠다.
+
+&nbsp;
+
+#### Ex 1) 성별로 그루핑
+
+가장 간단한 예시로, `customer_joined` 에서 회원들을 **성별로 그루핑해 등록 기간에 유의미한 차이가 있는지를 살펴보자**. 쿼리문에서 `GROUP BY` 는 `FROM` 다음에 사용되는데, 다음 SQL문을 실행해보자.
+
+<script src="https://gist.github.com/domug/db04e8f6572123ce23831f96e70c4e45.js"></script>
+
+&nbsp;
+
+<center>
+  <img src="{{site.baseurl}}/images/sql/groupby1.png" width="700" height="500" /> 
+  <br>
+  <em><span style="color:grey">실행 결과</span></em>
+</center>
+
+&nbsp;
+
+`FROM` 뒤에 `GROUP BY` 를 추가해서 회원들을 성별로 그루핑 한 다음, 각 그룹별로 엔트리 수와 등록 기간의 평균을 계산했다. 여성과 남성 회원들 간에 회원 유지 기간에는 큰 차이는 없는 것처럼 보인다.
+
+
+
+&nbsp;
+
+
+
+#### Ex 2) 성별로 그루핑 (+ 조건 추가)
+
+이번에는 위 내용에서 추가적으로 **입회비 무료 행사를 통해서 가입한 회원**들을 성별로 그루핑해보자. 즉, `campaign_name` 칼럼을 기준으로 조건을 별도로 설정해줘야 한다. 다음의 SQL문은 해당 내용을 수행한다.
+
+<script src="https://gist.github.com/domug/5349c09b82d09b49b3dd2deef16c5f0a.js"></script>
+
+&nbsp;
+
+<center>
+  <img src="{{site.baseurl}}/images/sql/groupby2.png" width="700" height="500" /> 
+  <br>
+  <em><span style="color:grey">실행 결과</span></em>
+</center>
+
+&nbsp;
+
+입회비 무료 행사를 통해 가입한 회원들은 남, 여 그룹 모두 평균 회원 기간이 전체에 비해 상당히 짧은 것을 확인할 수 있다. 거의 반토막 이하의 등록 기간을 보이는데, 프로모션을 통해 가입한 회원들은 철새적인 경향이 있는 것 같기도 하다.
+
+
+
+&nbsp;
+
+
+
+#### Ex 3) SUBSTRING 함수를 이용한 그루핑
+
+앞서 `SUBSTRING()` 함수를 이용해 문자열을 일정 길이의 서브셋으로 분리할 수 있다는 것을 보았다. 이번에는 이를 이용해 회원들의 ID를 그루핑 조건에 추가해보자. 
+
+해당 예시에서는 "성별"과 "회원ID" 2가지를 기준으로 회원들을 그루핑한다. 다음의 SQL문은 회원들을 두 가지 조건으로 그루핑 한 뒤, 각 그룹에 속하는 회원 수와 평균 회원 기간을 반환한다.
+
+<script src="https://gist.github.com/domug/fa0440b3ff41b37aed17b59cd04ca591.js"></script>
+
+&nbsp;
+
+<center>
+  <img src="{{site.baseurl}}/images/sql/groupby3.png" width="700" height="500" /> 
+  <br>
+  <em><span style="color:grey">실행 결과</span></em>
+</center>
+
+&nbsp;
+
+자 이제 슬슬 코드가 복잡해지기 시작했다. 하지만 코드를 자세히 살펴보면 크게 어려운 내용은 없다. 앞에서 했던 내용에 `SUBSTRING` 함수를 이용해 그루핑 조건 하나를 추가적으로 걸어줬을 뿐이다.
+
+결과는 제대로 출력되었으나, 성별이 마구잡이로 뒤섞여 있어 한눈에 보기가 약간 불편한 감이 없잖아 있다. 결과의 가독성을 높이기 위해 `ORDER BY` 를 이용해서 성별과 평균 회원 기간을 기준으로 결과를 정렬해주도록 하자.
+
+<script src="https://gist.github.com/domug/cb661d2b22d9eb50f98888db12ec69a0.js"></script>
+
+&nbsp;
+
+<center>
+  <img src="{{site.baseurl}}/images/sql/groupby4.png" width="700" height="500" /> 
+  <br>
+  <em><span style="color:grey">실행 결과</span></em>
+</center>
+
+&nbsp;
+
+훨씬 깔끔하게 그루핑 결과를 확인할 수 있다.
+
+
+
+&nbsp;
+
+#### Ex 4) HAVING 을 이용한 서브셋 반환
+
+앞의 예시에서는 회원들을 성별에 의해 그루핑 한 뒤, 전체 그룹의 정보를 모두 반환했다. 하지만 만약 몇 개의 그룹만 관심이 있는 경우는 어떻게 하면 될까?
+
+`HAVING` 명령어는 `GROUP BY` 뒤에 사용되어, 그루핑 된 값들에서 특정 조건을 만족하는 그룹의 결과만을 반환해준다. 예를 들어, Ex 3의 결과에서 "여성 회원들"에 해당하는 값들만 출력하고 싶을 때 다음의 SQL 문을 실행하면 된다.
+
+<script src="https://gist.github.com/domug/4241e4339c51b3151cefc1208415c692.js"></script>
+
+&nbsp;
+
+<center>
+  <img src="{{site.baseurl}}/images/sql/groupby5.png" width="700" height="500" /> 
+  <br>
+  <em><span style="color:grey">실행 결과</span></em>
+</center>
+
+&nbsp;
+
+`HAVING` 안에 `gender = "F"` 라는 조건을 추가적으로 설정해서 여성 회원들의 정보만을 반환하도록 설정했다. 이렇게 `HAVING` 은 `GROUP BY` 와 세트로 자주 사용되니 알아두도록 하자. 
+
+- 주의: 해당 구문에 `HAVING` 대신 `WHERE` 을 사용하면 에러가 뜬다!
+
+
+
+&nbsp;
+
+
+
+---
+
+## 주의사항
+
+대충 이정도만 알면 왠만한 그루핑은 문제없이 할 수 있을 것이다.
+
+&nbsp;
+
+추가적으로, `GROUP BY` 를 이용해서 결과를 출력할 때 지켜야할 규칙 두가지를 살펴볼텐데, `SELECT` 문 안에서는 다음과 같은 변수들만 사용할 수 있다.
+
+1. `GROUP BY` 뒤에서 사용한 칼럼
+
+2. `COUNT(), AVG()` 등의 집계함수
+
+&nbsp;
+
+그 이유는 **SQL 문의 실행 순서**와 관련이 있다. 앞서 살펴본 SQL 문에서 `GROUP BY` 는 `SELECT` 보다 코드의 뒤쪽에 위치하지만, 실제로 실행되는 순서는 `GROUP BY` 가 먼저 실행된 다음 `SELECT` 가 실행된다. 따라서 그루핑에 사용되지 않은 칼럼의 데이터를 `SELECT` 에서 출력하려면 오류가 발생하는 것이다. 
+
+사실 이부분은 약간 까다로운 내용이긴 한데, 우리가 여태까지 살펴본 명령어들이 SQL 문에서 작성되야 하는 순서는 다음과 같이 정리할 수 있다.
+
+&nbsp;
+
+1. **SELECT** 
+2. **FROM**
+3. **WHERE**
+4. **GROUP BY**
+5. **HAVING** 
+6. **ORDER BY**
+7. **LIMIT** 
+
+&nbsp;
+
+하지만 해당 명령어들이 "실제로" 실행되는 순서는 다음과 같다.
+
+
+
+&nbsp;
+
+1. **FROM** : 테이블 지정
+2. **WHERE** : 해당 테이블에서 주어진 조건을 만족하는 row 선별
+3. **GROUP BY** : row들을 주어진 조건에 따라 그루핑. 각 그룹이 하나의 row가 됨
+4. **HAVING** : 그루핑된 결과에서 특정한 조건을 만족하는 그룹들을 선별
+5. **SELECT** : 칼럼들을 조회
+6. **ORDER BY** : 각 row를 기준에 따라 정렬
+7. **LIMIT** : 조회된 row 들 중 일부만 반환
+
+
+
+&nbsp;
+
+이러한 코드 작성 순서와 실행 순서의 차이 때문에, 복잡한 쿼리문에서는 어떤 결과물이 반환될지 파악하기가 상당히 어려워진다. 따라서 SQL을 잘 하기 위해서는 쿼리문에서의 실행 순서를 확실하게 파악하는 것이 중요한데, 이는 하루 아침에 해결되는 일이 아니니 다양한 SQL문을 접해보면서 실력을 기르도록 하자..
+
+
+
+&nbsp;
+
+아마도 마지막이 될 다음 포스트에서는 SQL의 꽃이라고 할 수 있는 서브쿼리문에 대해 다뤄 볼 예정이다.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
