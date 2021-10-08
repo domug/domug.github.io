@@ -17,10 +17,10 @@ In this post, we will take a look at the details of classic statistical inferenc
 
 ## Contents
 
-1. [Challenges of Spatial Data](#challenges-of-spatial-data)
-2. [Types of Spatial Data](#types-of-spatial-data)
-3. [Characteristics of Spatial Data](#characteristics-of-spatial-data)
-4. [Some Prerequisites](#some-prerequisite-knowledges)
+1. [Goals of Statistical Inference](#goals-of-statistical-inference)
+2. [Model Specification](#model-specification)
+3. [Parameter Estimation](#parameter-estimation)
+4. [Krigging](#krigging)
 
 &nbsp;
 
