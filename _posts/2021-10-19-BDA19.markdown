@@ -1,0 +1,450 @@
+---
+layout: post
+title: "[Bayesian Statistics] Parametric Nonlinear Models"
+date: 2021-10-19 00:00:00
+image: 14.jpg
+tags: [bayesian]
+categories: bayesian
+use_math: true
+---
+
+&nbsp;
+
+# Ch19. Parametric nonlinear models
+
+This post is a summary of Chapter 19 of the textbook [*Bayesian Data Analysis*](https://users.aalto.fi/~ave/BDA3.pdf).
+
+---
+
+## Table of Contents
+
+[19.0 Linear vs Nonlinear](#190-linear-vs-nonlinear)
+
+[19.1 Example: serial dilution assay](#191-example-serial-dilution-assay)
+
+[19.2 Example: population toxicokinetics](#192-example-population-toxicokinetics)
+
+
+
+
+---
+
+
+
+### 19.0 Linear vs Nonlinear
+
+GLM: The function of the mean response is modeled as a linear combination of the predictor variables.
+
+<center>
+
+$$
+\begin{aligned}
+E[y|X, \beta] = g^{-1}(X\beta)
+\end{aligned}
+$$
+
+</center>
+
+
+
+However, problem is that not all phenomena behave linearly even under transformation.
+
+<center>
+
+
+$$
+E[y] = \frac{a_1 + b_1x_1}{a_2 + b_ex_2}, \quad \text{(ratio)} \\[20pt]
+E[y] = A_1e^{-\alpha_1x} + A_2^{-\alpha_2x} \quad \text{(nonlinear sum)}
+$$
+
+</center>
+
+&nbsp;
+
+- Complicated relationships between predictors and outcomes can be represented using usual pdfs!
+- **parametric nonlinear model**: prespecified functional form with unknown parameters.
+- Difficulties arise in parameter interpretation and there is no one-size-fits-all approach.
+
+&nbsp;
+
+---
+
+### 19.1 Example: serial dilution assay
+
+&nbsp;
+
+**Serial dilution assay**: A common design for estimating concentrations of compounds in biological samples, where measurements are taken at several different dilutions of a sample.
+
+&nbsp;
+
+#### laboratory data illustration
+
+Example of cockroach allergens in the homes of asthma sufferers:
+
+<center>
+  <img src="{{site.baseurl}}/images/BDA/1.png" width="700" height="500" /> 
+</center>
+
+<center>
+  <img src="{{site.baseurl}}/images/BDA/2.png" width="700" height="500" /> 
+</center>
+
+&nbsp;
+
+- We want to estimate the concentrations of the "Unknowns" 1-10, using observed concentrations of "Standards".
+- Asterisks indicates "below detection limit", which **cannot be estimated by standard procedures**. Neglecting these estimates is problematic because there seem to be some information in these lower measurements as they decline consistently with dilution.
+- Bayesian inference allows this **distinction between "zero" concentrations and "merely-zero" concentrations**.
+
+&nbsp;
+
+#### Model Specification
+
+<center>
+
+$$
+\begin{aligned}
+&<\text{notation}>\\[10pt]
+\theta_1, \dots, \theta_{10}&: \quad \text{concentrations of the unknown samples (our goal)} \\
+\theta_0&: \quad \text{known concentration of the standards} \\
+x_i &: \quad \text{concentration in well i} =1, \dots, 96 \\
+y_i &: \quad \text{corresponding color intensity measurement}
+\end{aligned}
+$$
+
+</center>
+
+&nbsp;
+
+Joint model is decomposed into four submodels:
+
+- **1. Expected color intensity for a given concentration**
+- **2. Measurement errors for the optical readings**
+- **3. Errors introduced during the dilution preparation process**
+- **4. Prior distributions for all of the parameters**
+
+---
+
+##### 1. Expected color intensity for a given concentration
+
+<center>
+
+$$
+\begin{aligned}
+E[y |x, \beta] = g(x,\beta) = \beta_1 +\frac{\beta_2}{1+(x/\beta_3)^{-\beta_4}}
+\end{aligned}
+$$
+
+</center>
+
+- Note that the mean response (concentrations) is in nonlinear relationship with the predictors. 
+- This functional relationship is defined using field-specific prior knowledge.
+
+---
+
+##### 2. Measurement errors
+
+<center>
+
+$$
+\begin{aligned}
+y_i \sim N\Big( g(x_i, \beta), \; \big(\frac{g(x_i,\beta)}{A}\big)^{2\alpha}\sigma_y^2 \Big) \;\;, (\alpha \in [0,1])
+\end{aligned}
+$$
+
+</center>
+
+- A is arbitrarily determined as 30 which is the median of x (included so that $\sigma_y^2$ can be more directly interpreted as the error sd for a "typical" measurement)
+- The error is accounted by the variance of the Gaussian distribution. 
+- Since the measurements are skewed towards 0, we don't want our model to overstate the precision near 0 concentration.
+
+---
+
+##### 3. Dilution errors
+
+- We only consider the *initial dilution error*, which can possibly happen when the measurements of standards is interfered by inert liquid.
+
+<center>
+
+$$
+\begin{aligned}
+log(x_0^{init}) &\sim N\big(log(d_o^{init} \theta_0), (\sigma^{init})^2 \big) \\[10pt]
+\theta_0&: \text{known concentration of the standards} \\
+d_0^{init} &: \text{initial dilution of the standard (known)} \\
+x_0^{init} &: \text{the actual concentration of the initial dilution (unknown)}\\
+\sigma^{init}&: \text{sd of initial dilution error fixed as 0.02}
+\end{aligned}
+$$
+
+</center>
+
+---
+
+##### 4. Priors
+
+<center>
+
+$$
+\begin{aligned}
+log(\beta_k) &\sim Unif(-\infty, \infty), \quad (k=1,\dots,4) \\[10pt]
+\sigma_y &\sim Unif(0, \infty) \\[10pt]
+\alpha &\sim(0, 1) \\[10pt]
+p(log\theta_j) &\propto 1, \quad (j=1,\dots,10)
+\end{aligned}
+$$
+
+</center>
+
+- We use noninformative priors with the constraint that probability of a specific sample must add up to 1.
+
+---
+
+
+
+#### Inference
+
+Posterior samples were attained by implementing MCMC algorithm with *BUGS* package in R.
+
+- The posterior median estimates and posterior 50% intervals are:
+
+<center>
+
+$$
+\begin{aligned}
+\hat\beta_1 &= 14.7 \quad [14.5, 14.9]  \\
+\hat\beta_2 &= 99.7 \quad [96.8, 102.9]  \\
+\hat\beta_3 &= 0.054 \quad [0.051, 0.058] \\
+\hat\beta_4 &= 1.34 \quad [1.30, 1.38] \\
+\sigma_y &= 2.2 \quad [2.1, 2.3] \\
+\alpha &= 0.97 \quad [0.94, 0.99]
+\end{aligned}
+$$
+
+
+
+</center>
+
+- Estimated concetrations for the unknown samples:
+
+<center>
+  <img src="{{site.baseurl}}/images/BDA/3.png" width="700" height="500" /> 
+</center>
+
+&nbsp;
+
+- We can see that the estimates are obtained even for samples like 8, where it was classified as "below detection limit" using traditional methodologies.
+
+
+
+<center>
+  <img src="{{site.baseurl}}/images/BDA/4.png" width="700" height="500" /> 
+</center>
+
+- Residual plot implies reasonable fit.
+
+
+
+&nbsp;
+
+---
+
+### 19.2 Example: population toxicokinetics
+
+&nbsp;
+
+As a more complicated application of Bayesian parametric nonlinear models, we consider an example with multivariate parameters and hierarchical model structure.
+
+#### Background
+
+- Perchloroethylene (PERC) is a industrial byproduct which is believed to cause cancer. This is breathed in by air and metabolized in the liver so our interest is in the amount of metabolized PERC.
+- In this sense, we want to estimate the "fraction of PERC metabolized" as a function of the concentration of the compound in the breathed air while taking into account the population variation.
+- The existing toxicokinetic model can be a good starting point as a prior knowledge. In fact, we have to to use somewhat informative prior in order to properly estimate the parameters.
+- It is known that there exists 15 parameters to determine metabolized PERC for each subjects.
+
+<center>
+
+$$
+\theta_k = (\theta_{k,1}, \dots, \theta_{k,15})
+$$
+
+</center>
+
+&nbsp;
+
+#### Notation
+
+<center>
+
+$$
+\begin{aligned}
+&y_{jkmt}:  \text{observed data} \\[10pt]
+&j = 1,2 \quad \text{(replications for the two exposure levels)} \\
+&k = 1,\dots,6 \quad \text{(index of individuals)} \\
+&m = 1, 2 \quad \text{multivariate predictor (1: blood concentration, 2: air concentration)} \\
+&t = \text{time}
+\end{aligned}
+$$
+
+</center>
+
+&nbsp;
+
+#### Model Specification
+
+The model can be decomposed into 3 parts such that:
+
+- **Measurement model**
+- **Population model**
+- **Priors**
+
+
+
+---
+
+##### 1. Measurement model
+
+- Existing toxicological model is utilized as a component of the nonlinear model.
+- It is assumed that the expected amount of blood concentration and air concentration have some functional (nonlinear) relationship with respect to the parameters, exposure level and time. 
+
+<center>
+
+$$
+\begin{aligned}
+E[y_{jkmt}]  = g_m(\theta_k, E_j, t)
+\end{aligned}
+$$
+
+</center>
+
+&nbsp;
+
+- To account for some possible measurement error, we define the measurement model as follows:
+
+<center>
+
+$$
+\begin{aligned}
+log(y_{ikmt} | \sigma^2_m) &\sim N(0, \sigma_m^2), \quad (m=1,2) \\[10pt]
+\sigma_1^2 &\sim Unif(0, \infty) \\
+\sigma_2^2 &\sim Unif(0, \infty)
+\end{aligned}
+$$
+
+</center>
+
+&nbsp;
+
+- Note that the prior mean is centered at zero, since our goal is in comparing the response among different subjects.
+
+---
+
+##### 2. Population model for parameters
+
+- We take into account some domain knowledge that a skewed, lognormal-like distribution is generally observed for a biological parameters. Furthermore, it is often exhibited that these parameters have physical bounds, so a prior distribution must be able to take this into account.
+- Some of the parameters are by definition constrained as the following: (specific details are out omitted)
+
+<center>
+
+$$
+\begin{aligned}
+\theta_{kl} &= \frac{exp(\psi_{kl})}{exp(\psi_{k2})+exp(\psi_{k3})+exp(\psi_{k4})+exp(\psi_{k5})}, \quad \text{for }l=2,3,4,5 \\[10pt]
+\theta_{kl} &= (0.873 - exp(\psi_{k8})) \frac{exp(\psi_{kl})}{exp(\psi_{k6}) + exp(\psi_{k7})}, \quad \text{for }l=6,7 \\[10pt]
+\theta_{kl} &= exp(\psi_{kl}), \quad \text{for }l=1,8\sim15
+\end{aligned}
+$$
+
+</center>
+
+&nbsp;
+
+- This is considerable amount of prior information and this transformation reduces the correlation of the parameters as well.
+- For a data with k subjects, we have 15k number of hyper parameters $\psi$ to evaluate. 
+- Note that we don't have to explicitly evaluate the parameters $\theta$ as they can be transformed using the hyper prior $\psi$.
+
+---
+
+##### 3. Prior Information
+
+- We have to assign proper prior distributions to each of the parameter we have designated.
+
+<center>
+
+$$
+\begin{aligned}
+\theta_{kl} &= f(\psi_{kc}), \quad c=1,\dots,15 \\[10pt]
+\psi_{kl} &\overset{indep}{\sim} N\big( \mu_l, \tau_l^2 \big) \quad \text{(set of individual-level parameters})\\[10pt]
+\mu_l &\overset{indep}{\sim} N\big(M_l, S_l^2  \big) \\
+\tau_{l}^2 &\overset{indep}{\sim} \text{Inv-}\chi^2(\nu, \tau_{l0}^2)
+\end{aligned}
+$$
+
+</center>
+
+&nbsp;
+
+- Thus, the full joint poterior distribution of this hierarchical model is as follows:
+
+<center>
+
+$$
+\begin{aligned}
+p(\psi, \mu, \tau^2, \sigma^2 | y, E, t, M, S, \nu, \tau_0^2) &\propto p(y|\psi, E, t, \sigma^2) \; p(\psi|\mu,\tau^2) \;p(\mu|M,S) \; p(\tau^2 |\nu, \tau_0^2) \\[10pt]
+&\propto \Big( \prod_{j=1}^J\prod_{k=1}^K\prod_{m=1}^2\prod_{t}N\big( log(y_{jkmt}) |\;log\;g_m(\theta_k, E_j, t), \sigma_m^2) \big)\sigma_1^{-2}\sigma_2^{-2}\Big) \; \\
+& \times \Big(\prod_{k=1}^K\prod_{l=1}^L N_{trunc}\big(\psi_{kl}|\mu_l, \tau_l^2 \big) \Big) \times \Big(\prod_{l=1}^L N\big(\mu_{l}|M_l, S_l^2 \big)\;\text{Inv-}\chi^2\big(\tau_l^2|\nu_l,\tau_{0l}^2 \big) \Big)
+\end{aligned}
+$$
+
+</center>
+
+---
+
+#### Computation
+
+We can implement Gibbs Sampler to the illustrated hierarchical nonparametric model by exploiting conjugate relationships. 
+
+- For a hyperparameter $\psi$ that doesn't have a closed-form full conditional distribution, we use Metropolis algorithm instead. Note that Metropolis algorithm iteratively updates the parameters one person at a time, so we only have to consider the parameters specific to that person (can possibly save some computational time).
+- As a result, we get posterior samples for every parameters and hyper parameters. The original parameter of interest $\theta$ can be computed using the posterior samples of $\psi$ to interpret the results on the natural scales.
+
+
+
+&nbsp;
+
+#### Inferences for quantities of interest
+
+- For each individual k, we can compute the fraction metabolized for each simulated parameter vector $\psi_k$. In turn, we get a distribution for this quantity for every individual.
+- The variance in this distribution comes from the uncertainty of posterior distribution $\psi$, which is the physiological parameter that we have defined earlier.
+
+<center>
+  <img src="{{site.baseurl}}/images/BDA/5.png" width="700" height="500" /> 
+</center>
+
+&nbsp;
+
+- We can also calculate 95% HPD interval for the fraction metabolized for each exposure levels.
+- The model fit can be evaluated by comparing the observed data $y_{jkmt}$ with their expected value $g_m(\theta_k, E_j, t)$ for all of the measurements based on the posterior simulations of $\theta$ ($\psi$). 
+
+<center>
+  <img src="{{site.baseurl}}/images/BDA/6.png" width="700" height="500" /> 
+</center>
+
+- The residual plot assures reasonable model fit.
+
+&nbsp;
+
+#### Summary
+
+In a nutshell, the analysis we have looked at has five key components:
+
+1. **Physiological model** - sufficient domain knowledge ensures reasonable starting point for prior specifications
+2. **Population model** - allows inference on a individual-level
+3. **Prior constructions of the parameters** - modeling procedure
+4. **Experimental data** - modeling procedure
+5. **Bayesian inference** - yields a distribution of parameters consistent with information from both the prior knowledge and observed data
+
+
+
+---
+
+# References
+
+- Gelman et. al. 2013. *Bayesian Data Analysis*. 3rd ed. CRC Press. p.471-485.
+
