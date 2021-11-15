@@ -393,5 +393,5 @@ In summary, the key takeaway from this example is that **by using Gaussian proce
 
 # References
 
-- Gelman et. al. 2013. *Bayesian Data Analysis*. 3rd ed. CRC Press. p.487-498.
+- Gelman et. al. 2013. *Bayesian Data Analysis*. 3rd ed. CRC Press. p.501-517.
 
