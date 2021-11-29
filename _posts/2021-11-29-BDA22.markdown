@@ -20,11 +20,19 @@ The contents of this post is subsequent to [this post](https://domug.github.io/2
 
 ### Table of Contents
 
-[21.3 Latent Gaussian process models](#211-gaussian-process-regression)
+[21.3 Latent Gaussian process models](#213-latent-gaussian-process-models)
 
-[21.2 Example: birthdays and birthdates](#212-example-birthdays-and-birthdates)
+[21.4 Functional data analysis](#214-functional-data-analysis)
+
+[21.5 Density estimation and regression](#215-density-estimation-and-regression)
+
+
+
+
 
 &nbsp;
+
+
 
 ---
 
