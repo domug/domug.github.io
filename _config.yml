@@ -5,11 +5,11 @@ url: "domug.github.io" # the base hostname & protocol for your site, e.g. http:/
 
 # Author
 author-name:    Dongwook Kim
-author-image:   profile.png
+author-image:   profile.jpg
 author-job:     Graduate Student, Yonsei Univ of Korea
-author-email:   epdlql96@gmail.com # Add your email for contant form.
+author-email:   domugii@yonsei.com # Add your email for contant form.
 author-twitter:  # Add your twitter account
-about-author:    Statistics & Data Science
+about-author:    
 
 # Social settings
 social-twitter:  
