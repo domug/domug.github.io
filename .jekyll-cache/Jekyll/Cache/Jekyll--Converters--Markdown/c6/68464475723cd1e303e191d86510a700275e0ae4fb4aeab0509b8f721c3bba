@@ -1,0 +1,178 @@
+I"�,<p> </p>
+
+<p>This post will briefly introduce the concept of Cluster Analysis for defining clusters inside a dataset.</p>
+
+<p> </p>
+
+<hr />
+
+<h1 id="cluster-analysis-ca">Cluster Analysis (CA)</h1>
+
+<p>In this post, we will be talking about <strong>Cluster Analysis</strong>.</p>
+
+<p>Until now we have seen <a href="https://domug.github.io/2020/12/05/PCA/">Principal Component Analysis</a> and <a href="https://domug.github.io/2020/12/06/FA/">Factor Analysis</a> to reduce dimensionality of the original dataset in terms of its <strong>variables</strong>. Both methods decompose data matrix by its column vectors to find a subset of variables that account for enough information of the original data. However, cluster analysis performs dimension reduction on <strong>observations</strong>, that is, by <strong>row vectors</strong>. This is the crucial difference that distinguishes Cluster Analysis from rest of the dimension reduction methods.</p>
+
+<p>In other words, the goal of cluster analysis is to find groups of clusters that can “adequately” separate and group the observations. Since the word “adequately” is a little vague in its meaning, we can formally define its meaning as follows.</p>
+<ul>
+  <li>
+    <p><strong>observations inside the same clusters are similar as possible</strong></p>
+  </li>
+  <li>
+    <p><strong>observations within different clusters are different as possible</strong></p>
+
+    <p> </p>
+  </li>
+</ul>
+
+<hr />
+
+<h3 id="distance">Distance</h3>
+
+<p>However, the above definition is still somewhat ambiguous. <strong>How are we going to measure the similarity and dissimilarity of each observations?</strong> Here’s where the mathematical concept of distance comes in. To define distance, we foremost need a <strong>measure</strong>, and there are various definitions of different mathematical measures to define the distance between two objects.</p>
+
+<p> </p>
+
+<p align="center">
+	<img width="700" height="500" src="/images/ca/distances.png" />
+</p>
+<p> </p>
+
+<p>Above is an wikipedia example of list of different distances, but all of them are defined to accomplish one single purpose; to measure the <strong>“closeness”</strong> of objects. The “closer” the objects are, the more homogeneous or similar they are. Since going into the details of all of the distances above would be tedious and time consuming, let’s focus on some of the key points of distance and move on.</p>
+
+<p>Normally when we think of distance between two things, we are mostly familiar with the <strong>“Euclidean Distance”</strong>, which is the most famous and widely used distance measure for calculating <strong>“physical distances”</strong>. Physical distance literally means the distance between two physical objects. We say Tokyo is around 1,150 km apart from Seoul. This is physical distance.</p>
+
+<p>But it’s important to note that there also exists <strong>“psychological distance”</strong> as well. Like when we are asked, “How close do you think you are with your best friend?”, the answer is certainly not going to be something like “Oh, it’s about 10 meters”. In this situation, we need another measurement that can account for our psychological intimacy.</p>
+
+<p>Likewise, the measurement of distance can vary according to the goal of our interest and the distance measure to be used for cluster analysis should also be different with respect to the nature of our data. Although most of the data we’ll face is going to be about physical properties, it is worth noticing that we should not blindly rely on the euclidean distance regardless of data environment.</p>
+
+<p> </p>
+
+<hr />
+
+<h3 id="k-means-clustering">K-Means Clustering</h3>
+<p>Anyways, let’s come back to our main topic. Now we are clear that cluster analysis is about grouping observations to make clusters. This process is done in a predefined order and principles, which is formally called as “algorithm”. There are lots of clustering algorithms and research is still ongoing.</p>
+
+<p>In this post, we will use an algorithm known as <strong>“K-Means Clustering”</strong> which is the most widely implemented clustering methodology. The reason why it is named as “K-means” is because it makes clusters based on the mean of each clusters.</p>
+
+<p>The steps of clustering for K-Means algorithm is the following.</p>
+
+<p> </p>
+
+<ol>
+  <li>Select number of clusters and distribute the observations accordingly</li>
+  <li>Calculate the centroid for each cluster (centroid is calculated as the mean of each cluster)</li>
+  <li>For each observation, calculate the within-group distances (distance between observation and the centroid)</li>
+  <li>Reallocate observations into the cluster whose centroid is the closest</li>
+  <li>If the cluster of any observation has changed, return to step 2 and repeat</li>
+</ol>
+
+<p> </p>
+
+<p>As an illustration, these steps can be visualized as follows:</p>
+
+<p align="center">
+	<img width="400" height="100" src="/images/ca/kmeans.gif" />
+</p>
+<p> </p>
+
+<p>Can you see how the centroid and allocation of observations change for each iteration? It seems like the observations are getting fairly divided as the algorithm continues to be repeated.</p>
+
+<p>However, there are two important points to be aware of when using the k-means algorithm. The first point is that the <strong>“starting point”</strong> is of big importance. If the starting points are somewhere isolated, then our clusters might get stuck locally as in the following illustration (<a href="https://towardsdatascience.com/k-means-a-complete-introduction-1702af9cd8c">source</a>).</p>
+
+<p> </p>
+
+<p align="center">
+	<img width="400" height="200" src="/images/ca/local.png" />
+</p>
+<p> </p>
+
+<p>We can see that if we choose the wrong staring point, then the calculation of within-group distances for each cluster is stuck locally. So we have to pay close attention to where we will initialize our algorithm.</p>
+
+<p>The second point is that k-means algorithm is sorely based on minimizing within-group distances, so it <strong>doesn’t consider structure of the data</strong>. Each partitioning of observations is done separately, so if we decided to use 3 clusters, then our algorithm only focuses on minimizing the within group distances for the 3 clusters. This can be problematic if our data cannot be separated based on the within group distances in the first place. An intuitive example is the following. (<a href="https://stats.stackexchange.com/questions/133656/how-to-understand-the-drawbacks-of-k-means">source</a>)</p>
+
+<p> </p>
+
+<p align="center">
+	<img width="400" height="200" src="/images/ca/hierarchical.png" />
+</p>
+<p> </p>
+
+<p>It is obvious that the clustering is done wrongly. This is the innate limitation of k-means clustering. For above data, we have to use another algorithm such as hierarchical clustering models.</p>
+
+<p>Therefore, we have to always obey the working principle of our universe that there is no <em>one-size-fits-all-approach</em>. Although K-Means algorithm is powerful and easily implemented, always be open to different possiblities.</p>
+
+<p>In practice, most of the software will automatically suggest starting points for us so our main concern would be to choose the appropriate number of clusters. There is no fixed rule for that, but keep in mind that often it is better to have smaller clusters for interpreting the results. For some practical tips on choosing the optimal number of clusters, <a href="https://towardsdatascience.com/10-tips-for-choosing-the-optimal-number-of-clusters-277e93d72d92">this website</a> provides really great tutorial so check it out if you are interested.</p>
+
+<p> </p>
+
+<hr />
+
+<h1 id="ca-example">CA Example</h1>
+
+<p>Now we will perform cluster analysis to our car dataset that we’ve been using throughout this topic. We will use <code class="language-plaintext highlighter-rouge">factoextra</code> library in R. Full codes can be found <a href="https://github.com/domug/Codes-for-blogs/blob/master/Dimension%20Reduction/CA.R">here</a>.</p>
+
+<p>Let’s first find out the euclidean distances among the cars based on our scaled car dataset. To do that, I’ve first defined the distance matrix and created a heatmap as the following.</p>
+
+<p> </p>
+
+<p align="center">
+	<img width="700" height="500" src="/images/ca/ca_heatmap.png" />
+</p>
+<p> </p>
+
+<p>If the color is close to blue, it means that the two cars are similar and otherwise if the color is close to red. It looks like we will be able to make clusters based on the euclidean distance.</p>
+
+<p>To perform cluster analysis, we first have to search for the optimal number of clusters. In our example we will use <strong>Elbow Method</strong> and <strong>Silhouette Method</strong> (Detailed introduction can be found in <a href="https://towardsdatascience.com/10-tips-for-choosing-the-optimal-number-of-clusters-277e93d72d92">this website</a>). Each methods returns a plot that can serve as a criteria to determine number of clusters to be used. Here’s the result.</p>
+
+<p> </p>
+
+<p align="center">
+	<img width="300" height="100" src="/images/ca/ca_em.png" />
+	<img width="300" height="100" src="/images/ca/ca_sm.png" />
+</p>
+<p> </p>
+
+<p>In Elbow Method we have to seek for the point where the declining slope is smoothed, just like we did in the elbow plot of PCA. On the other hand in the Silhouette Method, we want the highest point. By combining the results of two methods, it seems like 3 clusters are enough.</p>
+
+<p>Based on this result, it’s time to actually implement the k-means clustering using <code class="language-plaintext highlighter-rouge">kmeans</code> function in R. The result is visualized on a 2-dimensional graph on the axis of the first two principal components. Each observations have color labels depending on its company values; red dot represents American cars, green dot represents Europe cars and blue dot represents Japanese cars.</p>
+
+<p> </p>
+
+<p align="center">
+	<img width="700" height="500" src="/images/ca/ca_result.png" />
+</p>
+<p> </p>
+
+<p>From the result, the three clusters seem to be fair enough. Note that most of the cars in the green cluster are Europe and Japanese, while the rest two clusters are mostly American cars. By this, we can infer that there is going to be some unique characteristic on Japanese and Europe cars that distinguishes them from the American cars. Moreover, there seem to be some differences within the American cars as well.</p>
+
+<p>Here’s a list of car models within each clusters, so if you have sufficient knowledge on cars, it might be interesting to see if there is any trend in them.</p>
+
+<p> </p>
+
+<h4 id="cars-within-the-green-cluster">Cars within the green cluster</h4>
+<p align="center">
+	<img width="900" height="500" src="/images/ca/green.png" />
+</p>
+<p> </p>
+
+<h4 id="cars-within-the-blue-cluster">Cars within the blue cluster</h4>
+
+<p align="center">
+	<img width="900" height="500" src="/images/ca/blue.png" />
+</p>
+<p> </p>
+
+<h4 id="cars-within-the-red-cluster">Cars within the red cluster</h4>
+
+<p align="center">
+	<img width="900" height="500" src="/images/ca/red.png" />
+</p>
+<p> </p>
+
+<p>This is the end of a complete Cluster Analysis.</p>
+
+<p>In the next post, we will continue talk about <strong>“Discriminant Analysis”</strong>, which is the last dimension reduction method for this topic.</p>
+
+<hr />
+
+:ET

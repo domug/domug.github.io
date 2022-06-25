@@ -1,0 +1,253 @@
+I"<0<p> </p>
+
+<p>This post is an overall summary of different testing methodologies used in clinical trials.</p>
+
+<p><a href="#1-one-sample-t-test">1. One-Sample T-test</a></p>
+
+<p><a href="#2-two-sample-t-test">2. Two-Sample T-test</a></p>
+
+<hr />
+
+<h1 id="1-one-sample-t-test">1. <strong>One-Sample T-test</strong></h1>
+
+<p>One-Sample T-test is used to infer whether an <strong>unknown population mean</strong> differs from a <strong>hypothesized value</strong>.</p>
+
+<p><strong>&lt;Assumptions&gt;</strong></p>
+
+<ul>
+  <li>i.i.d. samples from normal distribution with unknown mean μ.</li>
+</ul>
+
+<p><strong>&lt;Test Setting&gt;</strong></p>
+
+<center>
+  <img src="/images/tests/ttest1.png" width="500" height="300" /> 
+</center>
+
+<p> </p>
+
+<p><strong>&lt;Takeaways&gt;</strong></p>
+
+<ul>
+  <li>A special case of the <em>one-sample t-test</em> is to determine whether a mean response changes under different experimental conditions by using “paired observations” ($\mu_d$=the mean difference, $\mu_0$= 0 , $y_i$’s = the paired-differences).</li>
+  <li>It can be shown that the <em>t-test</em> is equivalent to the <strong><em>Z-test</em></strong> for <strong>infinite degrees of freedom</strong>. In other words, Z-test is equivalent to t-test in the limit of sample size. In practice, a ‘large’ sample is usually considered to be $n$ ≥ 30.</li>
+  <li>If the assumption of <strong>normality</strong> cannot be guarenteed, the “mean” might not be the best measure of central tendency. In such cases, a non- parametric test such as the <em>Wilcoxon signed-rank test</em> might be more appropriate choice.</li>
+  <li>A non-significant result does not necessarily imply that the null hypothesis is true. It only asserts <strong>insufficient evidence</strong> for contradicting the original statement.</li>
+  <li>Statistical significance <strong>does not imply causality</strong> in observational studies, only for <strong>“randomized”</strong> controlled trials (RCT).</li>
+</ul>
+
+<hr />
+
+<h1 id="2-two-sample-t-test">2. <strong>Two-sample T-test</strong></h1>
+
+<p>Two-sample T-test is used to compare the means of two independent populations, denoted as $\mu_1$ and  $\mu_2$.</p>
+
+<p>It has ubiquitous application in the analysis of controlled clinical trials.</p>
+
+<p><strong>&lt;Assumptions&gt;</strong></p>
+
+<ul>
+  <li>The populations are normally distributed.</li>
+  <li>Homogeneity of variance - the populations share the same variance $\sigma^2$.</li>
+</ul>
+
+<p><strong>&lt;Test Setting&gt;</strong></p>
+
+<center>
+  <img src="/images/tests/ttest2.png" width="500" height="300" /> 
+</center>
+
+<center>
+  <img src="/images/tests/ttest2-1.png" width="250" height="150" /> 
+</center>
+
+<p> </p>
+
+<p><strong>&lt;Takeaways&gt;</strong></p>
+
+<ul>
+  <li>The assumption of equal variances can be tested using the <strong><em>F-test</em></strong>:</li>
+</ul>
+
+<center>
+  <img src="/images/tests/ttest2-2.png" width="500" height="300" /> 
+</center>
+
+<ul>
+  <li>If the assumption of equal variances is rejected, a slight modification of the <em>t-test</em> called as the <a href="https://en.wikipedia.org/wiki/Welch%27s_t-test"><em>Welch’s t-test</em></a>:</li>
+</ul>
+
+<center>
+  <img src="/images/tests/ttest2-3.png" width="500" height="300" /> 
+</center>
+
+<center>
+  <img src="/images/tests/ttest2-4.png" width="200" height="100" /> 
+</center>
+
+<ul>
+  <li>The assumption of normality can formally be checked by the <em><a href="https://en.wikipedia.org/wiki/Shapiro%E2%80%93Wilk_test">Shapiro-Wilk test</a></em> or the <em><a href="https://en.wikipedia.org/wiki/Kolmogorov%E2%80%93Smirnov_test">Kolmogorov-Smirnov test</a></em>.</li>
+  <li>For large enough samples, <strong>CLT (central limit theorem)</strong> holds. However, if the data is heavily skewed such that normal approximation guarenteed by CLT is not sufficiently accurate, we have to consider changing test statistic from mean to median and use <em>Wilcoxon rank-sum test</em> instead.</li>
+</ul>
+
+<hr />
+
+<h1 id="3-one-way-anova">3. <strong>One-way ANOVA</strong></h1>
+
+<p>One-way ANOVA is used to simultaneously compare two or more group means based on independent samples from each group.</p>
+
+<p><strong>&lt;Assumptions&gt;</strong></p>
+
+<ul>
+  <li>normally distributed data</li>
+  <li>samples are independent w.r.t. each group</li>
+  <li><strong>variance homogeneity</strong>, meaning that the within-group variance is constant across groups. This can be expressed as $\sigma_1 = \sigma_2 = \dots = \sigma_k = \sigma$</li>
+</ul>
+
+<p><strong>&lt;Test Setting&gt;</strong></p>
+
+<center>
+  <img src="/images/tests/anova1.png" width="500" height="300" /> 
+</center>
+
+<p><strong>&lt;Remarks&gt;</strong></p>
+
+<ul>
+  <li>Intuitively, if the “<em>F</em> statistic” that is roughly the ratio of <strong><em>between-group variability</em></strong> and <strong><em>within-group variability</em></strong> is far from 1, it is evident that the group means indeed differ.</li>
+  <li>
+    <p>On the other hand, <em>F</em> statistic will be close to 1, if the variation <strong>among groups</strong> and the variation <strong>within groups</strong> are independent estimates of the same measurement variation, $\sigma^2$.</p>
+  </li>
+  <li>
+    <p>In this sense, <em>MSG</em> is an estimate of the variability “among groups”, and <em>MSE</em> is an estimate of the variability “within groups”.</p>
+  </li>
+  <li>The parameters associated with the <em>F</em>-distribution are the upper and lower degrees of freedom.</li>
+  <li>
+    <p>An “ANOVA table” is the conventional method of summarizing the results (shown above).</p>
+  </li>
+  <li>
+    <p>Similar to t-test, <em>Shapiro-Wilk test</em> or <em>Kolmogorov-Smirnoff test</em> can be used to check the normality assumption.</p>
+  </li>
+  <li>
+    <p>For variance homogeneity assumption, <em><a href="https://en.wikipedia.org/wiki/Levene%27s_test">Levene’s test</a></em> or <em><a href="https://en.wikipedia.org/wiki/Bartlett%27s_test">Bartlett’s test</a></em> can be used.</p>
+  </li>
+  <li>
+    <p>When <strong>comparing</strong> <strong>more than two means</strong> ($k$ &gt; 2), a significance of the <em>F-test</em> indicates that at least one pair of means are different, but it doesn’t tell us which specific pairs are. Therefore, if the null hypothesis is rejected, further analysis should be taken to investigate where the differences lie.</p>
+  </li>
+  <li>95% confidence intervals can also be obtained for the mean difference between any pairs of groups (e.g, Group <em>i</em> vs Group <em>j</em>) by the formula:</li>
+</ul>
+
+<center>
+  <img src="/images/tests/anova2.png" width="300" height="150" /> 
+</center>
+
+<ul>
+  <li>If there are <strong>only two groups ($k = 2$)</strong>, the p-value for Group effect using an <strong><em>ANOVA</em></strong> is the same as that of a standard <strong><em>two-sample t-test</em></strong>. This is because the F and t-distributions enjoy the relationship that, with 1 upper degree of freedom, the <strong>F-statistic is the square of the t-statistic</strong>. When $k = 2$, the MSE in <em>ANOVA</em> is identical to the pooled variance in the <em>two-sample t-test</em>.</li>
+</ul>
+
+<hr />
+
+<h1 id="4-two-way-anova">4. <strong>Two-way ANOVA</strong></h1>
+
+<p>Two-way ANOVA is a method for “simultaneously” analyzing two factors that affect a response.</p>
+
+<p>It is also called a <strong>“randomized block design”</strong>.</p>
+
+<p><strong>&lt;Assumptions&gt;</strong></p>
+
+<ul>
+  <li>Similar to the one-way ANOVA - <strong>normality</strong>, <strong>variance homogeneity</strong>.</li>
+</ul>
+
+<p><strong>&lt;Test Setting&gt;</strong></p>
+
+<center>
+  <img src="/images/tests/anova3.png" width="500" height="300" /> 
+</center>
+
+<p><strong>&lt;Remarks&gt;</strong></p>
+
+<ul>
+  <li>
+    <p>Another identifiable source of variation called a <strong>“blocking factor”</strong> is included in the model, whose variation can be separated from the error variation to give more precise group comparisons.</p>
+  </li>
+  <li>The F-test for “group” (FG) tests the primary hypothesis of <em>no group effect</em>.</li>
+  <li>F-test for the block effect (FB) provides a secondary test.</li>
+  <li>
+    <p>Significant block effect often results in a smaller error variance (MSE) and <strong>greater precision for testing the primary hypothesis</strong> of <em>no group effect</em>, compared to the case where the block effects were ignored (but not always!).</p>
+  </li>
+  <li>“Group-by-Block factor” (G x B) represents the statistical <strong>interaction</strong> between the two main effects. This indicates that trends across groups differ among the levels of the blocking factor.</li>
+  <li>
+    <p><strong>Interaction effect is usually the first test of interest in a two-way ANOVA model</strong> because the test for group effects might not be meaningful in the presence of a significant interaction.</p>
+  </li>
+  <li>For the unbalanced groups (possibly due to missing data), sum of squares calculation is not trivial as it cannot be broken down into additive components due to the sources of variation. One way to address this issue is by using <strong>“</strong>weighted squares of means<strong>“</strong>.</li>
+  <li>A statistical model associated with a <strong>higher-order ANOVA</strong> is called a <strong><em>fixed-effects</em> model</strong> if all effects are fixed, a <strong><em>random-effects</em> model</strong> if all effects are random, and a <strong><em>mixed effect</em> model</strong> for a mixture of fixed and random effects.</li>
+</ul>
+
+<hr />
+
+<h1 id="5-linear-regression">5. <strong>Linear Regression</strong></h1>
+
+<p>Linear Regression is used to analyze the relationship between a response variable $y$, and predictors $x$.</p>
+
+<p><strong>&lt;Assumptions&gt;</strong></p>
+
+<ul>
+  <li>Normality of the response</li>
+  <li>Linearity between predictor and response</li>
+  <li><strong>Homoscedasticity</strong>: constant residual variance over the experimental region</li>
+  <li>No <strong>autocorrelation</strong> (correlation over time)</li>
+  <li>No <strong>multicollinearity</strong>: no redundant information in the predictors</li>
+</ul>
+
+<p><strong>&lt;Test Setting&gt;</strong></p>
+
+<center>
+  <img src="/images/tests/lreg.png" width="500" height="300" /> 
+</center>
+
+<p>cf) for the case of multivariate predictors $\mathbf{X}$ (i.e. <strong>multiple linear regression</strong>), above expressions can naturally be extended to vector dimension. Namely, the best estimator of coefficients and intercept can be attained by solving the <strong>normal equation</strong>:</p>
+
+<center>
+
+$$
+\mathbf{\hat \beta} = (X^TX)^{-1}X^Ty
+$$
+
+</center>
+
+<p> </p>
+
+<p><strong>&lt;Remarks&gt;</strong></p>
+
+<ul>
+  <li>
+    <p>As its name implies, “linear” regression models can only capture <strong>linear relationship</strong> between response and predictors. For other types of relationship (e.g. quadrature), we have to expand the model to include polynomial terms as well.</p>
+  </li>
+  <li>
+    <p>The hypothesis of “zero regression slope” is equivalent to the hypothesis that the “covariate is not an important predictor of response”.</p>
+  </li>
+  <li>For the multivariate case (i.e. multiple linear regression), <strong>coefficient of determination (R^2)</strong> represents the percentage reduction in error variability by using the explanatory variables as predictors of $y$ over just using the mean $\bar y$. This metric can be used for model (feature) selection.</li>
+  <li>The fitted regression line can be used to “predict” the value of response given a new predictor.</li>
+  <li>However, predicting a response <strong>outside the experimental region</strong> should be done with extra care as there is no guarentee that the same linear relationship will be held valid (a.k.a. <strong>extrapolation</strong>).</li>
+  <li>To roughly diagnose the homoscedasticity assumption, we can use <strong>residual plot</strong> which is standardized residuals plotted against the predicted values of the response. Ideally, there should be no pattern like the one following:</li>
+</ul>
+
+<center>
+  <img src="/images/tests/lreg2.png" width="500" height="300" /> 
+</center>
+
+<hr />
+
+<p> </p>
+
+<p> </p>
+
+<p> </p>
+
+<center>
+  <img src="/images/tests/ttest1.png" width="500" height="300" /> 
+</center>
+
+<hr />
+
+:ET

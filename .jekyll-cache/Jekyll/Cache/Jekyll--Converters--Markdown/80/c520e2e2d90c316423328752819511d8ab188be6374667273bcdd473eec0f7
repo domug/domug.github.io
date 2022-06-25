@@ -1,0 +1,148 @@
+I"S-<p> </p>
+
+<p>This post is an overall summary of different testing methodologies used in clinical trials.</p>
+
+<hr />
+
+<h2 id="1-one-sample-t-test">1. <strong>One-Sample T-test</strong></h2>
+
+<ul>
+  <li><em>One-Sample T-test</em> is used to infer whether an <strong>unknown population mean</strong> differs from a <strong>hypothesized value</strong>.</li>
+</ul>
+
+<p><strong>&lt;Assumptions&gt;</strong></p>
+
+<ul>
+  <li>i.i.d. samples from normal distribution with unknown mean μ.</li>
+</ul>
+
+<p><strong>&lt;Test Setting&gt;</strong></p>
+
+<center>
+  <img src="/images/tests/ttest1.png" width="500" height="300" /> 
+</center>
+
+<p><strong>&lt;Takeaways&gt;</strong></p>
+
+<ul>
+  <li>A special case of the <em>one-sample t-test</em> is to determine whether a mean response changes under different experimental conditions by using “paired observations” ($\mu_d$=the mean difference, $\mu_0$= 0 , $y_i$’s = the paired-differences).</li>
+  <li>It can be shown that the <em>t-test</em> is equivalent to the <strong><em>Z-test</em></strong> for <strong>infinite degrees of freedom</strong>. In other words, Z-test is equivalent to t-test in the limit of sample size. In practice, a ‘large’ sample is usually considered to be $n$ ≥ 30.</li>
+  <li>If the assumption of <strong>normality</strong> cannot be guarenteed, the “mean” might not be the best measure of central tendency. In such cases, a non- parametric test such as the <em>Wilcoxon signed-rank test</em> might be more appropriate choice.</li>
+  <li>A non-significant result does not necessarily imply that the null hypothesis is true. It only asserts <strong>insufficient evidence</strong> for contradicting the original statement.</li>
+  <li>Statistical significance does not imply <strong>causality</strong> in <strong>observational studies</strong>. We can make causal inferences for randomized controlled trials (RCT).</li>
+</ul>
+
+<hr />
+
+<h1 id="principal-component-analysis-pca">Principal Component Analysis (PCA)</h1>
+
+<p>The goal of principal component analysis in short is to construct a set of whole new variables from the original dataset. In other words, <strong>PCA re-expresses the original data in terms of the newly defined uncorrelated variables</strong>, each of which are derived by linear combinations of the original variables.</p>
+
+<p>To put it simply, it’s like seeing an object with different point of view. As an example, let’s say we are walking down the street and found a friend walking ahead of us. In fact, he is our best friend, so we can immediately recognize him just by looking at the back of his head and without having to see his face. Although what we are mostly aquainted with him is his front view such as his face, we can still recognize him as our friend even if there is a little bit of variation in what we actually see because the nature of the friend himself does not change.</p>
+
+<p>Let’s bring this example to the dataset. Normally, there are two ways of interpreting a typical matrix-like data; by row-wise and by  column-wise. <strong>Row-wise viewpoint</strong> is looking at the data from the <strong>perspective of individual observations</strong>, while <strong>column-wise viewpoint</strong> is looking from the <strong>perspective of features</strong>. A critical point here is that regardless of which view point we take, the <strong>data itself is unique</strong>. In other words, the data remain consistent regardless of which view point we see it from. Although we need some background knowledge on the linear algebra to fully understand this, this idea comes in handy althought it is very intuitive. It would be weird if the personality of your friend changes depending on the direction you’re talking at.</p>
+
+<p>This idea is the fundamental concept of PCA and we can visualize it as the following plot.</p>
+
+<p> </p>
+
+<p align="center">
+	<img width="400" height="300" src="/images/pca/pca_illustration.gif" />
+</p>
+<p> </p>
+
+<p>Above is a scatter plot of two variables which seem to have <strong>positive linear correlationship</strong>. Each individual observations are marked as circle and is represented by coordinates in terms of x and y axis. Now let’s focus our attention to the green lines. Tilt your head a little bit to the left and try to think of the two green lines as new x and y axis. Then it will be like the following plot.</p>
+
+<p> </p>
+
+<p align="center">
+	<img width="400" height="300" src="/images/pca/pca_illustration2.png" />
+</p>
+<p> </p>
+
+<p>If we consider the two orthogonal green lines as our new x and y axis, we can see that the observations are now <strong>uncorrelated</strong>. They are scattered randomly without distinct pattern or trend. What we have just done is indeed, a PCA. We have <strong>re-expressed the data in terms of two uncorrelated variables - the first and second principal component (PC)</strong>. We have decided to look at the original data from a slightly different perspective (axis), but the nature of the data itself remains unchanged.</p>
+
+<p>Note that if we look at the length of two green lines which are the principal components, then the first PC is longer then the second PC. This indicates that the <strong>variance of the first PC is the greater than that of the second PC</strong>, which is equivalent to saying that the <strong>first PC retains more information of the original data than the second PC</strong>. Therefore in PCA, the principal components are usually aligned in decreasing order by their variances, where the first PC is a linear combination of $X$ and a norm vector $u$ that results in maximum variance.</p>
+
+<p>Then how can we find the principal components? Two linear-algebraic methods are mostly used.</p>
+
+<ul>
+  <li>By using <strong>Spectral Decomposition of the sample correlation matrix</strong></li>
+  <li>By using <strong>Singular Value Decomposition of the original matrix</strong></li>
+</ul>
+
+<p>If you are familiar with linear algebra, the difference between these two methods is trivial as the correlation matrix is guarenteed to be a square matrix. (SVD is a generalization of the Spectral Decomposition!)</p>
+
+<p>In either ways, we can analytically prove that the principal components correspond to the <strong>eigen vectors</strong> of the matrix that is used for linear decomposition. Mathematical derivations will be omitted here for simplicity but rather we are going to take a look at its implementation using R.</p>
+
+<p>Some practical tips on performing PCA is as follows:</p>
+
+<ul>
+  <li>When measurement units (scale) among the variables are different, we have to standardize the variables by using correlation matrix. This is because linear decomposition is dependent on the scale of variables.</li>
+  <li>For variables with same measurement units, there’s no problem of directly using covariance matrix.</li>
+</ul>
+
+<p> </p>
+
+<hr />
+
+<h1 id="example-of-pca">Example of PCA</h1>
+
+<p>Now let’s actually perform PCA on a toy dataset. We’ll be using car dataset which consists of 74 independent car types with 13 features measured for each. Below is the data dictionary.</p>
+
+<p> </p>
+
+<p align="center">
+	<img width="900" height="600" src="/images/pca/datadict.png" />
+</p>
+<p> </p>
+
+<p>We’ll be using built-in functions in R. In the following code, simple preprocessing of the data is done and PCA is applied afterwards.</p>
+
+<p align="center">
+	<img width="900" height="600" src="/images/pca/pca_code1.png" />
+</p>
+<p> </p>
+
+<p>From the summarized result of PCA, we got 12 principal components derived from the original data.</p>
+
+<p>Let’s take a look at the proportion of variances in each principal components. This is equivalent to the <strong>amount of variation (or information) each principal components explain</strong>. So only by the first two principal components, around 71.7% of total information is retained. This means that the rest of components from 3 to 12 only have less than 30% of total information. In practice, there is a tendency to choose the number of principal components as to be where the cumulative variance is in between 70% to 90%, so we can conclude that using the first 2 principal components would be enough for our car dataset.</p>
+
+<p>The number of principal components to be used can also be examined by the <strong>Scree Plot</strong>.</p>
+
+<p align="center">
+	<img width="900" height="600" src="/images/pca/screeplot.png" />
+</p>
+<p> </p>
+
+<p>In the following scree plot, we have to choose the point where the decreasing spline becomes mild. It is clear that this trend is smoothed after the second pricipal component, thus it is verified that using the first two components is enough.</p>
+
+<p>As a next step, let’s try to interpret the result of PCA by using the first 2 principal components for representing original dataset. A strong adventage of using just two components is that visualization gets handy. This 2-dimensional visualization of PCA result is called as a <strong>Biplot</strong> and here’s the result. Specific code can be found <a href="https://github.com/domug/Codes-for-blogs/blob/master/Dimension%20Reduction/PCA.R">here</a>.</p>
+
+<p> </p>
+
+<p align="center">
+	<img width="500" height="400" src="/images/pca/biplot.png" />
+</p>
+<p> </p>
+
+<p>We can see that most of the variables are negatively correlated with the second PC, while the first PC seperates variables dichotomically. Since the texts are sort of overlapped, let’s try to understand the result from a numerical point of view by looking at the values of <strong>principal component loadings</strong>. It is a matrix which expresses the correlation between the original variables and PC variables.</p>
+
+<p> </p>
+
+<p align="center">
+	<img width="900" height="600" src="/images/pca/pcloadings.png" />
+</p>
+<p> </p>
+
+<p>The first PC is positively correlated with variables &lt;<em>Price, Size of Headroom, Seat Clearance, Trunk Space, Weight, Length, Diameter, Displacement</em>&gt;. Can we find out some common attributes in them? Referring to the data dictionary above, the first PC seems to be related with the <strong>size of a car</strong>. On the other hand, the second PC is negatively correlated with most of the variables but among them, repair records show greatest negative correlation. By this information, we can say the second PC is mostly related to the <strong>stability of a car</strong>.</p>
+
+<p>By this way, sometimes we can name the principal components and use this information to interpret the biplot. In our biplot above, the cars grouped as <em>category 1</em> (blue color) indicates cars made by US companies. From this, we can conclude that American cars are generally large in size but show relatively weak stability compared to the cars in <em>category 2</em> (Japanese cars) and <em>category 3</em> (European cars).</p>
+
+<p>In fact, the interpretation of the results may vary depending on the researcher because each people have different amount of domain knowledge on the dataset. As I don’t have any profound knowledge on cars, my interpretation would’ve been probably shallow, but I still think it is interesting to see that we can possibly name the newly defined variables and interpret the results. This interpretablilty is one of the profound advantage of using statistical models.</p>
+
+<p>This is the end of the first statistical dimention reduction method, PCA. In the <a href="https://domug.github.io/2020/12/06/FA/">following post</a>, we will continue to talk about another widely used dimension reduction method known as <strong>Factor Analysis</strong>.</p>
+
+<hr />
+
+:ET

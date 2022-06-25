@@ -1,0 +1,2 @@
+I"4<p>In this post, we will take a look at the details of classic statistical inference for geostatistical (point-referenced) dataset. Specifically, we will see the outlines of parameter estimation and prediction for spatial model with Gaussian Process, along with implementation on a real dataset using R.</p>
+:ET

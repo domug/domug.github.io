@@ -1,0 +1,409 @@
+I"�5<p>In this post, we will take a look at some of the basic concepts necessary for analyzing spatial data.</p>
+
+<p> </p>
+
+<h2 id="contents">Contents</h2>
+
+<ol>
+  <li><a href="#challenges-of-spatial-data">Challenges of Spatial Data</a></li>
+  <li><a href="#types-of-spatial-data">Types of Spatial Data</a></li>
+  <li><a href="#characteristics-of-spatial-data">Characteristics of Spatial Data</a></li>
+  <li><a href="#some-prerequisite-knowledges">Some Prerequisites</a></li>
+</ol>
+
+<p> </p>
+
+<hr />
+
+<h2 id="challenges-of-spatial-data">Challenges of Spatial Data</h2>
+
+<p> </p>
+
+<p>For traditional statistical inferences, data are assumed to follow i.i.d. condition (independent + identically distributed).</p>
+
+<p>However in <strong>spatial data</strong>, data are very rarely i.i.d. because they are <strong>geographically referenced</strong>. That is, data are spatially dependent. Thus, we have to come up with more complex models that can account for this <strong>covariance structure</strong>.</p>
+
+<p>Overlooking this dependency might lead to poor estimates and prediction because of the underestimated variance.</p>
+
+<ul>
+  <li>Variance estimation with i.i.d assumption</li>
+</ul>
+
+<p> </p>
+
+<center>
+
+$$
+\begin{aligned}
+Z_1, Z_2, ..., Z_n \overset{iid}{\sim} N(\mu, \sigma^2) \\
+\Rightarrow Var(\bar Z) = \frac{\sigma^2}{n}
+\end{aligned}
+$$
+
+</center>
+
+<p> </p>
+
+<ul>
+  <li>
+    <p>Variance estimation with covariance structure $Cov(Z_i, Z_j) = \sigma^2 \rho^{\lvert i - j \rvert}$</p>
+
+    <p> </p>
+  </li>
+</ul>
+
+<center>
+
+$$
+\begin{aligned}
+Var(\bar Z) &amp;= \frac{\sum_i \sum_j Cov(Z_i, Z_j)}{n^2} \\
+&amp;= \frac{\sigma^2}{n} \Big( 1 + 2(\frac{\rho}{1-\rho})(1-\frac{1}{n}) - 2(\frac{\rho}{1-\rho})^2 (\frac{1-\rho^{n-1}}{n}) \Big)
+\end{aligned}
+$$
+
+</center>
+
+<p> </p>
+
+<p>We can see from the equation that for stronger covariance (large $\rho$), the estimated variance is larger than $\frac{\sigma^2}{n}$.</p>
+
+<p>Here, $\; n^* = \Big( 1 + 2(\frac{\rho}{1-\rho})(1-\frac{1}{n}) - 2(\frac{\rho}{1-\rho})^2 (\frac{1-\rho^{n-1}}{n}) \Big)$ is called as effective sample size. Note that for sufficiently large $n$, $\; n^* \rightarrow n \Big( \frac{1-\rho}{1+\rho} \Big)$, which indicates that even in asymptotical sense the variance structure still exists.</p>
+
+<p> </p>
+
+<p>One advantage of modeling spatial dependency structure is that sometimes overlooked covariates can be adjusted by spatially dependent error term $\epsilon$. But the problem is that modeling this spatial dependency structure is often burdensome.. For one reason, the dependency may be present in all directions. Thus to make long story short, a convenient solution is to decompose the model into two part - <strong>mean structure</strong> &amp; <strong>covariance structure</strong>.</p>
+
+<ul>
+  <li>
+    <p>For the covariance structure, it seems natural to assume that the correlation between two points deminish along with the distances. In other words, data that are further apart are less dependent than the data located nearby. We can use various covariance functions for this purpose.</p>
+  </li>
+  <li>
+    <p>For modeling the mean structure, Gaussian Process is often utilized.</p>
+  </li>
+</ul>
+
+<p>In this sense, spatial data analysis (modeling) is built on top of existing methodologies. For example, Bayesian Hierarchical Models and computation is used to define a spatial model, Gaussian Process is used to model the mean structure, Markov Random Field is used for modeling the correlation structure and the concept of distance is rendered for analyzing spatial data.</p>
+
+<p>We will take a look at how these can be implemented in the subsequent posts.</p>
+
+<p> </p>
+
+<hr />
+
+<h2 id="types-of-spatial-data">Types of Spatial Data</h2>
+
+<p> </p>
+
+<p>Let’s denote spatial data in $d$ dimensions (usually $d=2$) by 
+\(\{ Z(s) : s \in D \subset R^d \}\)
+, where $s$ is the geographical location where the process $Z(s)$ is observed.</p>
+
+<p>In general, spatial data can be characterized into the following 3 categories:</p>
+
+<p> </p>
+
+<h4 id="1-geostatistical-data"><strong>1. Geostatistical Data</strong></h4>
+
+<ul>
+  <li>A spatial process which is observed only at points (usually coordinates).</li>
+  <li>ex) PM 2.5 concentration in Seoul</li>
+  <li>$D$ is a continuous fixed set.</li>
+</ul>
+
+<center>
+  <img src="/images/sda/geostatistical_example.png" width="700" height="500" /> 
+  <br />
+  <em><span style="color:grey">Example of Geostatistical Data</span></em>
+</center>
+
+<p> </p>
+
+<h4 id="2-lattice-areal-data"><strong>2. Lattice (Areal) Data</strong></h4>
+
+<ul>
+  <li>A spatial process which is observed at a discrete level (countably many locations).</li>
+  <li>This usually arises as a result of aggregation like daily COVID-19 infection counts for different countries.</li>
+  <li>$D$ is a discrete fixed set.</li>
+  <li>Because the data are aggregated by a unit location, the data may be more complete compared to geostatistical data.</li>
+</ul>
+
+<center>
+  <img src="/images/sda/lattice_example.png" width="700" height="500" /> 
+  <br />
+  <em><span style="color:grey">Example of Lattice Data</span></em>
+</center>
+
+<p> </p>
+
+<h4 id="3-spatial-point-process"><strong>3. Spatial Point Process</strong></h4>
+
+<ul>
+  <li>A spatial process is observed at points, but the locations are of interest on their own.</li>
+  <li>A naive example is the case where we are interested in the clustering patterns among spatial data points.</li>
+  <li>$D$ is stochastic, typically continuous.</li>
+  <li>We are often interested in finding out the spatial clusters, where each unit location has its own mean and variance structure.</li>
+</ul>
+
+<center>
+  <img src="/images/sda/pp_example.jpeg" width="700" height="500" /> 
+  <br />
+  <em><span style="color:grey">Example of Spatial Point Process (from Baddeley and Turner R package, 2006)</span></em>
+</center>
+
+<p> </p>
+
+<hr />
+
+<h2 id="characteristics-of-spatial-data">Characteristics of Spatial Data</h2>
+
+<p> </p>
+
+<p>Some of the distinctive characteristics of spatial data are as follows:</p>
+
+<ul>
+  <li>We are mostly interested in <strong>interpolation</strong> (what happens at unobserved locations between geographical points). It’s easy to think of this as a prediction for spatial dataset. I think this term is due to the philosophical discipline of spatial data analysis field.</li>
+</ul>
+
+<p> </p>
+
+<ul>
+  <li>In comparison to the <strong>asymptotic (large sample) theory</strong> in classical statistics, spatial data analysis assumes <strong>increasing domain asymptotics</strong>, where our focus is to find out what happens as the domain gets bigger (like the accuracy of interpolation).</li>
+</ul>
+
+<p> </p>
+
+<ul>
+  <li>Spatial process often only have a <strong>single realized value</strong> of $n$ x $1$ vector. That is, we treat the $n$ data points at the same time. If the data is logitudinal over time, then we can have several replicates ($n$ x $p$).</li>
+</ul>
+
+<p> </p>
+
+<ul>
+  <li>In addition to the spatially dependent structure, the predictor and response variables are often <strong>highly multivariate and correlated</strong> which necessitates hierarchical models.</li>
+</ul>
+
+<p> </p>
+
+<ul>
+  <li>Some additional difficulties arise due to <strong>Non-Gaussian structure</strong> and <strong>Misalignment</strong> of data points. Misalignment refers to the problem when the domain of predictor doesn’t correspond to the response variable (e.g. predictor variables collected at a county level, but the response is at a country level).</li>
+</ul>
+
+<p> </p>
+
+<hr />
+
+<h2 id="some-prerequisite-knowledges">Some Prerequisite Knowledges</h2>
+
+<p> </p>
+
+<p>We need some background knowledges in order to understand and implement spatial data analysis.</p>
+
+<p> </p>
+
+<h4 id="1-notion-of-distance">1. Notion of Distance</h4>
+
+<p>The most simplest metric of measuring the distance between two points is the Euclidean Distance.</p>
+
+<p> </p>
+
+<center>
+
+$$
+D_{Euc} = \sqrt{(lat1 - lat2)^2 + (lon1+lon2)^2}
+$$
+
+</center>
+
+<p> </p>
+
+<p>In spatial dataset however, there is a problem of using Euclidean Distance because it ignores the curvature of Earth. In turn, the actual distance between two points on Earth’s surface will be distorted if we naively use the Euclidean Distance.</p>
+
+<p>As a remedy, <strong>Geodesic Distance</strong> or <strong>Chordal Distance</strong> is often used as a more realistical measure of distance for spatial data.</p>
+
+<p> </p>
+
+<h6 id="geodesic-distance">&lt;Geodesic Distance&gt;</h6>
+
+<p>\(D_{Geo} = R \arccos{[\sin(lat1) \sin(lat2) + \cos(lat1)\cos(lat2)(lon1-lon2)]}\)
+ </p>
+
+<p> </p>
+
+<h6 id="chordal-distance">&lt;Chordal Distance&gt;</h6>
+
+<p> 
+\(\begin{aligned}
+&amp;x_i = R \cos(lat_i) \cos(lon_i) \\[10pt]
+&amp;y_i = R \cos(lat_i)\sin(lon_i) \\[10pt]
+&amp;z_i = R\sin(lat_i) \\[10pt]
+&amp;u_1 = (x_1, y_1, z_2), \quad u_2 = (x_2, y_2, z_2) \\[10pt]
+&amp;D_{Chor} = D_{Euc}(u_1, u_2)
+\end{aligned}\)
+ </p>
+
+<p> </p>
+
+<p>where $R = 6371$ is the mean radius of Earth in km. Note that the Chordal DIstance is a Euclidean Distance for $R^3$.</p>
+
+<p> </p>
+
+<h4 id="2-gaussian-process">2. Gaussian Process</h4>
+
+<p>A Gaussian Process is a <strong>stochastic process</strong> whose finite-dimensional distributions of each states are all multivariate gaussians. Since we are dealing with spatial data, a <strong>spatial stochastic process</strong> can be represented by the collection of random variables such that</p>
+
+<p> </p>
+
+<center>
+
+$$
+\{ Y(s) : s \in D \subset R^d \}, \quad (d \subset \{2,3\}) \\[10pt]
+F(y_1, y_2, \dots, y_n \; ; s_1,s_2,\dots,s_n) = P(Y(s_1)&lt;y_1, \;Y(s_2) &lt; y_2, \; \dots, \; Y(s_n)&lt;y_n)
+$$
+
+</center>
+
+<p> </p>
+
+<p>where $s$ indicates individual locations and $Y(s)$ is the corresponding observation (for a spatial process, we typically have a vector $Y = (Y(s_1), Y(s_2), … , Y(S_n))^\prime$ of $n$ observations).</p>
+
+<p>Since Gaussian Process is a stochastic set of finite Gaussian variables, we only need to define the mean and covariance structure in order to fully define a Gaussian Process.</p>
+
+<p> </p>
+
+<center>
+
+$$
+\mu(s) = E[Y(s)] \\[10pt]
+C(s_i, s_j) = Cov(Y(s_i), Y(s_j))
+$$
+
+
+
+</center>
+
+<p> </p>
+
+<p>where $C(s_i, s_j)$ is often characterized by various covariance functions.</p>
+
+<p>A famous covariance function for modeling the spatial dependency is the <strong>Matérn covariance function</strong> given by</p>
+
+<p> </p>
+
+<center>
+
+
+$$
+\phi(h) = \frac{\sigma^2}{2^{\nu-1}\Gamma(\nu)} (h/\rho)^\nu K_\nu(h/\rho), \quad h=\sqrt{2\nu}\;d
+$$
+</center>
+
+<p> </p>
+
+<p>where $\nu$ is the smoothness parameter that controls the differentiability of a Process with Matérn covariance and $K_\nu$ is a Bessel function of order $\nu$. For our purposes, I think it is sufficient to know that we can use this function for the covariance structure rather than the nitty-gritty details of its components.</p>
+
+<p> </p>
+
+<h4 id="3-isotropy">3. Isotropy</h4>
+
+<p>For the covariance structure of a spatial process, it is often assumed to have isotrophic characteristics. This means that the covariance (or more generally any attributes) only depends on the distance of two points and <strong>invariant to the direction</strong>.</p>
+
+<p> </p>
+
+<center>
+
+
+$$
+\begin{aligned}
+Cov(Y(s_i), Y(s_j)) &amp;= C(h) \\[10pt] &amp;= \phi(\lvert\lvert h \rvert\rvert)
+\end{aligned}
+$$
+</center>
+
+<p> </p>
+
+<p>This concept is related to the property of <strong>stationarity</strong> in a (spatial) stochastic process such that for any set of observations $Y(s_1), \dots, Y(s_n)$ and any spatial lag $h$, we have</p>
+
+<p> </p>
+
+<center>
+
+$$
+F(y_1, \dots, y_n ; s_1+h, \dots, s_n+h) = F(y_1, \dots, y_n ; s_1, \dots, s_n)
+$$
+
+</center>
+
+<p> </p>
+
+<p>This is called as a <strong>strong stationarity</strong>. A slightly weakened variation of this condition is</p>
+
+<p> </p>
+
+<center>
+
+
+$$
+\begin{aligned}
+E[Y(s)] &amp;= E[Y(s+h)] =\mu \\[10pt]
+Cov(Y(s), Y(s+h)) &amp;= Cov(Y(0), Y(h)) = C(h)
+\end{aligned}
+$$
+</center>
+
+<p> </p>
+
+<p>which is called as a <strong>second-order(weak) stationarity</strong> defined by the moments of spatial random variable $Y$.</p>
+
+<ul>
+  <li>Note that for a Gaussian Process, the strong stationarity and weak stationarity are equivalent because the two moments are sufficient to fully define a stochastic process.</li>
+</ul>
+
+<p>By taking a step further, a second-order stationarity of a process implies a <strong>intrinsic stationarity</strong>, which is $Var[Y(s+h) - Y(s)]$ depending only on the lag $h$. When this condition is satisfied, we can define a function of lag $h$ such as</p>
+
+<p> </p>
+
+<center>
+
+$$
+\gamma(h) = \frac{1}{2} Var[Y(s+h) - Y(s)]
+$$
+
+
+
+</center>
+
+<p> </p>
+
+<p>and we call this function as a <strong>variogram</strong>. This variogram is generally utilized for diagnosing the existence of spatial dependency among the points in the dataset.</p>
+
+<ul>
+  <li>As a reminder, second-order stationarity implies intrinsic stationarity but not the other way around.</li>
+</ul>
+
+<p> </p>
+
+<p>Therefore, regarding spatial data analysis and modeling, we can now answer the following questions:</p>
+
+<p> </p>
+
+<blockquote>
+  <ul>
+    <li>How can we define distance?</li>
+    <li>How can we measure spatial dependency?</li>
+    <li>How to perform EDA for a spatial data?</li>
+  </ul>
+</blockquote>
+
+<p> </p>
+
+<p>With this in mind, we will see how we can actually implement statistical inference for spatial data in the subsequent post.</p>
+
+<p> </p>
+
+<hr />
+
+<h2 id="reference">Reference</h2>
+
+<p>This post is written based on the lecture note of <em>Spatial Data Analysis</em> (STA6241), held at the Department of Statistics &amp; Data Science at Yonsei University 2021-2 autumn semester.</p>
+
+:ET

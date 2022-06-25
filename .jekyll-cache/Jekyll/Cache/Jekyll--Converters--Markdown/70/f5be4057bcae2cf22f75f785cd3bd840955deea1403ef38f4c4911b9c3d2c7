@@ -1,0 +1,501 @@
+I"mK<p> </p>
+
+<h1 id="ch-20-basis-function-models">Ch 20. Basis Function Models</h1>
+
+<p>This post is a summary of Chapter 20 of the textbook <a href="https://users.aalto.fi/~ave/BDA3.pdf"><em>Bayesian Data Analysis</em></a>.</p>
+
+<hr />
+
+<h3 id="table-of-contents">Table of Contents</h3>
+
+<p><a href="#200-nonparametric-models">20.0 Nonparametric Models</a></p>
+
+<p><a href="#201-splines-and-weighted-sums-of-basis-functions">20.1 Splines and weighted sums of basis functions</a></p>
+
+<p><a href="#202-basis-selection-and-shrinkage-of-coefficients">20.2 Basis selection and shrinkage of coefficients</a></p>
+
+<p><a href="#203-non-normal-models-and-multivariate-regression-surfaces">20.3 Non-normal models and multivariate regression surfaces</a></p>
+
+<h2> </h2>
+
+<h3 id="200-nonparametric-models">20.0 Nonparametric Models</h3>
+
+<ul>
+  <li>Chapter 19 dealt with “<em>parametric</em>” nonlinear models where the function of predictors and parameters were prespecified.</li>
+</ul>
+
+<center>
+
+$$
+\begin{aligned}
+E[y|X, \beta] = \mu(X_i, \phi)
+\end{aligned}
+$$
+
+</center>
+
+<ul>
+  <li>
+    <p>In the following chapters, we consider models where the function $\mu$ is also a <strong>priori unknown</strong>.</p>
+  </li>
+  <li>Since we don’t know $\mu$, we have to estimate it somehow.</li>
+  <li>There are various ways to model $\mu$ and in this chapter, we consider using <strong>basis function expansions</strong>.</li>
+  <li>The key idea of <strong>basis function models</strong> is to linearly combine set of simple functions of the predictor variables to approximate arbitrary nonlinear functions.</li>
+</ul>
+
+<center>
+
+$$
+\begin{aligned}
+y_i = w_0\phi_0(1) +w_1\phi_1(x_{i1}) + \dots + w_n\phi_n(x_{in})
+\end{aligned}
+$$
+
+</center>
+
+<ul>
+  <li>Note that above equation reduces to standard linear regression model when $\phi$ is an identity function.</li>
+</ul>
+
+<p> </p>
+
+<hr />
+
+<h3 id="201-splines-and-weighted-sums-of-basis-functions">20.1 Splines and weighted sums of basis functions</h3>
+
+<p> </p>
+
+<h4 id="basis-function-expansion">Basis Function Expansion</h4>
+
+<p>Let’s consider a set of nonlinear functions $\mu(\dot)$. We can model this $\mu$ by the basis function expansion such that</p>
+
+<center>
+
+$$
+\begin{aligned}
+\mu(x) = \sum_{h=1}^H \beta_h b_h(x) = \beta_1 b_1(x) + \beta_2 b_2(x) + \dots + \beta_H b_H(x)
+\end{aligned}
+$$
+
+</center>
+
+<p>where $b$ is a prespecified set of basis functions and $\beta$ is the vector of corresponding basis coefficients.</p>
+
+<ul>
+  <li>
+    <p>In a nutshell, we are approximating $\mu(x)$ by a linear combination of $H$ different basis functions.</p>
+  </li>
+  <li>
+    <p>A taylor series expansion is a familiar example where the basis functions are polynomials of increasing degree.</p>
+  </li>
+</ul>
+
+<p> </p>
+
+<h4 id="example-of-basis-functions">Example of Basis Functions</h4>
+
+<p>A typically used set of basis functions is the <strong>local basis functions</strong> that are centered on different locations $x_h$ so that $b_h(x)$ reduces to zero when $x$ is reasonably far away from the center $x_h$.</p>
+
+<p>Here we introduce two often-used family of basis functions which are <strong><em>Gaussian radial basis functions</em></strong> and <strong><em>B-Spline</em></strong>.</p>
+
+<p> </p>
+
+<center>
+
+$$
+\begin{aligned}
+&amp;&lt;\text{GRBF}&gt; \\
+&amp;:b_h(x) = exp\Big( -\frac{\lvert x - x_h \rvert^2}{l^2}  \Big), \quad (x_h\text{ are the centers of basis functions and }l \text{ is the width parameter}) \\[30pt]
+&amp;&lt;\text{B-spline}&gt; \\
+&amp;:\text{a piecewise continuous function that is defined conditional on some set of knots.} \\
+&amp;\Rightarrow b_h(x) = \begin{equation}
+    X=
+    \begin{cases}
+      \frac{1}{6}u^3, &amp; \text{for}\ x \in (x_h, x_{h+1}), \;\;\;\;u = (x-x_h)/\delta \\
+       \frac{1}{6}(1+3u+3u^2-3u^3), &amp; \text{for}\ x \in (x_{h+1}, x_{h+2}),\; u = (x-x_{h+1})/\delta \\
+        \frac{1}{6}(4-6u^2+3u^3), &amp; \text{for}\ x \in (x_{h+2}, x_{h+3}), \;u = (x-x_{h+2})/\delta \\
+         \frac{1}{6}(1-3u+3u^2-u^3), &amp; \text{for}\ x \in (x_{h+3}, x_{h+4}), \;u = (x-x_{h+3})/\delta \\
+      0, &amp; \text{otherwise}
+    \end{cases}
+  \end{equation}
+  \\[10pt] &amp;\quad\quad \text{(an example of cubic B-spline)}
+\end{aligned}
+$$
+
+</center>
+
+<p> </p>
+
+<ul>
+  <li>An example of approximating the normal curve by the cubic B-spline basis functions:</li>
+</ul>
+
+<center>
+  <img src="/images/BDA/bspline.png" width="700" height="500" /> 
+</center>
+
+<p> </p>
+
+<ul>
+  <li><strong>B-splines</strong> have a more complex functional form than Gaussian radial basis functions, but has compact support which leads to sparser design matrix. This can be exploited for enhancing computational efficiencies.</li>
+  <li>
+    <p><strong>Gaussian radial basis function</strong> usually produces smoother functions than B-spline as they are <strong>infinitely differentiable</strong> in the support.</p>
+  </li>
+  <li>An example of 4 realizations of prior for a nonparametric function using the cubic B-spline basis functions:</li>
+</ul>
+
+<center>
+  <img src="/images/BDA/bspline2.png" width="700" height="500" /> 
+</center>
+
+<p> </p>
+
+<ul>
+  <li>Note that the number of basis functions (splines) $H$ directly impacts the flexibility of the resulting approximation of a target function.</li>
+  <li>In this setting, our model is <strong>conditionally linear on the selected basis functions</strong> and we can apply the model fitting ideas of standard linear regression like the Least Squares method to estimate the basis coefficients $\beta$.</li>
+</ul>
+
+<center>
+
+$$
+\begin{aligned}
+y_i = \mu(x_i) + \epsilon_i = w_i\beta +\epsilon_i, \quad w_i = (b_1(x_i), b_2(x_i), \dots, b_H(x_i))
+\end{aligned}
+$$
+
+</center>
+
+<p> </p>
+
+<ul>
+  <li>An example of estimating the nonlinear curve by B-splines:</li>
+</ul>
+
+<center>
+  <img src="/images/BDA/bspline3.png" width="700" height="500" /> 
+</center>
+
+<p> </p>
+
+<ul>
+  <li>Note that the posterior mean curve is attained by averaging over the posterior distributions of the basis coefficients for each of the basis functions.</li>
+</ul>
+
+<p> </p>
+
+<h4 id="deciding-number-of-knots-for-b-splines">Deciding number of knots for B-splines</h4>
+
+<p>In applying splines, we need to specify the number of knots and their locations.</p>
+
+<ul>
+  <li>The most naive approach is to arbitrarily choose sufficient number of knots (no optimization).</li>
+  <li>As a Bayesian alternative, we can <strong>set priors on the number and locations of each knots</strong> which is called as a free knot approach. However, this idea faces <strong>computational challenges</strong> as it requires highly efficient reversible jump MCMC (between 0/1) for posterior computation.</li>
+  <li>Rather, we can select sufficiently many knots and implement <strong>variable selection</strong> to shrink the coefficients of the less important splines to near zero. This can be done by introducing a <strong>shrinkage prior</strong> that is concentrated near zero with heavy tails.</li>
+</ul>
+
+<p> </p>
+
+<hr />
+
+<h3 id="202-basis-selection-and-shrinkage-of-coefficients">20.2 Basis selection and shrinkage of coefficients</h3>
+
+<p> </p>
+
+<p>Let’s take a closer look at the <strong>basis selection</strong> by focusing on the single-predictor nonparametric regression model with Gaussian residuals.</p>
+
+<center>
+
+$$
+\begin{aligned}
+y_i \sim N(w_i\beta, \sigma^2), \quad &amp;w_i = (b_1(x_i), \dots, b_H(x_i)) \\[10pt]
+&amp;b = \{ b_h \}_{h=1}^H \text{ denote a prespecified collection of potential basis functions}
+\end{aligned}
+$$
+
+</center>
+
+<p> </p>
+
+<ul>
+  <li>In practice, <strong>we are mostly uncertain in which basis functions are really needed</strong>.</li>
+</ul>
+
+<p> </p>
+
+<p>To allow less important basis functions to naturally be excluded from the model, we introduce an auxilary variable $\gamma$ to denote model index such that:</p>
+
+<center>
+
+$$
+\begin{aligned}
+&amp;\gamma = (\gamma_1, \dots, \gamma_H) \in \Gamma \\[10pt]
+  &amp;\begin{equation}
+    \gamma_h=
+    \begin{cases}
+      1, &amp; \text{basis function }b_h \text{ should be included}\  \\
+      0, &amp; \text{otherwise}
+    \end{cases}
+  \end{equation}
+\end{aligned}
+$$
+
+</center>
+
+<p> </p>
+
+<ul>
+  <li>$\Gamma$ is a model space containing $2^H$ possibilities for $\gamma$’s.</li>
+</ul>
+
+<p> </p>
+
+<p>For a complete Bayesian model specification, we require a <strong>prior over the model space $\Gamma$</strong> as well as a prior for the non-zero basis coefficients $\beta_\gamma = \{ \beta_h: \gamma_h = 1   \}$.</p>
+
+<ul>
+  <li>A simple specification is by using the mixture prior such that:</li>
+</ul>
+
+<center>
+
+$$
+\begin{aligned}
+\beta_h &amp;\sim \pi_h \delta_0 + (1-\pi_h)N(0, \kappa_h^{-1}\sigma^2) \quad (\delta_0 \text{ is a degenerate distribution}) \\[10pt]
+\pi_h&amp;\sim Beta(a_h, b_h)\\
+\sigma^2 &amp;\sim \text{Inv-}\Gamma(a,b) \\
+\kappa_h &amp;\sim \Gamma(0.5, 0.5) \quad (\text{to induce a heavy-tailed Cauchy prior for }\beta's) \\[15pt]
+
+\Rightarrow \gamma_h &amp;\sim Bernoulli(1-\pi_h)
+\end{aligned}
+$$
+
+</center>
+
+<p> </p>
+
+<ul>
+  <li>Hence, each of the basis coefficients will be set to 0 with probability $\pi_h$ (unimportant basis functions) and drawn from the Normal prior otherwise (important basis functions).</li>
+  <li>In this prior specification, the joint posterior density for $\gamma$ can be tracked analytically using conjugacy, but the posterior probability for a specific model $\gamma_h$ is intractable since it requires averaging over all potential candidates of $\gamma$ ($2^H$).</li>
+  <li>
+    <p>So we must use approximation such as MCMC-based stochastic search algorithm to identify high posterior probability models in the model space, or Gibbs sampling to iteratively updates $\gamma_h$ from its Bernoulli full conditional posterior.</p>
+  </li>
+  <li>Anyways, the key takeaway is that <strong>we can potentially conduct model selection to obtain a simplified model without the unnecessary basis functions</strong> by averaging the joint posterior $p(y|X, \gamma)$ with respect to $\gamma$.</li>
+</ul>
+
+<p> </p>
+
+<p>One possible drawback of this Bayesian variable selection for basis functions is that it might be <strong>sensitive to the initial choices of basis functions</strong>.</p>
+
+<ul>
+  <li>We can potentially include multiple types of basis functions and implement Bayesian variable selection to find out the subset of basis functions doing the best job at parsimoniously characterizing the curve.</li>
+  <li>So whenever possible, <strong>prior information should strongly inform the selection of basis functions</strong>.</li>
+</ul>
+
+<p> </p>
+
+<h4 id="shrinkage-priors">Shrinkage priors</h4>
+
+<p>The basis selection method by introducing an auxilary model index variable $\gamma$ is indeed appealing, but it comes with a <strong>computational price</strong>.</p>
+
+<ul>
+  <li>Since the number of possible models to consider is $2^H$, for sufficiently large number of basis functions, only a small percentage of the whole model space will be visited by our MCMC sampleers even in several hundreds of thousands of iterations.</li>
+  <li>This gets even worse for non-conjugate priors.</li>
+</ul>
+
+<p> </p>
+
+<p>One possible remedy for this problem is to use <strong>shrinkage priors</strong> for the coefficients, where the basis coefficients are avoided from being set exactly to zero.</p>
+
+<ul>
+  <li>An appropriate prior for this purpose should have high density at zero, while having heavy tails to avoid over-shrinking the signals of important basis functions.</li>
+  <li>The most useful shrinkage priors can be expressed as <strong>scale mixtures of Gaussians</strong> as follows:</li>
+</ul>
+
+<center>
+
+$$
+\begin{aligned}
+\beta_h &amp;\sim N(0, \sigma_h^2), \\[10pt]
+\sigma^2_h &amp;\sim G, \quad (G\text{: gaussian mixtures for the variances})
+\end{aligned}
+$$
+
+</center>
+
+<p> </p>
+
+<ul>
+  <li>For choice of the mixture distribution G, we can use several priors such as the Cauchy prior, Laplace (double exponential) prior or the generalized double Pareto prior.</li>
+</ul>
+
+<p> </p>
+
+<p>According to the author, the <strong>generalized double Pareto prior</strong> is specifically mentioned that this distribution can indirectly be sampled by reparamerization of its parameters using Normal, Exponential and Gamma distributions.</p>
+
+<center>
+
+$$
+\begin{aligned}
+gdP(\beta|\;\xi,\alpha) &amp;= \frac{1}{2\xi}\Big( 1 + \frac{\lvert \beta \rvert}{\alpha\xi}\Big)^{-(\alpha+1)}, \quad (\xi &gt;0, \alpha&gt;0  \text{ are scale and shape parameters}) \\[10pt]
+&amp;\Leftrightarrow \\[10pt]
+\beta &amp;\sim N(0, \sigma^2) \\[5pt]
+\sigma &amp;\sim Exp(\lambda^2/2)\\[5pt]
+\lambda &amp;\sim \Gamma(\alpha,\eta) \\[5pt]
+\xi &amp;= \eta/\alpha, \quad (\text{typically, }\alpha = \eta =1)
+\end{aligned}
+$$
+
+</center>
+
+<p> </p>
+
+<ul>
+  <li>We can use a simple Gibbs sampler to get posterior samples for each of the parameters and basis coefficients (for more detail refer p.494).</li>
+  <li>We expect from this generalized double Pareto shrinkage prior to shrink many of the basis coefficients towards zero, while not shrinking the coefficients for the more important bases much at all in high-dimensional settings.</li>
+</ul>
+
+<p> </p>
+
+<hr />
+
+<h3 id="203-non-normal-models-and-multivariate-regression-surfaces">20.3 Non-normal models and multivariate regression surfaces</h3>
+
+<p> </p>
+
+<h4 id="non-normal-models">Non-normal models</h4>
+
+<p>We can relax our model to accommodate <strong>heavier-tailed residual densities</strong> which can handle possible outliers by using a scale mixture of the gaussians.</p>
+
+<ul>
+  <li>One example is the “inverse-gamma scale mixture of normals representation” of the residual density such that:</li>
+</ul>
+
+<center>
+
+$$
+\begin{aligned}
+y_i \sim N(\mu(x_i), \phi_i\sigma^2), \quad \phi_i\sim \text{Inv-}\Gamma(\nu/2, \nu,2)
+\end{aligned}
+$$
+
+</center>
+
+<p> </p>
+
+<ul>
+  <li>Each response has different variance structure and the value of $\phi_i$ will control the scale of the response, <strong>downweighting the influence of outliers</strong> on the posterior distribution of $\mu(x)$.</li>
+  <li>To extend the response distribution to the <strong>exponential families</strong>, we can use various <strong>link functions</strong> just like for the GLMs in the same framework as above.</li>
+</ul>
+
+<p> </p>
+
+<h4 id="multivariate-regression-surfaces">Multivariate regression surfaces</h4>
+
+<p>So far, we have focused on regression models with a single predictor. What can we do to incorporate <strong>multiple predictors</strong>?</p>
+
+<p>For multivariate cases, the <strong><em>curse of dimensionality</em></strong> arises.</p>
+
+<ul>
+  <li>Computational methods that work for small number of predictors may not scale well as predictors are added. This is because the number of basis functions needed increase exponentially with respect to increase in the predictor variables.</li>
+  <li>We need sufficiently large number of data points, prior information or some restrictions to reliably estimate a nonparametrical multivariate regression because the observations are sparsely distributed in high dimensional predictor surfaces.</li>
+  <li>To account for this, a commonly used assumption is the <strong>additivity</strong> of the curve function by univariate regression functions:</li>
+</ul>
+
+<center>
+
+$$
+\begin{aligned}
+\mu(x) &amp;= \mu_0 + \sum_{j=1}^p \beta_j (x_j) \\[10pt]
+\beta_j(x_j) &amp;= \sum_{h=1}^{H_j}\theta_{jh}b_{jh}(x_j)
+\end{aligned}
+$$
+
+</center>
+
+<p> </p>
+
+<ul>
+  <li>
+    <p>Above, an unknown coefficient function for each of the predictor $\beta_j()$ is expressed as a linear combination of a prespecified set of basis functions $b_j = \{b_{jh} \}_{h=1}^{H_j}$.</p>
+  </li>
+  <li>
+    <p>Additivity assumption might not be plausible when there is <strong>interaction effect among the predictor variables</strong>. In this case, we can think of using <strong>tensor product specification</strong> (for more detail refer p.497).</p>
+  </li>
+  <li>In addition to additivity assumptions, we can set constraint on shape of the priors to further enhance the efficiency.</li>
+  <li>For example, if we are certain that our response is nondecreasing in some of the predictors, we can set nondecreasing constraint on certain $\beta_j(x_j)$ in the additive expansion. Let’s check this by an example.</li>
+</ul>
+
+<p> </p>
+
+<h4 id="example-a-nonparametric-regression-function-that-is-constrained-to-be-nondecreasing">Example. A nonparametric regression function that is constrained to be nondecreasing</h4>
+
+<p>We consider an example of pregnant women data in the U.S. Collaborative Perinatal Project, where the incidence of “<strong>preterm birth</strong>” is studied in relationship with 5 different covariates (cholesterol, triglyceride level, age, BMI, smoking status) and “<strong>DDE concentration</strong>” (DDE is a persistent metabolite of the pesticide DDT).</p>
+
+<p>Let’s see how we can incorporate a <strong>nondecreasing constraint</strong> on the regression function relating level of DDE to the probability of preterm birth.</p>
+
+<ul>
+  <li>This constraint is made because we have a reasonable “a-priori belief” that covariate-adjusted premature delivery risk is nondecreasing in dose of DDE.</li>
+</ul>
+
+<p> </p>
+
+<p>We use <strong>semiparametric probit additive model</strong> such that:</p>
+
+<center>
+
+$$
+\begin{aligned}
+Pr(y_i=1|\theta, x_i, z_i) &amp;= \Phi\Big( \alpha_0 + \sum_{k=1}^5z_{ik}\alpha_k + f(x_i)\Big) = \Phi\big(z_i\alpha + f(x_i) \big) \\[10pt]
+&amp;(z_i:\text{covariate variable}, \;x_i:\text{DDE level}, \;y_i:\text{indicator of preterm birth})
+\end{aligned}
+$$
+
+</center>
+
+<p> </p>
+
+<ul>
+  <li>
+    <p>The covariate adjustments are parametric (although not described), while $f(x)$ is characterized nonparametrically as a nondecreasing curve using splines with a carefully structured prior on the basis coefficients. The basis functions are simply piecewise linear functions with a dense set of knots.</p>
+  </li>
+  <li>
+    <p>To incorporate the constraint, we <strong>choose a prior for the basis coefficients that does not allow negative values</strong>. Since these coefficients are directly the slopes of the regression lines at each knots, the resulting nonparametric curve cannot be decreasing.</p>
+  </li>
+  <li>
+    <p>For the (latent) basis coefficients, we use <strong>first-order normal random walk autoregressive prior</strong> such that:</p>
+  </li>
+</ul>
+
+<center>
+
+$$
+\begin{aligned}
+\beta_j^* &amp;\sim N(\beta_{j-1}^*, \;\sigma_\beta^2) \\[10pt]
+\sigma_\beta^2 &amp;\sim \text{Inv-}\Gamma(a, b), \quad (a,b \text{ are some constants})\\[10pt]
+\beta_j &amp;= \textbf{1}\{\beta_j \geq \delta \}\beta_j^*, \quad \delta \sim \Gamma(c, d) \quad (c,d \text{ are some constants})
+\end{aligned}
+$$
+
+</center>
+
+<p> </p>
+
+<ul>
+  <li>Note that $\delta$ is a positive threshold parameter which links latent $\beta_j^*$ to the slopes $\beta_j$.</li>
+  <li>By implementing an MCMC algorithm for posterior computation, we get the following estimated curve $f(x)$:</li>
+</ul>
+
+<center>
+  <img src="/images/BDA/np_with_cons.png" width="700" height="500" /> 
+</center>
+
+<p> </p>
+
+<hr />
+
+<h1 id="references">References</h1>
+
+<ul>
+  <li>Gelman et. al. 2013. <em>Bayesian Data Analysis</em>. 3rd ed. CRC Press. p.487-498.</li>
+</ul>
+
+:ET

@@ -1,0 +1,331 @@
+I"�-<p> </p>
+
+<h1 id="ch-21-gaussian-process-models-contd">Ch 21. Gaussian Process Models (cont’d)</h1>
+
+<p>The contents of this post is subsequent to <a href="https://domug.github.io/2021/11/15/BDA21/">this post</a>.</p>
+
+<hr />
+
+<h3 id="table-of-contents">Table of Contents</h3>
+
+<p><a href="#213-latent-gaussian-process-models">21.3 Latent Gaussian process models</a></p>
+
+<p><a href="#214-functional-data-analysis">21.4 Functional data analysis</a></p>
+
+<p><a href="#215-density-estimation-and-regression">21.5 Density estimation and regression</a></p>
+
+<p> </p>
+
+<hr />
+
+<h3 id="213-latent-gaussian-process-models">21.3. Latent Gaussian process models</h3>
+
+<p>So far, we talked about using Gaussian process as a prior for an arbitrary function. In this setting, we implicitly assumed that the likelihood 
+\(p(y | \theta)\)
+is <strong>normal</strong>. This wasn’t a huge deal for any type of continuous data, as transformation technics are available for such cases to make them approximately normal.</p>
+
+<p>However, we now focus on <strong>non-Gaussian likelihoods</strong> where such assumptions are violated. For instance, how can we put a prior to an indicator function where the outcomes are binary? or some function that returns discrete data like counts?</p>
+
+<p>In this situation, we can define a <strong>latent function</strong> $f$ which through a link function determines the likelihood 
+\(p(y | f, \phi)\)
+, and set Gaussian process prior on that latent function (just like in the GLMs).</p>
+
+<p>Then the conditional posterior density of the latent $f$ is 
+\(p(f|x,y,\theta,\phi) \propto p(y|f,\phi)p(f|x,\theta)\)
+, which is proportional to the likelihood times the prior of the latent function, which we will assume to be a Gaussian process.</p>
+
+<p>The textbook mentions that we can use GP-specific samplers for extracting the posterior samples from this model specification, or we can approximate the posterior (of the latent function $f$) by using the normal approximation.</p>
+
+<p> </p>
+
+<center>
+
+$$
+\begin{aligned}
+\Rightarrow p&amp;(f | x,y,\theta, \phi) \approx N(f |\hat f, \Sigma) \\[10pt]
+\text{where }&amp;\hat f \text{ is the posterior mode}, \\
+&amp;\Sigma^{-1} = K(x, x) + W, \\
+&amp; K(x,x) \text{ is the prior covariance matrix,} \\
+&amp; W = diag(w_{ii}), w_{ii} = \frac{d^2}{df^2} log p(y | f_i, \phi)|_{f_i = \hat f_i}
+\end{aligned}
+$$
+
+
+
+</center>
+
+<p> </p>
+
+<ul>
+  <li>the posterior mode $\hat f$ can be derived using the variational inference or expectation propagation.</li>
+</ul>
+
+<p> </p>
+
+<h5 id="example-leukemia-survival-times">Example. Leukemia survival times</h5>
+
+<p>As an illustration of a <strong>Gaussian process model with non-Gaussian data</strong>, the book introduces analysis of the survival time of leukemia in adults. The predictor variables were <em>age</em>, <em>sex</em>, <em>WBC</em> (white blood cell count) and <em>Townsend score</em> (detail is omitted) and the response was the survival time with its censoring indicator $z$ of 0/1.</p>
+
+<p>Since the response is dependent on the binary indicator variable, they have used log-logistic model. The likelihood for the reported number of leukimia cases for each subjects is:</p>
+
+<p> </p>
+
+<center>
+
+$$
+\begin{aligned}
+p(y | -) &amp;= \prod_{i=1}^n \Big( \frac{ry^{r-1}}{exp(f(X_i))} \Big)^{1-z_i} \Big( 1 + (\frac{y}{exp(f(X_i))})^r  \Big)^{z_i-2}, \\[5pt]
+&amp;f_i(X_i) = \alpha + X_i\beta + \mu(X_i)
+
+\end{aligned}
+$$
+
+</center>
+
+<p> </p>
+
+<p>where $r$ is the shape parameter and $z_i$ is the censoring indicator for subject $i$.</p>
+
+<p>In this model specification, we set Gaussian process prior with exponential covariance function on the $\mu$, which fully defines the latent function $f$. Furthermore, for a complete Bayesian inference, weakly informative priors were set for the hyper parameters.</p>
+
+<p>To derive the posteriors for each of the parameter components, numerical approximation technics such as the Laplace’s method and CCD integration was used. Figure 21.6 shows the estimated conditional comparison of each predictor with all other predictors fixed to certain values.</p>
+
+<p> </p>
+
+<center>
+  <img src="/images/BDA/Fig21.6.png" width="700" height="500" /> 
+</center>
+
+<p> </p>
+
+<p>If we take a look at the bottom right figure, we can see that the predictor <em>WBC</em> has interation with <em>Townsend score</em> (TDI). Since concrete definition of each of the predictor variables was not provided in the textbook, I will not dig further into the interpretation of their interation effects. However, the key takeaway is that the Gaussian process prior on the function $\mu$ was able to account for the  interaction effects of the predictors.</p>
+
+<hr />
+
+<h3 id="214-functional-data-analysis">21.4 Functional data analysis</h3>
+
+<p>This section briefly introduces the idea of <strong>functional data analysis</strong>.</p>
+
+<p>The main idea is that now we are considering the responses and predictors for a subject as a <strong>random functions</strong> defined at infinitely many locations, rather than vector-valued random variables.</p>
+
+<p>As an example, suppose we have an observation $y_{ij}$ collected at a point $t_{ij}$. With some possible uncertainty, we can model the observations as</p>
+
+<p> </p>
+
+<center>
+
+$$
+y_{ij} \sim N\big( f_i(t_{ij}), \sigma^2  \big)
+$$
+
+</center>
+
+<p> </p>
+
+<p>Now the mean structure of this normal distribution is a function, not a scalar. Furthermore, suppose we want to incorporate covariates $x_i$ for each subjects in the mean structure $f$. In this situation, Gaussian process can be used as a prior for this functional relationship.</p>
+
+<p>For example, the ordinary regression can be expressed as:</p>
+
+<p> </p>
+
+<center>
+
+$$
+\begin{aligned}
+y_{ij} &amp;\sim N( f(x_i, t_{ij}), \sigma^2), \\[10pt]
+f &amp;\sim GP(m, k), \quad (k\text{ is expanded to include additional dimension of }t)
+\end{aligned}
+$$
+
+</center>
+
+<p> </p>
+
+<p>For example, we can use the exponential covariance function for $k$ such that</p>
+
+<p> </p>
+
+<center>
+
+$$
+k = \tau^2\Big( -\big( \sum_{j=1}^p \frac{(x_j - x_j^\prime)^2}{l_j^2} + \frac{(t-t^\prime)^2}{l_{p+1}^2}   \big)  \Big)
+$$
+
+</center>
+
+<p> </p>
+
+<p>Again, the main point is that the Gaussian process is used as a prior for a “function”.</p>
+
+<p> </p>
+
+<hr />
+
+<h3 id="215-density-estimation-and-regression">21.5 Density estimation and regression</h3>
+
+<p>The discussions until now have focused on how we can use Gaussian process as a prior for a functional component in a model.</p>
+
+<p>Now, we shift our attention to nonparametrically modeling the <strong>likelihood</strong> using Gaussian process. There are several ways to do this where one of the most famous method is by the Dirichlet process (to be addressed in subsequent chapters), but in this section the logistic Gaussian process (LGP) is introduced.</p>
+
+<p> </p>
+
+<h5 id="density-estimation">Density estimation</h5>
+
+<p>As a simple example, suppose we are interested in modeling the one-dimensional likelihood under i.i.d. assumptions (i.e. $y_i \overset{iid}{\sim} p$).</p>
+
+<p>For estimating the likelihood of the given observations $\textbf y$, the LGP first generates an arbitrary random surface (in this case, a curve) from a Gaussian process and transforms this surface to fit to the observations. Then the kernel likelihood is divided by its integration over the whole parameter space to make it satisfy probability distribution:</p>
+
+<p> </p>
+
+<center>
+
+$$
+p(y|f) = \frac{e^{f(y)}}{\int e^{f(y^\prime)}dy^\prime }, \quad f\sim GP(m,k)
+$$
+
+</center>
+
+<p> </p>
+
+<ul>
+  <li>The parameter functions for the Gaussian process $m, k$ are defined as usual.</li>
+</ul>
+
+<p>One huge challenge left unsolved is the integral at the denominator, as it requires integration of a continuous function $f$. Since it cannot be derived analytically in most of the situations, inference for $f$ and model parameters $m, k$ are usually done by MCMC methods.</p>
+
+<p>Figure 21.7 illustrates the estimated densities from data using Gaussian processes. We can see that the estimated density is multimodal, which reasonably corresponds to the observed histogram.</p>
+
+<p> </p>
+
+<center>
+  <img src="/images/BDA/Fig21.7.png" width="700" height="500" /> 
+</center>
+
+<p> </p>
+
+<h5 id="density-regression">Density regression</h5>
+
+<p>We can extend the above LGP prior to include covariates (predictor variables) $\textbf x$ such that:</p>
+
+<p> </p>
+
+<center>
+
+$$
+p(y | x, f) = \frac{e^{f(x,y)}}{\int e^{f(x, y^\prime)}dy^\prime}
+$$
+
+</center>
+
+<p> </p>
+
+<p>where again, $f$ is drawn from a Gaussian process $GP(m, k)$ with prespecified covariance function. One choice of such $k$ is the squared exponential covariance kernel such that:</p>
+
+<p> </p>
+
+<center>
+
+$$
+k\big( (x,y), (x^\prime, y^\prime) \big) = \tau^2 exp\Big( -\big( \sum_{j=1}^p \frac{(x_j - x_j^\prime)^2}{l_j}   + \frac{(y-y^\prime)^2}{l_{p+1}} \big)  \Big)
+$$
+
+</center>
+
+<p> </p>
+
+<p>the hyperpriors for $l_j$ can be chosen adequately to allow variable selection for the predictors as we did in previous chapters.</p>
+
+<p>Similar to the unconditional density estimation, the inference can be done by MCMC. However, computational costs can be an issue when we include multiple predictors, as each predictor adds another $p$ dimensions to the integration at the denominator.</p>
+
+<p> </p>
+
+<h5 id="latent-variable-regression">Latent-variable regression</h5>
+
+<p>The foremost problem of posterior inference for the likelihood using the LGP was that it required the integration of the continuous density $f$ over the parameter space, which is intractable for most cases.</p>
+
+<p>A simple alternative can possibly be done by including a latent variable $u \sim Unif(0,1)$ for drawing the posterior samples for the likelihood given the observations.</p>
+
+<p>Suppose we are interested in estimating the posterior likelihood (density) given a one-dimensional i.i.d. observations without any predictors. The <strong>latent-variable density estimation</strong> model can be defined as the following:</p>
+
+<p> </p>
+
+<center>
+
+$$
+y_i \sim N\big( \mu(u_i), \sigma^2 \big), \quad u_i \sim Unif(0,1)
+$$
+
+</center>
+
+<p> </p>
+
+<p>In this situation, we can set Gaussian process prior centered on $\mu_0$ with a squared covariance function $k$ for the mean function $\mu$.</p>
+
+<p> </p>
+
+<center>
+
+$$
+\mu \sim GP(\mu_0, k)
+$$
+
+
+
+</center>
+
+<p> </p>
+
+<p>Additionally, if we can assume that the function $\mu_0$ can be approximated by a well-known density function $g_0$ for which we can analytically derive the inverse cdf $G_0^{-1}$, we can use the <strong>inverse-cdf method</strong> to extract samples from $\mu_0$.</p>
+
+<p> </p>
+
+<center>
+
+$$
+\begin{aligned}
+&amp;\mu_0 \sim g_0\\[10pt]
+&amp; \mu_0 \equiv G_0^{-1}(u_i) \quad u_i \sim Unif(0,1) \\[10pt]
+&amp;\therefore \text{we have samples for }\mu_0 \\[5pt]
+&amp;\Rightarrow \text{Gaussian process }GP(\mu_0, k) \text{ is completely defined!}
+\end{aligned}
+$$
+
+
+
+</center>
+
+<p> </p>
+
+<p>If this is the case, we don’t have to care about the integration of $\mu$ and density estimation can be done using the property of conditionals of the multivariate Gaussian distribution by updating $\mu$ from the realized values of $u_i$.</p>
+
+<p>Likewise, we can also include covariates in the above setting and then the model becomes latent-variable regression model.</p>
+
+<p> </p>
+
+<center>
+
+$$
+y_i \sim N\big( \mu(u_i, x_i), \sigma^2 \big), \quad u_i \sim Unif(0,1)
+$$
+
+
+
+</center>
+
+<p> </p>
+
+<hr />
+
+<p> </p>
+
+<p> </p>
+
+<hr />
+
+<h1 id="references">References</h1>
+
+<ul>
+  <li>Gelman et. al. 2013. <em>Bayesian Data Analysis</em>. 3rd ed. CRC Press. p.487-498.</li>
+</ul>
+
+:ET

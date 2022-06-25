@@ -1,0 +1,146 @@
+I"�%<p> </p>
+
+<p><a href="https://domug.github.io/2021/09/21/SQL1/">저번 포스트</a>에 이어서, 이번에는 데이터베이스에 있는 여러 데이터들을 하나로 결합하는 방법에 대해서 정리해볼 예정이다. 
+ </p>
+
+<h2 id="목차">목차</h2>
+
+<ol>
+  <li>
+    <p><a href="#foreign-key">Foreign Key</a></p>
+  </li>
+  <li>
+    <p><a href="#테이블-조인">테이블 조인</a></p>
+  </li>
+  <li>
+    <p><a href="#3개-이상의-테이블-조인">3개 이상의 테이블 조인</a></p>
+  </li>
+</ol>
+
+<hr />
+
+<p>데이터베이스 안에는 여러 개의 테이블이 여기저기 산재해 있는 경우가 대부분이다. 쿠팡과 같은 쇼핑몰을 예시로 들자면, 특정한 데이터베이스 안에 상품 정보, 상품 판매 정보, 배송 정보 등의 데이터가 수 십개, 많으면 수 백개가 존재할 것이다. 따라서 SQL을 이용해 데이터 분석을 하기 위한 첫 걸음은 산발적인 데이터들을 하나로 결합해 분석에 용이한 형태로 재정의하는 것이다.</p>
+
+<p>이렇게 여러 테이블을 하나의 테이블로 합치는 것을 <strong>테이블 조인 (join)</strong> 이라고 한다. 테이블 조인을 위해서는 개별적인 테이블들의 특징과 테이블 간의 연관 관계를 제대로 파악하는 것이 중요한데, 앞선 포스팅에서 사용했던 <a href="https://github.com/domug/DSL_21-1/tree/master/EDA%20%EC%84%B8%EC%85%98/Part3">헬스장 데이터</a>를 계속 사용해 이를 직접 실습해보도록 하겠다.</p>
+
+<p> </p>
+
+<hr />
+
+<h2 id="foreign-key">Foreign Key</h2>
+
+<p>우선 첫번째로, <code class="language-plaintext highlighter-rouge">customer_master</code> 테이블과 <code class="language-plaintext highlighter-rouge">class_mater</code> 테이블을 조인해보도록 하겠다.</p>
+
+<center>
+  <img src="/images/sql/class_master.png" width="700" height="500" /> 
+  <br />
+  <em><span style="color:grey">class_master 테이블</span></em>
+</center>
+
+<p> </p>
+
+<center>
+  <img src="/images/sql/customer_master.png" width="700" height="500" /> 
+  <br />
+  <em><span style="color:grey">customer_master 테이블</span></em>
+</center>
+
+<p> </p>
+
+<p>이렇게 서로 다른 두 개의 테이블을 조인할 때는 항상 기준이 되는 칼럼을 설정해야 한다. 기준이 되는 칼럼은 두 테이블 모두 공통적으로 갖고 있는 속성이어야 하며, 이러한 역할을 수행하는 칼럼을 <strong>Foreign Key</strong> 라고 부른다. 따라서, 위 예시에서 Foreign Key는 <code class="language-plaintext highlighter-rouge">class</code> 칼럼이라고 할 수 있다.</p>
+
+<p>자 그러면 <code class="language-plaintext highlighter-rouge">class</code> 칼럼을 기준으로 <code class="language-plaintext highlighter-rouge">class_master</code> 테이블의 정보를 <code class="language-plaintext highlighter-rouge">customer_master</code> 테이블로 합쳐보자.</p>
+
+<p> </p>
+
+<hr />
+
+<h2 id="테이블-조인">테이블 조인</h2>
+
+<p>서로 다른 테이블을 조인하는 방식은 여러가지가 있으나, 가장 흔히 사용되는 조인의 방법은 다음과 같다. (<a href="https://docs.trifacta.com/display/DP/Join+Types">이미지 출처</a>)</p>
+
+<center>
+  <img src="/images/sql/JoinVennDiagram.png" width="500" height="300" /> 
+</center>
+
+<p> </p>
+
+<p>우리는 이 중에서도 Left Join을 이용해 <code class="language-plaintext highlighter-rouge">class_master</code> 테이블과 <code class="language-plaintext highlighter-rouge">customer_master</code> 테이블을 조인해보도록 하겠다.</p>
+
+<p>그 이름에서 직관적으로 알 수 있듯이, Left Join 이란 왼쪽 테이블을 기준으로 오른쪽 테이블과의 교집합을 전부 추가하는 방식으로 진행된다.</p>
+
+<p>이를 실행하는 SQL문은 다음과 같다.</p>
+
+<script src="https://gist.github.com/domug/51fde2b0c0549531af5ba793f5593628.js"></script>
+
+<ul>
+  <li>참고: 위 예시와 같이 Foreign Key의 칼럼명이 서로 동일하다면 <code class="language-plaintext highlighter-rouge">USING(class)</code> 를 사용해도 동일한 결과를 얻을 수 있다.</li>
+</ul>
+
+<p> </p>
+
+<center>
+  <img src="/images/sql/leftjoin_result.png" width="700" height="500" /> 
+  <br />
+  <em><span style="color:grey">실행 결과</span></em>
+</center>
+
+<p> </p>
+
+<p><code class="language-plaintext highlighter-rouge">LEFT OUTER JOIN</code> 명령어를 사용해 <code class="language-plaintext highlighter-rouge">customer_master</code> 테이블에 회원들의 회원권 종류와 관련한 정보를 추가했다.</p>
+
+<p>위의 SQL문을 잘 살펴보면 각주에 <strong>Alias</strong> 라는게 써져 있는데, 여기서 Alias란 서로 다른 테이블을 결합할 때 각 테이블명을 임시적으로 설정해두는 것을 의미한다. 즉, “customer_master” 라는 테이블이 해당 쿼리문 안에서는 “customer”라는 테이블명으로 지정되며, 이와 유사하게 “class_master”  테이블은 “class” 라는 명칭으로 지정되기 때문에 해당 테이블 안에 있는 칼럼을 <code class="language-plaintext highlighter-rouge">Alis명.칼럼명</code> 형태로 호출할 수 있다. 이는 코드의 간결성을 위해 흔히 사용되는 기법 중 하나이니 기억하고 넘어가자.</p>
+
+<p>이 밖에도 MySQL은 <code class="language-plaintext highlighter-rouge">RIGHT OUTER JOIN</code>, <code class="language-plaintext highlighter-rouge">INNER JOIN</code> 등의 명령어를 지원한다. 단, 주의해야 할 점은 Full Outer Join은 MySQL에서 직접적으로 지원되지 않는다는 점인데, 해당 조인은 <code class="language-plaintext highlighter-rouge">LEFT OUTER JOIN</code> 과 <code class="language-plaintext highlighter-rouge">RIGHT OUTER JOIN</code> 의 합집합을 이용해 구할 수 있다 (<code class="language-plaintext highlighter-rouge">UNION {ALL}</code>). 구체적인 방법과 예시는 구글링하면 나오니 여기서는 일단 넘어가도록 하겠다.</p>
+
+<p> </p>
+
+<hr />
+
+<h2 id="3개-이상의-테이블-조인">3개 이상의 테이블 조인</h2>
+
+<p>앞서 <code class="language-plaintext highlighter-rouge">customer_master</code> 와 <code class="language-plaintext highlighter-rouge">class_master</code>  두개의 테이블을 조인하는 과정에 대해서 살펴보았다.</p>
+
+<p>그렇다면 3개 이상의 테이블을 한꺼번에 조인하려면 어떻게 해야할까? 해결책은 의외로 단순한데, 하나의 SQL문에 조인을 여러번 추가하면 된다.</p>
+
+<p>아직 사용하지 않은 나머지 두개의 테이블 (<code class="language-plaintext highlighter-rouge">campaign_master</code>, <code class="language-plaintext highlighter-rouge">use_log</code>) 을 살펴보자.</p>
+
+<center>
+  <img src="/images/sql/campaign_master.png" width="700" height="500" /> 
+  <br />
+  <em><span style="color:grey">campaign_master 테이블</span></em>
+</center>
+
+<p> </p>
+
+<center>
+  <img src="/images/sql/use_log.png" width="700" height="500" /> 
+  <br />
+  <em><span style="color:grey">use_log 테이블</span></em>
+</center>
+
+<p> </p>
+
+<p>해당 테이블들을 살펴본 결과, <code class="language-plaintext highlighter-rouge">campaign_master</code> 테이블의 정보 역시 <code class="language-plaintext highlighter-rouge">customer_master</code> 테이블에 결합시킬 수 있을 것 같다. <code class="language-plaintext highlighter-rouge">use_log</code> 테이블은 고객의 헬스장 방문 기록에 대한 정보로, 여기에서는 따로 조인을 하지 않고 추후 데이터 분석 과정에서 별도로 이용하도록 하겠다.</p>
+
+<p>앞서 한 방법과 유사하게 <code class="language-plaintext highlighter-rouge">campaign_master</code> 을 <code class="language-plaintext highlighter-rouge">customer_master</code> 테이블과 조인하려고 한다. 다시 한번 강조하지만, 테이블 조인을 위해서는 가장 먼저 Foreign Key를 파악해야 한다. 해당 테이블을 잘 살펴보면, <code class="language-plaintext highlighter-rouge">campaign_id</code> 칼럼을 Foreign Key로 사용해서 <code class="language-plaintext highlighter-rouge">customer_master</code> 테이블에 조인시킬 수 있다는 것을 알 수 있다.</p>
+
+<p>이를 이용해 주어진 테이블들을 하나의 테이블로 깔끔하게 결합시켜 보자. 다음은 <code class="language-plaintext highlighter-rouge">customer_master</code> 테이블을 기준으로 <code class="language-plaintext highlighter-rouge">class_master</code>, <code class="language-plaintext highlighter-rouge">campaign_master</code> 테이블을 순차적으로 left join하는 SQL문이다.</p>
+
+<script src="https://gist.github.com/domug/bbfaa809782b9b1c00f9f926fe190163.js"></script>
+
+<p> </p>
+
+<center>
+  <img src="/images/sql/joined.png" width="700" height="500" /> 
+  <br />
+  <em><span style="color:grey">실행 결과</span></em>
+</center>
+
+<p> </p>
+
+<p>SQL문을 이용해 서로 다른 세개의 테이블에 흩어져 있던 정보를 하나의 테이블로 결합시켰다. 또한, 이렇게 얻어진 테이블을 추후 분석에 사용하기 위해 <code class="language-plaintext highlighter-rouge">customer_joined</code> 라는 테이블로 데이터베이스에 저장하였다.</p>
+
+<p>이제 분석을 위한 데이터가 갖춰졌다. <a href="https://domug.github.io/2021/09/23/SQL3/">다음 포스트</a>부터는 본격적으로 데이터를 분석하는 방법에 대해 살펴볼 예정이다.</p>
+
+:ET

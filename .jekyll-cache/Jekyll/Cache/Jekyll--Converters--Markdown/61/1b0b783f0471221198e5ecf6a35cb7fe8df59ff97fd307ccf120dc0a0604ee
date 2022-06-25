@@ -1,0 +1,523 @@
+I"�D<p>In this post, we will take a look at the details of classic statistical inference for geostatistical (point-referenced) dataset. Specifically, we will see the outlines of parameter estimation and prediction for spatial model with Gaussian Process, along with implementation on a real dataset using R.</p>
+
+<p> </p>
+
+<h2 id="contents">Contents</h2>
+
+<ol>
+  <li><a href="#goals-of-statistical-inference">Goals of Statistical Inference</a></li>
+  <li><a href="#model-specification">Model Specification</a></li>
+  <li><a href="#parameter-estimation">Parameter Estimation</a></li>
+  <li><a href="#krigging">Krigging</a></li>
+</ol>
+
+<p> </p>
+
+<hr />
+
+<h2 id="goals-of-statistical-inference">Goals of Statistical Inference</h2>
+
+<p> </p>
+
+<p>Roughly speaking, there are two main goals we are concerned with when making inference about spatial data (or more broadly any kind of data domain).</p>
+
+<ul>
+  <li><strong>To make inference about data generating process</strong>
+    <ul>
+      <li>This is equivalent to specifying a model to be used, which is accomplished by estimating its parameters.</li>
+    </ul>
+  </li>
+  <li><strong>To predict $Y(S_{new})$ for new data point $S_{new}$</strong>
+    <ul>
+      <li>For spatial domain, this is called as interpolation (or krigging)</li>
+    </ul>
+  </li>
+</ul>
+
+<p> </p>
+
+<p>Therefore, the very first step of data analysis is to define a (parametric) model.</p>
+
+<p> </p>
+
+<hr />
+
+<h2 id="model-specification">Model Specification</h2>
+
+<p> </p>
+
+<p>With the assumptions of stationarity and isotropy, let’s define a spatial model such that:</p>
+
+<p> </p>
+
+<center>
+
+$$
+\begin{aligned}
+Y(s) &amp;=  \mu(s) + \eta(s) + \epsilon(s) \\
+\; \\
+\; \\
+\mu(s) = E[Y(s)] = X^\prime\beta &amp;: \quad \text{Deterministic Linear Mean Trend} \\[10pt]
+\eta(s) \sim GP\big(\textbf0, \sigma^2 \Gamma(\rho) \big) &amp;: \quad \text{Spatially-correlated Gaussian Process} \\[10pt]
+\epsilon(s) \sim N\big(\textbf0, \tau^2I_p \big) &amp;: \quad \text{White Noise Process of Measurement Error}
+
+\end{aligned}
+$$
+
+
+
+</center>
+
+<p> </p>
+
+<p>where $\sigma^2$ is the overall variance of spatial points, $\rho$ is the dependency parameter and $\tau^2$ is the nugget (error).</p>
+
+<ul>
+  <li>Note that there are four parameters to estimate in this model which are ${ \beta, \sigma^2, \rho, \tau^2 }$.</li>
+</ul>
+
+<p>In this sense, the reason of modeling correlation structure by <strong>Gaussian Process</strong> is because it is <strong>easy to handle</strong>. Namely, we can use the desirable property of Gaussian distributions such that the marginal and conditional distributions of multivariate Gaussian random variables are also Gaussian, and since we only need two parameters (mean, covariance) for the Gaussian Process parameter estimation is greatly simplified.</p>
+
+<p>However, there are some shortcomings as well especially in terms of computational costs as we have to derive the inverse matrix of the covariance function from the likelihood kernel 
+\((\bf y- \bf \mu)^\prime\Sigma^{-1}(\bf y- \bf{\mu})\)
+. It is generally known that the complexity is of order $O(n^3)$.</p>
+
+<p>Anyways, Gaussian Process usually provides reasonable fit for spatial dependencies, so unless we have any critical objections we will stick to it.</p>
+
+<p> </p>
+
+<hr />
+
+<h2 id="parameter-estimation">Parameter Estimation</h2>
+
+<p> </p>
+
+<p>In this part, we will first take a look the classical geostatistical approach of estimating model parameters.</p>
+
+<p>In a nutshell, it can be abstracted as the following steps:</p>
+
+<ol>
+  <li><strong>Get preliminary estimate of $\hat \beta_{OLS}$ using the least squares method.</strong></li>
+  <li>
+    <p><strong>Using the residuals from the preliminary estimate, estimate the variance components $\sigma^2, \rho, \tau^2$ with variogram and diagnose the dependency structure.</strong></p>
+  </li>
+  <li><strong>Re-estimate $\beta$ by generalized least squares method using the estimated variance components ($\hat \beta_{GLS}$)</strong></li>
+</ol>
+
+<p> </p>
+
+<p>As a result, we can fully define our model and in turn we can perform krigging (prediction) for unobserved points.</p>
+
+<p>However, note that this estimation procedure doesn’t provide optimal estimate of the parameters because the parameter estimation is sequential and we cannot assess uncertainty of our estimators. Nevertheless, it can still be useful for the EDA steps such as finding out the clustering patterns among geological points. A more ideal alternative of parameter estimation is to use Bayesian methodologies, which will be introduced in subsequent lectures.</p>
+
+<p> </p>
+
+<p>Anyways, let’s dig into the details of each steps. For a concrete illustration, we are going to actually implement these steps in R using the temperature data of California.</p>
+
+<p> </p>
+
+<h4 id="dataset">Dataset</h4>
+
+<p>The dataset <code class="language-plaintext highlighter-rouge">CAtemps.RData</code> contains two R objects of class <code class="language-plaintext highlighter-rouge">SpatialPointsDataFrame</code>, namely <code class="language-plaintext highlighter-rouge">CAtemp</code> and <code class="language-plaintext highlighter-rouge">CAgrid</code> where <code class="language-plaintext highlighter-rouge">CAtemp</code> contains information about average temperatures (in degrees Fahrenheit) of 200 locations in California from 1961-1990 along with their elevations in meters.</p>
+
+<p> </p>
+
+<center>
+  <img src="/images/sda/catemp.png" width="700" height="500" /> 
+  <br />
+  <em><span style="color:grey">Overview of CAtemp Dataset</span></em>
+</center>
+
+<p> </p>
+
+<p>Using this dataset, our goal is to fit a spatial model for average temperatures where the model can be defined as the following:</p>
+
+<p> </p>
+
+<center>
+
+$$
+\begin{aligned}
+&amp;Y_i = \mu(s_i;\beta) + e(s_i;\sigma^2, \rho) + \epsilon_i, \\[10pt]
+\; \\
+\text{where }\;\; &amp;\mu(s_i;\beta) = \beta_0 + \beta_1 Longitude(s_i) + \beta_2 Latitude(s_i) + \beta_3 Elevation(s_i) \\[10pt]
+&amp;e(s_i;\sigma^2, \rho) : \text{mean zero Gaussian Process} \\[10pt]
+&amp;e_i \sim N(0,\tau^2): \text{nugget (measurement error)}
+\end{aligned}
+$$
+
+
+
+</center>
+
+<p> </p>
+
+<p>In this setting, we are going estimate the model parameters using <code class="language-plaintext highlighter-rouge">CAtemp</code> and perform krigging for unobserved locations in <code class="language-plaintext highlighter-rouge">CAgrid</code> by the fitted model.</p>
+
+<p> </p>
+
+<h4 id="step-1-preliminary-estimate-of-beta">Step 1. Preliminary Estimate of $\beta$</h4>
+
+<p>The <strong>ordinary least squares estimate</strong> of $\beta$ is by definition which minimizes</p>
+
+<center>
+
+$$
+\hat \beta_{OLS} = \underset{\beta}{argmin} (Y-X\beta)^\prime (Y-X\beta)
+$$
+
+
+
+</center>
+
+<p>where $X$ is a $n$ x $p$ design matrix.</p>
+
+<p>From this, we can derive the estimate of $\beta$ such that</p>
+
+<center>
+
+$$
+\hat \beta_{OLS} = (X^\prime X)^{-1}X^\prime Y
+$$
+
+
+
+</center>
+
+<p>and the corresponding residual vector $\hat \epsilon$ is</p>
+
+<center>
+
+$$
+\hat \epsilon = Y - X\hat \beta_{OLS}
+$$
+
+
+
+</center>
+
+<p> </p>
+
+<script src="https://gist.github.com/domug/e1f41a69cbff8ab5c0d9680ac5ec87e4.js"></script>
+
+<center>
+  <img src="/images/sda/ols_beta.png" width="700" height="500" /> 
+</center>
+
+<p> </p>
+
+<p>Let’s visualize the residual plot.</p>
+
+<script src="https://gist.github.com/domug/3e23b90122974f621428351b374ebf92.js"></script>
+
+<center>
+  <img src="/images/sda/ols_resid.png" width="500" height="300" /> 
+  <br />
+  <em><span style="color:grey"></span></em>
+</center>
+
+<p> </p>
+
+<p>There seem to be some possible correlation structure among the residuals with respect to geological locations. This can more formally be determined by the variogram.</p>
+
+<p> </p>
+
+<h4 id="step-2-fit-variogram-and-estimate-the-variance-parameters-sigma2-rho-tau2">Step 2. Fit variogram and estimate the variance parameters $\sigma^2, \rho, \tau^2$</h4>
+
+<p>For two different spatial points $s_i$ and $s_j$ with a lag $h$, a variogram is defined as</p>
+
+<p> </p>
+
+<center>
+
+
+$$
+\begin{aligned}
+\gamma(h) &amp;= \frac{1}{2} Var(e(s+h) - e(s)) \\[10pt]
+&amp;=\frac{1}{2} E\big[ \big(e(s+h)-e(s)\big)^2  \big] \quad \because E\big[e(s+h) \big] = E\big[e(s) \big] = 0 \\[10pt]
+&amp;\text{where } e(s) = \eta(s) + \epsilon(s)
+\end{aligned}
+$$
+</center>
+
+<p> </p>
+
+<p>Since we only have a single realized value of temperatures, we don’t have replications of the lag $h$. Nevertheless, we can bin our dataset into several lags and get the <strong>estimated variogram</strong> by the method of moments such that</p>
+
+<p> </p>
+
+<center>
+
+$$
+\hat \gamma(h_u) = \frac{1}{2 \; \#\{s_i - s_j \in H_u\}} \sum_{s_i-s_j\in H_u} \big[ \hat e(s_i) - \hat e(s_j) \big]^2
+$$
+
+
+
+</center>
+
+<p> </p>
+
+<p>where the symbol # indicates number of elements in a specific set and $H_u$ is the partition of the space by lag $u$.</p>
+
+<p>Let’s fit an <strong>exponential variogram</strong> using our dataset.</p>
+
+<script src="https://gist.github.com/domug/aa68e74dbb8d42edea8d8531bdd5029d.js"></script>
+
+<center>
+  <img src="/images/sda/variogram.png" width="500" height="300" /> 
+  <br />
+  <em><span style="color:grey"></span></em>
+</center>
+
+<p> </p>
+
+<p>By the fitted variogram, we can see that there is some dependency structure with respect to the spatial lags.</p>
+
+<p>The reason for using <strong>parametric variogram</strong> like the exponential is because we are going to estimate the variance parameters $\sigma^2, \rho, \tau^2$ using the fitted variogram. In this case, because the parameters are constrained to form a covariance matrix of the Gaussian Process which must be positive (semi) definite, we are using covariance functions that satisfies this condition.</p>
+
+<p>Anyways, if we have successfully fitted a parametric variogram, then we can derive the <strong>weighted least squares estimate of the variance components</strong> 
+\(\hat \theta_{WLS} = \{\hat \sigma^2, \hat \rho, \hat \tau^2\}\)
+such that</p>
+
+<p> </p>
+
+<center>
+
+$$
+\hat \theta_{WLS} = \underset{\theta = \{\sigma^2, \rho, \tau^2 \}}{argmin} \sum_{u} \frac{\#\{ s_i - s_j \in H_u \}}{\gamma(h_u;\theta)^2} \big[ \hat \gamma(h_u) - \gamma(h_i;\theta) \big]^2
+$$
+
+
+
+</center>
+
+<p> </p>
+
+<p>where for our example is calculated and stored in the variables <code class="language-plaintext highlighter-rouge">sigma2_hat</code>, <code class="language-plaintext highlighter-rouge">rho_hat</code> and <code class="language-plaintext highlighter-rouge">tau2_hat</code>.</p>
+
+<p> </p>
+
+<h4 id="step-3-re-estimate-beta">Step 3. Re-estimate $\beta$</h4>
+
+<p>Finally, we can re-estimate the mean trend parameter $\beta$ by the generalized least squares method using the variance parameters we have estimated in step 2.</p>
+
+<center>
+
+$$
+\begin{aligned}
+\hat \beta_{GLS} = \big( X^\prime \hat \Sigma^{-1}X  \big)^{-1} X^\prime \hat\Sigma^{-1}Y, \quad (\hat\Sigma^{-1} \text{ is the estimated covariance matrix})
+\end{aligned}
+$$
+
+
+
+</center>
+
+<p> </p>
+
+<p>To implement this in R, we have to first define a distance matrix among the locations in our dataset. Then, we will define the covariance structure by using the exponential covariance function and get the estimated covariance matrix $\hat \Sigma^{-1}$</p>
+
+<p>Note that the exponential covariance function is defined as the following formula:</p>
+
+<center>
+
+
+$$
+\gamma(h) = \sigma^2exp\big(\frac{-\left\| h \right\|}{\rho} \big)
+$$
+</center>
+
+<p>where $\lvert\lvert h \rvert\rvert$ is the distance matrix.</p>
+
+<script src="https://gist.github.com/domug/cb79142ff95830d0e0e6c7036f360537.js"></script>
+
+<p> </p>
+
+<p>Now we are ready to derive $\hat \beta_{GLS}$.</p>
+
+<script src="https://gist.github.com/domug/c0096caeca3ab8f772b4b4cc0abdae69.js"></script>
+
+<center>
+  <img src="/images/sda/gls.png" width="300" height="200" /> 
+  <br />
+  <em><span style="color:grey"></span></em>
+</center>
+
+<p> </p>
+
+<p>Finally, we have completely defined our model!</p>
+
+<p> </p>
+
+<hr />
+
+<h2 id="krigging">Krigging</h2>
+
+<p>As a next step, it’s time to get predictions for unobserved locations. In a spatial analysis domain, the prediction for unobserved location is called as <strong>krigging</strong> (or interpolation) so I will stick to the term krigging.</p>
+
+<p>Since we have defined our covariance structure by the Gaussian Process, we can use the decent property of multivariate normal distribution that the conditional and marginal distribution can be factorized as</p>
+
+<p> </p>
+
+<center>
+
+$$
+\begin{aligned}
+{Y_1 \choose Y_2} \sim N\Big( {\mu_1 \choose \mu_2}, &amp;\begin{pmatrix}
+\Sigma_{11} &amp; \Sigma_{12} \\
+\Sigma_{21} &amp; \Sigma_{22} \\
+\end{pmatrix} \Big) \\[20pt]
+\text{where }&amp;Y_1 \sim N \big(\mu_1, \Sigma_{11} \big) \\[10pt]
+&amp;Y_2 |Y_1 \sim N \big(\mu_2 + \Sigma_{21} \Sigma_{11}^{-1}(Y_1 - \mu_1),\; \Sigma_{22} - \Sigma_{21}\Sigma_{11}^{-1} \Sigma_{12} \big)
+\end{aligned}
+$$
+
+
+
+</center>
+
+<p> </p>
+
+<p>Using this property, we can define the joint distribution of $Y$ and $Y(s_0)$ as</p>
+
+<p> </p>
+
+<center>
+
+$$
+\begin{aligned}
+{Y \choose Y(s_0)} \sim N\Big( {m \choose m_0}, &amp;\begin{pmatrix}
+\Sigma &amp; \gamma \\
+\gamma^\prime &amp; \sigma^2 \\
+\end{pmatrix} \Big) \\[20pt]
+\end{aligned}
+$$
+
+</center>
+
+<p> </p>
+
+<p>In this setting, let
+\(\hat Y(s_0) = \lambda_0 + \lambda^\prime Y\)
+indicate the krigging vector.</p>
+
+<p>if we assume $\lambda_0 = m_0 - \lambda^\prime m$, then we have</p>
+
+<center>
+
+$$
+\begin{aligned}
+E[\hat Y(s_0) - Y(s_0)] &amp;= E[\lambda_0 + \lambda^\prime Y - Y(s_0)]\\[10pt]
+&amp;= 0
+\end{aligned}
+$$
+
+</center>
+
+<p>which implies the unbiasedness of the krigging estimator.</p>
+
+<p>Therefore, to get the <strong>BLUP</strong> (Best Linear Unbiased Predictor) of $Y(s_0)$, it is natural to search for an estimator that minimizes the variance such that</p>
+
+<center>
+
+$$
+\begin{aligned}
+\hat \lambda_{opt} &amp;= \underset{\lambda}{argmin} \; Var\big( \hat Y(s_0) - Y(s_0)  \big)\\ 
+&amp;= \underset{\lambda}{argmin} \; Var\big( \hat Y(s_0)\big) + Var\big(Y(s_0)  \big) -2Cov(\hat Y(s_0), Y(s_0)) \\[10pt]
+&amp;= \underset{\lambda}{argmin} \; \{ \lambda^\prime \Sigma\lambda + \sigma^2-2\lambda^\prime\gamma \} \\[10pt]
+&amp;\Leftrightarrow \frac{\partial}{\partial \lambda} \{ \lambda^\prime \Sigma\lambda + \sigma^2-2\lambda^\prime\gamma \} \overset{set}{\equiv} 0 \\[10pt]
+&amp;\therefore \hat \lambda_{opt} =\Sigma^{-1}\gamma \\[10pt]
+&amp;\Rightarrow\hat Y(s_0) = m_0 + \gamma^\prime \Sigma^{-1}(Y-m)
+
+\end{aligned}
+$$
+
+</center>
+
+<p> </p>
+
+<p>The derivation of the krigging estimator from the above equation assumes that we know the values of the parameters of the joint normal distribution. However, in realistic situations, <strong>we often don’t know the mean parameters $m$ and $m_0$ as well as the covariance parameters $\theta = (\gamma, \sigma^2)$</strong>.</p>
+
+<p>Therefore, we have to somehow estimate these parameters by our dataset and plug in the estimated parameters to get the krigging values. The krigging estimator defined by this is called as the <strong>EBLUP</strong> (empirical BLUP). The EBLUP tends to underestimate the true error because it ignores the variability coming from estimating $\theta$ in the first place, which leads to lower performance. In subsequent posts, we will see how Bayesian methods can solve all of these problems completely.</p>
+
+<p> </p>
+
+<h4 id="krigging-example">Krigging Example</h4>
+
+<p>Now let’s implement the above illustration of krigging for our <code class="language-plaintext highlighter-rouge">CAgrid</code> dataset.</p>
+
+<p>First, we have to define distance matrix and derive the covariance matrix. Note that we are trying to derive the “EBLUP” by reusing the estimates from previous questions since we have no idea about the parameters.</p>
+
+<script src="https://gist.github.com/domug/090f079491fd30b574986d7fce60220b.js"></script>
+
+<p> </p>
+
+<p>And we are ready to get the predictions.</p>
+
+<center>
+
+$$
+\hat Y(s_0) = X(s_0)^{\prime} \hat\beta_{GLS} + \gamma^{\prime}\Sigma^{-1}(Y-X^\prime\hat\beta_{GLS})
+$$
+
+</center>
+
+<script src="https://gist.github.com/domug/72e2c06fdffd8934933eb3c0eefc3348.js"></script>
+
+<center>
+  <img src="/images/sda/krigging.png" width="200" height="100" /> 
+  <br />
+  <em><span style="color:grey"></span></em>
+</center>
+
+<p> </p>
+
+<p>Furthermore, we can calculate the mean squared error for our predictions by the following formula:</p>
+
+<center>
+
+$$
+MSE(s_0) = \sigma^2 - \gamma^{\prime} \Sigma^{-1}\gamma + b^{\prime}(X^{\prime}\Sigma^{-1}X)^{-1}b,\\
+where\;\;\;\;b = X(s_0)^{\prime} - X^{\prime}\Sigma^{-1}\gamma
+$$
+
+
+
+</center>
+
+<script src="https://gist.github.com/domug/1f9e4ff634726ef97f2af4228579c5ed.js"></script>
+
+<p> </p>
+
+<p>Let’s visualize the predictions and standard errors.</p>
+
+<script src="https://gist.github.com/domug/f3593e9998b04b797776d52a661e5a24.js"></script>
+
+<center>
+  <img src="/images/sda/prediction.png" width="500" height="300" /> 
+  <br />
+  <em><span style="color:grey"></span></em>
+</center>
+
+<p> </p>
+
+<script src="https://gist.github.com/domug/ef9a16bf3b41564257f1ff0d74193862.js"></script>
+
+<center>
+  <img src="/images/sda/error.png" width="500" height="300" /> 
+  <br />
+  <em><span style="color:grey"></span></em>
+</center>
+
+<p> </p>
+
+<p>From the plot of standard errors, we can see that the error is relatively small for locations with lots of nearby data points which seems reasonable.</p>
+
+<hr />
+
+<h2 id="reference">Reference</h2>
+
+<p>This post is written based on the lecture note of <em>Spatial Data Analysis</em> (STA6241), held at the Department of Statistics &amp; Data Science at Yonsei University 2021-2 autumn semester.</p>
+
+:ET

@@ -26,13 +26,7 @@ The contents of this post is subsequent to [this post](https://domug.github.io/2
 
 [21.5 Density estimation and regression](#215-density-estimation-and-regression)
 
-
-
-
-
 &nbsp;
-
-
 
 ---
 
@@ -42,7 +36,7 @@ The contents of this post is subsequent to [this post](https://domug.github.io/2
 
 So far, we talked about using Gaussian process as a prior for an arbitrary function. In this setting, we implicitly assumed that the likelihood 
 $$
-p(y | \theta) 
+p(y | \theta)
 $$
 is **normal**. This wasn't a huge deal for any type of continuous data, as transformation technics are available for such cases to make them approximately normal.
 

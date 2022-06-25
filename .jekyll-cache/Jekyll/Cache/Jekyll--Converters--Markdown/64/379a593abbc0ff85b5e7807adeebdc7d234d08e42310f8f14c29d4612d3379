@@ -1,0 +1,154 @@
+I"-<p> </p>
+
+<p>This post is an overall summary of different testing methodologies used in clinical trials.</p>
+
+<p><a href="#1-one-sample-t-test">1. One-Sample T-test</a></p>
+
+<p><a href="#2-two-sample-t-test">2. Two-Sample T-test</a></p>
+
+<hr />
+
+<h1 id="1-one-sample-t-test">1. <strong>One-Sample T-test</strong></h1>
+
+<p><em>One-Sample T-test</em> is used to infer whether an <strong>unknown population mean</strong> differs from a <strong>hypothesized value</strong>.</p>
+
+<p><strong>&lt;Assumptions&gt;</strong></p>
+
+<ul>
+  <li>i.i.d. samples from normal distribution with unknown mean μ.</li>
+</ul>
+
+<p><strong>&lt;Test Setting&gt;</strong></p>
+
+<center>
+  <img src="/images/tests/ttest1.png" width="500" height="300" /> 
+</center>
+
+<p> </p>
+
+<p><strong>&lt;Takeaways&gt;</strong></p>
+
+<ul>
+  <li>A special case of the <em>one-sample t-test</em> is to determine whether a mean response changes under different experimental conditions by using “paired observations” ($\mu_d$=the mean difference, $\mu_0$= 0 , $y_i$’s = the paired-differences).</li>
+  <li>It can be shown that the <em>t-test</em> is equivalent to the <strong><em>Z-test</em></strong> for <strong>infinite degrees of freedom</strong>. In other words, Z-test is equivalent to t-test in the limit of sample size. In practice, a ‘large’ sample is usually considered to be $n$ ≥ 30.</li>
+  <li>If the assumption of <strong>normality</strong> cannot be guarenteed, the “mean” might not be the best measure of central tendency. In such cases, a non- parametric test such as the <em>Wilcoxon signed-rank test</em> might be more appropriate choice.</li>
+  <li>A non-significant result does not necessarily imply that the null hypothesis is true. It only asserts <strong>insufficient evidence</strong> for contradicting the original statement.</li>
+  <li>Statistical significance <strong>does not imply causality</strong> in observational studies, only for <strong>“randomized”</strong> controlled trials (RCT).</li>
+</ul>
+
+<hr />
+
+<h1 id="2-two-sample-t-test">2. <strong>Two-sample T-test</strong></h1>
+
+<p><em>Two-sample T-test</em> is used to compare the means of two independent populations, denoted as $\mu_1$ and  $\mu_2$.</p>
+
+<p>It has ubiquitous application in the analysis of controlled clinical trials.</p>
+
+<p><strong>&lt;Assumptions&gt;</strong></p>
+
+<ul>
+  <li>The populations are normally distributed.</li>
+  <li>Homogeneity of variance - the populations share the same variance $\sigma^2$.</li>
+</ul>
+
+<p><strong>&lt;Test Setting&gt;</strong></p>
+
+<center>
+  <img src="/images/tests/ttest2.png" width="500" height="300" /> 
+</center>
+
+<center>
+  <img src="/images/tests/ttest2-1.png" width="250" height="150" /> 
+</center>
+
+<p> </p>
+
+<p><strong>&lt;Takeaways&gt;</strong></p>
+
+<ul>
+  <li>The assumption of equal variances can be tested using the <strong><em>F-test</em></strong>:</li>
+</ul>
+
+<center>
+  <img src="/images/tests/ttest2-2.png" width="500" height="300" /> 
+</center>
+
+<ul>
+  <li>If the assumption of equal variances is rejected, a slight modification of the <em>t-test</em> called as the <a href="https://en.wikipedia.org/wiki/Welch%27s_t-test"><em>Welch’s t-test</em></a>:</li>
+</ul>
+
+<center>
+  <img src="/images/tests/ttest2-3.png" width="500" height="300" /> 
+</center>
+
+<center>
+  <img src="/images/tests/ttest2-4.png" width="200" height="100" /> 
+</center>
+
+<ul>
+  <li>The assumption of normality can formally be checked by the <em><a href="https://en.wikipedia.org/wiki/Shapiro%E2%80%93Wilk_test">Shapiro-Wilk test</a></em> or the <em><a href="https://en.wikipedia.org/wiki/Kolmogorov%E2%80%93Smirnov_test">Kolmogorov-Smirnov test</a></em>.</li>
+  <li>For large enough samples, <strong>CLT (central limit theorem)</strong> holds. However, if the data is heavily skewed such that normal approximation guarenteed by CLT is not sufficiently accurate, we have to consider changing test statistic from mean to median and use <em>Wilcoxon rank-sum test</em> instead.</li>
+</ul>
+
+<hr />
+
+<h1 id="3-one-way-anova">3. <strong>One-way ANOVA</strong></h1>
+
+<p><em>One-way ANOVA</em> is used to simultaneously compare two or more group means based on independent samples from each group.</p>
+
+<p><strong>&lt;Assumptions&gt;</strong></p>
+
+<ul>
+  <li>normally distributed data</li>
+  <li>samples are independent w.r.t. each group</li>
+  <li><strong>variance homogeneity</strong>, meaning that the within-group variance is constant across groups. This can be expressed as $\sigma_1 = \sigma_2 = \dots = \sigma_k = \sigma$</li>
+</ul>
+
+<p><strong>&lt;Test Setting&gt;</strong></p>
+
+<center>
+  <img src="/images/tests/anova1.png" width="500" height="300" /> 
+</center>
+
+<p><strong>&lt;Remarks&gt;</strong></p>
+
+<ul>
+  <li>Intuitively, if the “<em>F</em> statistic” that is roughly the ratio of <strong><em>between-group variability</em></strong> and <strong><em>within-group variability</em></strong> is far from 1, it is evident that the group means indeed differ.</li>
+  <li>
+    <p>On the other hand, <em>F</em> statistic will be close to 1, if the variation <strong>among groups</strong> and the variation <strong>within groups</strong> are independent estimates of the same measurement variation, $\sigma^2$.</p>
+  </li>
+  <li>
+    <p>In this sense, <em>MSG</em> is an estimate of the variability among groups, and <strong><em>MSE</em></strong> is an estimate of the variability within groups.</p>
+  </li>
+  <li>The parameters associated with the <em>F</em>-distribution are the upper and lower degrees of freedom.</li>
+  <li>
+    <p>An <strong>“ANOVA table”</strong> is a traditional and widely used method of summarizing the results (as shown above).</p>
+  </li>
+  <li>
+    <p>Similar to t-test, <em>Shapiro-Wilk test</em> or <em>Kolmogorov-Smirnoff test</em> can be used to check <strong>normality assumption</strong>.</p>
+  </li>
+  <li>
+    <p>For <strong>variance homogeneity</strong> assumption, <em>Levene’s test</em> or <strong><em>Bartlett’s test</em></strong>, can be used.</p>
+  </li>
+  <li>
+    <p>When comparing <strong>more than two means</strong> (k &gt; 2), a significant <em>F-test</em> indicates that at least one pair of means differs, but which pair (or pairs) is not identified by <em>ANOVA</em>. Therefore, if the null hypothesis is rejected further analysis must be undertaken to investigate where the differences lie.</p>
+  </li>
+  <li>95% confidence intervals can also be obtained for the mean difference between any pair of groups (e.g, Group <em>i</em> vs Group <em>j</em>) by using the formula:</li>
+</ul>
+
+<hr />
+
+<p> </p>
+
+<p> </p>
+
+<p> </p>
+
+<p> </p>
+
+<center>
+  <img src="/images/tests/ttest1.png" width="500" height="300" /> 
+</center>
+
+<hr />
+:ET

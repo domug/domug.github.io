@@ -1,0 +1,156 @@
+I"n5<p> </p>
+
+<p>This post will briefly investigate the key ideas behind modern statistics in terms of the concept of statistical inference.</p>
+
+<p> </p>
+
+<hr />
+
+<h1 id="what-is-statistics">What is Statistics?</h1>
+
+<p>Before the advance of Pearson’s statistical revolution in the early 20th century, our universe was considered to be <strong>deterministic</strong>.  Scholars tried to find out the exact distance between an asteroid and Earth with precise math and scientific theories and thought every phenomenon is a result of an innate principle of universe.</p>
+
+<p>However, starting from the famous British statistician named <a href="https://en.wikipedia.org/wiki/Karl_Pearson">Karl Pearson</a>, <strong>probabilistic view of universe</strong> became to dominate science. This was made possible with a simple shift in thought such that “<strong>the observed data is one of the many possible outcomes from a specific value of a parameter</strong>”.</p>
+
+<p>Let’s assume that we are interested in finding out the average height of male students in Yonsei University. The parameter to be inferred is the “average height” and the most naive but straightforward approach would be to conduct an inquiry to all male students of Yonsei University and calculate the average based on the collected data. However, this approach is infeasible when our target of interest is sufficiently large (think about making a poll to millions of voters during the presidential election).</p>
+
+<p>To deal with this problem, statisticians have came up with an idea to approximate the parameter based on <strong>samples</strong>. From now, we are assuming that the height of the students are the randomly generated values from the parameter and we are using these samples to make inference on the parameter in the other way around.</p>
+
+<p>Thus, a <strong>statistical inference</strong> is composed of a series of logical procedure which can be abstracted by the following illustration.</p>
+
+<p> </p>
+
+<p align="center">
+  <img width="700" height="500" src="/images/Estimation_Multi/statistics.png" />
+</p>
+
+<p> </p>
+
+<ol>
+  <li>Define a <strong>parameter</strong> from the <strong>population space</strong>.
+    <ul>
+      <li><em>parameter</em> is our target of interest which we cannot know exactly.</li>
+    </ul>
+  </li>
+  <li>Collect <strong>samples</strong> from the population.
+    <ul>
+      <li>samples must be representative of the population.</li>
+    </ul>
+  </li>
+  <li>From the samples, make inference about the parameter.</li>
+</ol>
+
+<p> </p>
+
+<p>So in a nutshell, <strong>statistical inference</strong> is all about making a decision about the parameter from the collected samples. In this sense, statistical inference can mainly be decomposed into 2 sub-categories based on the objective and aim of the study - which are <strong>Estimation</strong> and <strong>Testing</strong>. Let’s briefly take a look at each.</p>
+
+<p> </p>
+
+<hr />
+
+<h1 id="statistical-estimation">Statistical Estimation</h1>
+
+<p>Statistical estimation is an endeavor to find an <strong>estimator</strong> to approximate the parameter. From the collected samples, an <strong>estimator</strong> (or <strong>object function</strong>) is defined, which is a <strong>function of random variables</strong>, to efficiently mimic the behaviour of the original parameter.</p>
+
+<p>For example, consider a situation in which we want to make inference on the population mean. Since it is impossible to consider every single entities in a parameter space, we mostly use sample mean as a representative of the population mean.</p>
+
+<p> </p>
+
+<center>
+
+$$
+\mu \approx \bar X = \frac{\sum_{i=1}^{N} X_i }{N}
+$$
+
+
+
+</center>
+
+<p> </p>
+
+<p>Note that the sample mean is an estimator because it is a function of random variables $X_1, X_2, … X_N$.</p>
+
+<p>However, defining an estimator can be largely subjective. Whereas from the above example a sample mean is used as an estimator of population mean, someone might possibly claim to use sample median instead. To prevent this possible disharmony, a famous British statistician <a href="https://en.wikipedia.org/wiki/Ronald_Fisher">Ronald Fisher</a> has suggested some criteria for evaluating a defined estimator. Among them, some of the most basic criteria are <strong>consistency</strong>, <strong>unbiasedness</strong> and <strong>efficiency</strong>, which are introduced in Hogg’s Mathematical Statistics. This is a semester-length topic to be covered, so for now let’s ignore the nitty-gritty details and just remember that the <strong>variance</strong> of an estimator plays a key role in evaluating its performance.</p>
+
+<p>Let’s assume that we have defined an estimator of our parameter. As a subsequent step, we have to question how effectively our defined estimator can represent the true parameter. Regarding this, a <strong>loss function</strong> is defined to get a specific numerical value of our estimator’s uncertainty. The most commonly used loss function for continuous estimator is the <strong>Mean Square Prediction Error (MSPE)</strong>, which is just the expected value of the difference between the prediction of our estimator and the true parameter. Here is the formula.</p>
+
+<p> </p>
+
+<center>
+
+$$
+\begin{aligned}
+
+MSPE(x) &amp;= E[ (\hat f(x) - y)^2 ] \\
+&amp;= Bias(\hat f(x))^2 + Var(\hat f(x)) + \sigma^2, \;\;\;\;where \; Bias(\hat f(x)) = E[\hat f(x) - E[y]]
+
+\end{aligned}
+$$
+
+</center>
+
+<p> </p>
+
+<p>From the second line of the equation, we can see that MSPE can be decomposed into <strong>Bias</strong> and <strong>Variance</strong> respectively. This decomposition is very important and is called as <strong>Bias-Variance Tradeoff</strong>. Namely, bias is inversely proportional to the variance. Then what are bias and variance? Imagine a situation in a shooting range. A sniper sees a target at about 500 meters ahead and took 8 shots with his rifle. The following is the resulting performance.</p>
+
+<p> </p>
+
+<p align="center">
+  <img width="460" height="300" src="/images/Estimation_Multi/bvtradeoff.svg" />
+</p>
+
+<p align="center">
+  <img width="700" height="500" src="/images/Estimation_Multi/bvtradeofftable.png" />
+</p>
+
+<p> </p>
+
+<p>Among the 4 outcomes, which one would be the best performance? Ideally, a sniper would like to have his shots to be within the target as well as the shots be precise so that they are not scattered all over the place. In this sense, it looks like the very first outcome of the top left is the best. Well this is indeed ideal, but life isn’t always that easy. Most likely the shots will be among the latter three depending on various factors that distract the sniper’s performance. Therefore in a realistical sense, the bottom left outcome is still fair enough.</p>
+
+<p>This example is a nice illustration of the bias variance tradeoff. We want our estimator to be as closest to the parameter as possible while at the same time be consistent (“consistent” in here means that when we recalculate the predicted value by estimator, the estimated values does not vary much). But by the innate principle of the universe, we can’t achieve both at once. Thus, we have to compromise between the ideal and reality like the bottom left outcome and it’s totally upto the researcher to decide the amount of tradeoff depending on the goal of the research.</p>
+
+<p>In practice, a <strong>Maximum Likelihood Estimator (MLE)</strong>, an estimator that maximizes the <strong>likelihood function</strong> (likelihood function is equationally the same as the pdf of a distribution but with an alternating perspective from the data points), is most widely used as an estimator. The reason is because it has lots of desirable properties based on its asymptoticity (when sample size diverges to infinity). To be more specific, it is known that under some regularity conditions, an MLE is always asymptotically unbiased and efficient as its limiting distribution is the Gaussian distribution.</p>
+
+<p>Anyways, the key concept of statistical estimation is making inference about the parameter based on the estimator. Note that <strong>we only use the term “estimation” when our target of interest implies randomness</strong> (Again, an estimator is a function of random variables!).</p>
+
+<p> </p>
+
+<hr />
+
+<h1 id="testing">Testing</h1>
+
+<p>Another key element of statistical inference is (hypothesis) testing. A statistical test in short is a procedure to <strong>validate the status quo by comparing it to the alternative.</strong> This <strong>status quo</strong> is formally called as the <strong>null hypothesis</strong> and the alternative is called as the <strong>alternative hypothesis</strong>, which are denoted by $H_0$ and $H_1$ respectively.</p>
+
+<p>Here’s a brief summary of testing procedure.</p>
+
+<ol>
+  <li>Define and calculate the <strong>test statistic</strong> based on the hypothesis to be tested.</li>
+  <li>Divide the parameter space into two disjoint and complementary subspace. One of this subspace is called as the <strong>critical region</strong>.</li>
+  <li>Reject the null hypothesis only if a test statistic is included in the critical region.</li>
+</ol>
+
+<p>In step (1), a test statistic is defined considering the characteristic of the hypothesis to be tested. For example, if a researcher is interested in studying whether there is difference in the average value of two population, two sample t-test is used and the test statistic is derived accordingly.</p>
+
+<p>In step (2), defining a critical region is the core of a hypothesis testing procedure (In fact, a test is defined by its critical region!). To do this, the maximum percentage of error to be tolerated based on the assumption that our null hypothesis is correct is set. This maximum value is formally called as the <strong>significance level (or Type I error)</strong> and 0.01 or 0.05 is most commonly used in practice.</p>
+
+<p>In step (3), the null hypothesis is rejected according to the calculated test statistic. In practice, this decision is driven by the <strong>p-value</strong>. A <strong>p-value</strong> by definition, is <strong>a probability of obtaining a result equal to or more extreme than what was being observed by the given data under the assumption that the null hypothesis is valid.</strong> For example, if the calculated p-value was 0.01 for a specific test, it is equivalent to saying that the observed data is likely to happen with probability of only 1% under the null hypothesis, which is a very unusal case. Thus, if this is the case, it is natural to infer that the null hypothesis was wrong in the first place so it works as an evidence for rejecting the null hypothesis.</p>
+
+<p> </p>
+
+<blockquote>
+  <p>p-value should <strong>never</strong> be interpreted as the probability of the parameter itself because the <strong>parameter is a constant</strong>!! (This is a bit different in a field of <strong>Bayesian Statistics</strong>, but we don’t use the term p-value in Bayesian Statistics so let’s not be bothered for now.)</p>
+</blockquote>
+
+<p> </p>
+
+<p>However, <strong>rejecting the null hypothesis doesn’t necessarily mean that the alternative hypothesis is correct</strong>. It is easy to think of the statistical testing procedure as a prosecutor accusing the defendant in a court. In a statistical test, a researcher tries to find evidence (data) to prove that the null hypothesis is wrong. But even if there is lack of evidence, it does not guarentee that the null hypothesis is correct. We can only say in terms of uncertainty, that there is “lack of evidence” to conclude that the null hypothesis is wrong. Thus, a sufficiently large p-value must be interpreted as “not enough evidence that goes against the null hypothesis”, but should never be interpreted as “there is clear evidence to prove that the null hypothesis is correct”.</p>
+
+<p>Therefore, a small p-value is not sufficient to withdraw any meaningful conclusion because the value itself can sometimes be misleading. For example, think about a situation where we are testing the hypothesis such that “the percentage of two groups are different”. Assume that we have calculated the percentage of the two groups, which were 40% and 40.2%. Regarding this, we would expect a large p-value, but this difference of 0.2%p can be statistically significant if the sample size was sufficiently large especially for us living in a world of big data.</p>
+
+<p>Therefore, a researcher should always provide <strong>confidence interval</strong> along with the p-value for his research to be valid. <strong>A typical 95% confidence interval in short is an interval that would encompass the true population parameter if the procedure is repeated for multiple times.</strong> This definition is somewhat unnatural because we cannot make any probabilistic statement about the parameter as it is a constant value. Thus, the probability of the true parameter to be included in a confidence interval is always binary (0 or 1) and 95% confidence interval just guarentees that if the interval is calculated multiple times, then about 95% of these intervals would indeed contain the true parameter.</p>
+
+<p>This is the reason why I personally don’t prefer statistical hypothesis testing procedure because I think it is somewhat arbitrary. For disciplines in which samples are limited and conduting an experiment is costly such as the field of medicine, statistical tests are powerful tools. However, we should not have blind faith on the low p-value and keep it mind that statistical tests are merely tools and exist as a guideline for making a decision.</p>
+
+<p> </p>
+
+:ET
