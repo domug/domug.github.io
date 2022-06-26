@@ -1,0 +1,984 @@
+I"B�<p> </p>
+
+<p>This post is an overall summary of different testing methodologies used in clinical trials.</p>
+
+<ul>
+  <li>
+    <p><a href="#1-one-sample-t-test">1. One-Sample T-test</a></p>
+  </li>
+  <li>
+    <p><a href="#2-two-sample-t-test">2. Two-Sample T-test</a></p>
+  </li>
+  <li>
+    <p><a href="#3-one-way-anova">3. One-way ANOVA</a></p>
+  </li>
+  <li>
+    <p><a href="#4-two-way-anova">4. Two-way ANOVA</a></p>
+  </li>
+  <li>
+    <p><a href="#5-linear-regression">5. Linear Regression</a></p>
+  </li>
+  <li>
+    <p><a href="#6-analysis-of-covariance">6. Analysis of Covariance</a></p>
+  </li>
+  <li>
+    <p><a href="#7-wilcoxon-signed-rank-test">7. Wilcoxon Signed Rank Test</a></p>
+  </li>
+  <li>
+    <p><a href="#8-wilcoxon-rank-sum-test">8. Wilcoxon Rank-Sum Test</a></p>
+  </li>
+  <li>
+    <p><a href="#9-kruskal-wallis-test">9 Kruskal-Wallis Test</a></p>
+  </li>
+  <li>
+    <p><a href="#10-binomial-test">10. Binomial Test</a></p>
+  </li>
+  <li>
+    <p><a href="#11-chi-square-test">11. Chi-Square Test</a></p>
+  </li>
+  <li>
+    <p><a href="#12-fishers-exact-test">12. Fisher’s Exact Test</a></p>
+  </li>
+  <li>
+    <p><a href="#13-mcnemars-test">13. McNemar’s Test</a></p>
+  </li>
+  <li>
+    <p><a href="#14-cochran-mantel-haenszel-test">14. Cochran-Mantel-Haenszel Test</a></p>
+  </li>
+  <li>
+    <p><a href="#15-logistic-regression">15. Logistic Regression</a></p>
+  </li>
+</ul>
+
+<p> </p>
+
+<hr />
+
+<h1 id="1-one-sample-t-test">1. <strong>One-Sample T-test</strong></h1>
+
+<p>One-Sample T-test is used to infer whether an <strong>unknown population mean</strong> differs from a <strong>hypothesized value</strong>.</p>
+
+<p><strong>&lt;Assumptions&gt;</strong></p>
+
+<ul>
+  <li>i.i.d. samples from normal distribution with unknown mean μ.</li>
+</ul>
+
+<p><strong>&lt;Test Setting&gt;</strong></p>
+
+<center>
+  <img src="/images/tests/ttest1.png" width="500" height="300" /> 
+</center>
+
+<p> </p>
+
+<p><strong>&lt;Takeaways&gt;</strong></p>
+
+<ul>
+  <li>A special case of the <em>one-sample t-test</em> is to determine whether a mean response changes under different experimental conditions by using “paired observations” ($\mu_d$=the mean difference, $\mu_0$= 0 , $y_i$’s = the paired-differences).</li>
+  <li>It can be shown that the <em>t-test</em> is equivalent to the <strong><em>Z-test</em></strong> for <strong>infinite degrees of freedom</strong>. In other words, Z-test is equivalent to t-test in the limit of sample size. In practice, a ‘large’ sample is usually considered to be $n$ ≥ 30.</li>
+  <li>If the assumption of <strong>normality</strong> cannot be guarenteed, the “mean” might not be the best measure of central tendency. In such cases, a non- parametric test such as the <em>Wilcoxon signed-rank test</em> might be more appropriate choice.</li>
+  <li>A non-significant result does not necessarily imply that the null hypothesis is true. It only asserts <strong>insufficient evidence</strong> for contradicting the original statement.</li>
+  <li>Statistical significance <strong>does not imply causality</strong> in observational studies, only for <strong>“randomized”</strong> controlled trials (RCT).</li>
+</ul>
+
+<p> </p>
+
+<hr />
+
+<h1 id="2-two-sample-t-test">2. <strong>Two-sample T-test</strong></h1>
+
+<p>Two-sample T-test is used to compare the means of two independent populations, denoted as $\mu_1$ and  $\mu_2$.</p>
+
+<p>It has ubiquitous application in the analysis of controlled clinical trials.</p>
+
+<p><strong>&lt;Assumptions&gt;</strong></p>
+
+<ul>
+  <li>The populations are normally distributed.</li>
+  <li>Homogeneity of variance - the populations share the same variance $\sigma^2$.</li>
+</ul>
+
+<p><strong>&lt;Test Setting&gt;</strong></p>
+
+<center>
+  <img src="/images/tests/ttest2.png" width="500" height="300" /> 
+</center>
+
+<center>
+  <img src="/images/tests/ttest2-1.png" width="250" height="150" /> 
+</center>
+
+<p> </p>
+
+<p><strong>&lt;Takeaways&gt;</strong></p>
+
+<ul>
+  <li>The assumption of equal variances can be tested using the <strong><em>F-test</em></strong>:</li>
+</ul>
+
+<center>
+  <img src="/images/tests/ttest2-2.png" width="500" height="300" /> 
+</center>
+
+<ul>
+  <li>If the assumption of equal variances is rejected, a slight modification of the <em>t-test</em> called as the <a href="https://en.wikipedia.org/wiki/Welch%27s_t-test"><em>Welch’s t-test</em></a>:</li>
+</ul>
+
+<center>
+  <img src="/images/tests/ttest2-3.png" width="500" height="300" /> 
+</center>
+
+<center>
+  <img src="/images/tests/ttest2-4.png" width="200" height="100" /> 
+</center>
+
+<ul>
+  <li>The assumption of normality can formally be checked by the <em><a href="https://en.wikipedia.org/wiki/Shapiro%E2%80%93Wilk_test">Shapiro-Wilk test</a></em> or the <em><a href="https://en.wikipedia.org/wiki/Kolmogorov%E2%80%93Smirnov_test">Kolmogorov-Smirnov test</a></em>.</li>
+  <li>For large enough samples, <strong>CLT (central limit theorem)</strong> holds. However, if the data is heavily skewed such that normal approximation guarenteed by CLT is not sufficiently accurate, we have to consider changing test statistic from mean to median and use <em>Wilcoxon rank-sum test</em> instead.</li>
+</ul>
+
+<p> </p>
+
+<hr />
+
+<h1 id="3-one-way-anova">3. <strong>One-way ANOVA</strong></h1>
+
+<p>One-way ANOVA is used to simultaneously compare two or more group means based on independent samples from each group.</p>
+
+<p><strong>&lt;Assumptions&gt;</strong></p>
+
+<ul>
+  <li>normally distributed data</li>
+  <li>samples are independent w.r.t. each group</li>
+  <li><strong>variance homogeneity</strong>, meaning that the within-group variance is constant across groups. This can be expressed as $\sigma_1 = \sigma_2 = \dots = \sigma_k = \sigma$</li>
+</ul>
+
+<p><strong>&lt;Test Setting&gt;</strong></p>
+
+<center>
+  <img src="/images/tests/anova1.png" width="500" height="300" /> 
+</center>
+
+<p><strong>&lt;Takeaways&gt;</strong></p>
+
+<ul>
+  <li>Intuitively, if the “<em>F</em> statistic” that is roughly the ratio of <strong><em>between-group variability</em></strong> and <strong><em>within-group variability</em></strong> is far from 1, it is evident that the group means indeed differ.</li>
+  <li>
+    <p>On the other hand, <em>F</em> statistic will be close to 1, if the variation <strong>among groups</strong> and the variation <strong>within groups</strong> are independent estimates of the same measurement variation, $\sigma^2$.</p>
+  </li>
+  <li>
+    <p>In this sense, <em>MSG</em> is an estimate of the variability “among groups”, and <em>MSE</em> is an estimate of the variability “within groups”.</p>
+  </li>
+  <li>The parameters associated with the <em>F</em>-distribution are the upper and lower degrees of freedom.</li>
+  <li>
+    <p>An “ANOVA table” is the conventional method of summarizing the results (shown above).</p>
+  </li>
+  <li>
+    <p>Similar to t-test, <em>Shapiro-Wilk test</em> or <em>Kolmogorov-Smirnoff test</em> can be used to check the normality assumption.</p>
+  </li>
+  <li>
+    <p>For variance homogeneity assumption, <em><a href="https://en.wikipedia.org/wiki/Levene%27s_test">Levene’s test</a></em> or <em><a href="https://en.wikipedia.org/wiki/Bartlett%27s_test">Bartlett’s test</a></em> can be used.</p>
+  </li>
+  <li>
+    <p>When <strong>comparing</strong> <strong>more than two means</strong> ($k$ &gt; 2), a significance of the <em>F-test</em> indicates that at least one pair of means are different, but it doesn’t tell us which specific pairs are. Therefore, if the null hypothesis is rejected, further analysis should be taken to investigate where the differences lie.</p>
+  </li>
+  <li>95% confidence intervals can also be obtained for the mean difference between any pairs of groups (e.g, Group <em>i</em> vs Group <em>j</em>) by the formula:</li>
+</ul>
+
+<center>
+  <img src="/images/tests/anova2.png" width="300" height="150" /> 
+</center>
+
+<ul>
+  <li>If there are <strong>only two groups ($k = 2$)</strong>, the p-value for Group effect using an <strong><em>ANOVA</em></strong> is the same as that of a standard <strong><em>two-sample t-test</em></strong>. This is because the F and t-distributions enjoy the relationship that, with 1 upper degree of freedom, the <strong>F-statistic is the square of the t-statistic</strong>. When $k = 2$, the MSE in <em>ANOVA</em> is identical to the pooled variance in the <em>two-sample t-test</em>.</li>
+</ul>
+
+<p> </p>
+
+<hr />
+
+<h1 id="4-two-way-anova">4. <strong>Two-way ANOVA</strong></h1>
+
+<p>Two-way ANOVA is a method for “simultaneously” analyzing two factors that affect a response.</p>
+
+<p>It is also called a <strong>“randomized block design”</strong>.</p>
+
+<p><strong>&lt;Assumptions&gt;</strong></p>
+
+<ul>
+  <li>Similar to the one-way ANOVA - <strong>normality</strong>, <strong>variance homogeneity</strong>.</li>
+</ul>
+
+<p><strong>&lt;Test Setting&gt;</strong></p>
+
+<center>
+  <img src="/images/tests/anova3.png" width="500" height="300" /> 
+</center>
+
+<p><strong>&lt;Takeaways&gt;</strong></p>
+
+<ul>
+  <li>
+    <p>Another identifiable source of variation called a <strong>“blocking factor”</strong> is included in the model, whose variation can be separated from the error variation to give more precise group comparisons.</p>
+  </li>
+  <li>The F-test for “group” (FG) tests the primary hypothesis of <em>no group effect</em>.</li>
+  <li>F-test for the block effect (FB) provides a secondary test.</li>
+  <li>
+    <p>Significant block effect often results in a smaller error variance (MSE) and <strong>greater precision for testing the primary hypothesis</strong> of <em>no group effect</em>, compared to the case where the block effects were ignored (but not always!).</p>
+  </li>
+  <li>“Group-by-Block factor” (G x B) represents the statistical <strong>interaction</strong> between the two main effects. This indicates that trends across groups differ among the levels of the blocking factor.</li>
+  <li>
+    <p><strong>Interaction effect is usually the first test of interest in a two-way ANOVA model</strong> because the test for group effects might not be meaningful in the presence of a significant interaction.</p>
+  </li>
+  <li>For the unbalanced groups (possibly due to missing data), sum of squares calculation is not trivial as it cannot be broken down into additive components due to the sources of variation. One way to address this issue is by using <strong>“</strong>weighted squares of means<strong>“</strong>.</li>
+  <li>A statistical model associated with a <strong>higher-order ANOVA</strong> is called a <strong><em>fixed-effects</em> model</strong> if all effects are fixed, a <strong><em>random-effects</em> model</strong> if all effects are random, and a <strong><em>mixed effect</em> model</strong> for a mixture of fixed and random effects.</li>
+</ul>
+
+<p> </p>
+
+<hr />
+
+<h1 id="5-linear-regression">5. <strong>Linear Regression</strong></h1>
+
+<p>Linear Regression is used to analyze the relationship between a response variable $y$, and predictors $x$.</p>
+
+<p><strong>&lt;Assumptions&gt;</strong></p>
+
+<ul>
+  <li>Normality of the response</li>
+  <li>Linearity between predictor and response</li>
+  <li><strong>Homoscedasticity</strong>: constant residual variance over the experimental region</li>
+  <li>No <strong>autocorrelation</strong> (correlation over time)</li>
+  <li>No <strong>multicollinearity</strong>: no redundant information in the predictors</li>
+</ul>
+
+<p><strong>&lt;Test Setting&gt;</strong></p>
+
+<center>
+  <img src="/images/tests/lreg.png" width="500" height="300" /> 
+</center>
+
+<p>cf) for the case of multivariate predictors $\mathbf{X}$ (i.e. <strong>multiple linear regression</strong>), above expressions can naturally be extended to vector dimension. Namely, the best estimator of coefficients and intercept can be attained by solving the <strong>normal equation</strong>:</p>
+
+<center>
+
+$$
+\mathbf{\hat \beta} = (X^TX)^{-1}X^Ty
+$$
+
+</center>
+
+<p> </p>
+
+<p><strong>&lt;Takeaways&gt;</strong></p>
+
+<ul>
+  <li>
+    <p>As its name implies, “linear” regression models can only capture <strong>linear relationship</strong> between response and predictors. For other types of relationship (e.g. quadrature), we have to expand the model to include polynomial terms as well.</p>
+  </li>
+  <li>
+    <p>The hypothesis of “zero regression slope” is equivalent to the hypothesis that the “covariate is not an important predictor of response”.</p>
+  </li>
+  <li>For the multivariate case (i.e. multiple linear regression), <strong>coefficient of determination (R^2)</strong> represents the percentage reduction in error variability by using the explanatory variables as predictors of $y$ over just using the mean $\bar y$. This metric can be used for model (feature) selection.</li>
+  <li>The fitted regression line can be used to “predict” the value of response given a new predictor.</li>
+  <li>However, predicting a response <strong>outside the experimental region</strong> should be done with extra care as there is no guarentee that the same linear relationship will be held valid (a.k.a. <strong>extrapolation</strong>).</li>
+  <li>To roughly diagnose the homoscedasticity assumption, we can use <strong>residual plot</strong> which is standardized residuals plotted against the predicted values of the response. Ideally, there should be no pattern like the one following:</li>
+</ul>
+
+<center>
+  <img src="/images/tests/lreg2.png" width="300" height="150" /> 
+</center>
+
+<ul>
+  <li>For diagnosing the normality assumption, we can draw a normal qq plot :</li>
+</ul>
+
+<center>
+  <img src="/images/tests/lreg3.png" width="200" height="150" /> 
+</center>
+
+<ul>
+  <li>For diagnosing if autocorrelation exists, there is a test called <em><a href="https://en.wikipedia.org/wiki/Durbin%E2%80%93Watson_statistic">Durbin-Watson test</a></em>.</li>
+  <li>Diagnostics available for detecting collinearity between independent variables include the <em>variance inflation factor (VIF)</em> and <em>eigenvalue analysis</em> of the model factors. For <em>VIF</em> approach, a widely used threshold is 10 (smaller the better).</li>
+</ul>
+
+<p> </p>
+
+<hr />
+
+<h1 id="6-analysis-of-covariance">6. <strong>Analysis of Covariance</strong></h1>
+
+<p>Analysis of Covariance (ANCOVA) is used to compare response means among two or more groups “adjusted” for a quantitative concomitant variable (a.k.a. <strong>covariate</strong>), which is considered to have influenced the response.</p>
+
+<p><strong>&lt;Assumptions&gt;</strong></p>
+
+<ul>
+  <li>groups are independent</li>
+  <li>normally distributed response measure</li>
+  <li>variance homogeneity</li>
+</ul>
+
+<p><strong>&lt;Test Setting&gt;</strong></p>
+
+<center>
+  <img src="/images/tests/ancova.png" width="500" height="300" /> 
+</center>
+
+<p>The mean response within each group depends on the covariate, which results in a model for the ith group mean as $\mu_i = \alpha_i + \beta x$. Then, the estimated regression line for $i$-th group is:</p>
+
+<center>
+  <img src="/images/tests/ancova2.png" width="150" height="100" /> 
+</center>
+
+<p>Similar to that of ANOVA, we can decompose the source of variation by the following table:</p>
+
+<center>
+  <img src="/images/tests/ancova3.png" width="500" height="300" /> 
+</center>
+
+<p>In this setting, our primary interest is the comparison of the group means adjusted to a common value of the covariate such that (little subscript 0 indicates covariates used):</p>
+
+<center>
+  <img src="/images/tests/ancova4.png" width="500" height="300" /> 
+</center>
+
+<p>This hypothesis is equivalent to the “equality of intercepts among groups”, as each of the group means are only different in $\alpha$’s. Thus, the test does not depend on the value of covariate $x_0$.</p>
+
+<center>
+
+$$
+H_0: \alpha_1 = \alpha_2 = \dots = \alpha_k
+$$
+
+</center>
+
+<p>To determine whether the covariates have a significant effect on the response, use the $F_X$ ratio to test for zero-regression slope using the following test statistic:</p>
+
+<center>
+  <img src="/images/tests/ancova5.png" width="500" height="300" /> 
+</center>
+
+<p><strong>&lt;Takeaways&gt;</strong></p>
+
+<ul>
+  <li>
+    <p>Basically, ANCOVA is combining <strong>regression</strong> and <strong><em>ANOVA</em></strong> methods by <strong>fitting simple linear regression models within each group</strong> and <strong>comparing regressions among groups</strong>. Therefore, the nitty-gritty details such as model intepretation and diagnosis follow that of the aformentioned two statistical models.</p>
+  </li>
+  <li>ANCOVA can often <strong>increase the precision of comparisons of the group means</strong> and thereby decrease the estimated error variance, as the covariates can be a major source of variation among groups.</li>
+  <li>Roughly speaking, the estimated effect among groups are shrunken towards the global mean of the model. This is often called as the “<a href="https://en.wikipedia.org/wiki/Regression_toward_the_mean">regression towards the mean</a>”.</li>
+</ul>
+
+<p> </p>
+
+<hr />
+
+<h1 id="7-wilcoxon-signed-rank-test">7. <strong>Wilcoxon Signed-Rank Test</strong></h1>
+
+<p>Wilcoxon Signed-Rank Test is a non-parametric analog of the <em>one-sample t-test</em>.</p>
+
+<p><strong>&lt;Assumptions&gt;</strong></p>
+
+<ul>
+  <li>symmetrical underlying distribution</li>
+  <li>No distributional assumptions as it is a <strong>non-parametric</strong> <strong>test</strong>.</li>
+</ul>
+
+<p><strong>&lt;Notations&gt;</strong></p>
+
+<ul>
+  <li>
+    <p>$y_1, y_2, \dots, y_n$: $n$ non-zero differences or changes (zeros are ignored)</p>
+  </li>
+  <li>
+    <table>
+      <tbody>
+        <tr>
+          <td>$R_i$: absolute rank of</td>
+          <td>yi</td>
+          <td>(in ascending order)</td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
+  <li>$R_{(+)}$: the sum of the ranks associated with the “positive” values of the $y_i$’s</li>
+  <li>$R_{(-)}$: the sum of the ranks associated with the “negative” values of the $y_i$’s</li>
+</ul>
+
+<p><strong>&lt;Test Setting&gt;</strong></p>
+
+<p>For a parameter <strong>θ</strong> which might represent the unknown population mean, median, or other location parameters, the test is defined as:</p>
+
+<center>
+  <img src="/images/tests/wilcoxon1.png" width="500" height="300" /> 
+</center>
+
+<center>
+  <img src="/images/tests/wilcoxon2.png" width="300" height="150" /> 
+</center>
+
+<ul>
+  <li>Note that when $H_0$ is true, the test statistic $T$ has an approximate <em>student-t distribution</em> with $n–1$ degrees of freedom.</li>
+</ul>
+
+<p>When there are <strong>tied data values</strong> (values are equal), the <strong>averaged rank</strong> is assigned to the corresponding $R_i$ values. If this is the case, we need a minor remedy in the calculation of $V$. To illustrate, suppose there are $g$ groups of tied data values. For the $j$-th group, compute $c_j = m(m-1)(m+1)$, where $m$ is the number of tied data values for that group. Then for the correction factor $C = c1 + c2 + \dots + c_g$,</p>
+
+<center>
+
+$$
+V = \frac{1}{24} \Big(n(n+1)(2n+1) - \frac{C}{2}\Big)
+$$
+
+</center>
+
+<p> </p>
+
+<p><strong>&lt;Takeaways&gt;</strong></p>
+
+<ul>
+  <li>So in a nutshell, this test is used to make inferences about a population mean or median <strong>without requiring the assumption of normally distributed data</strong>.</li>
+  <li>Allbeit no requirement of distributional assumptions is clearly an advantage, the <em>t-test</em> is still more preferred for the following reasons:
+    <ul>
+      <li><em>t-test</em> has been shown to have more statistical power in detecting true differences when the data are normally distributed.</li>
+      <li>Analysts often feel more comfortable reporting a <em>t-test</em> whenever it is appropriate, especially to a non-statisticians.</li>
+      <li><em>t-test</em> is robust under deviations of its underlying assumptions. For example, the Central Limit Theorem guarentees <strong>asymptotic normality</strong> for the sample mean as long as we have large enough data.</li>
+      <li>In fact, <em>Wilcoxon signed-rank test</em> and <em>t-test</em> become closer as the sample size <em>n</em> gets larger.</li>
+    </ul>
+  </li>
+  <li>When the data are <strong>highly skewed</strong> or otherwise <strong>non-symmetrical</strong>, an alternative to the <em>signed-rank test</em>, such as the <strong><em>sign test</em></strong> (to be discussed in a second), can be used.</li>
+</ul>
+
+<p> </p>
+
+<hr />
+
+<h1 id="8-wilcoxon-rank-sum-test">8. <strong>Wilcoxon Rank-Sum Test</strong></h1>
+
+<p>Wilcoxon rank-sum test is a non-parametric analog of the <strong><em>two-sample t-test</em></strong>.</p>
+
+<p><strong>&lt;Assumptions&gt;</strong></p>
+
+<ul>
+  <li>Two population distributions have the same shape and differ only by a possible shift in location (i.e. <strong>variance homogeneity</strong>).</li>
+</ul>
+
+<p><strong>&lt;Notations&gt;</strong></p>
+
+<ul>
+  <li>$y_{(1,1)}, y_{(1,2)}, …, y_{(1,n_1)}$: independent samples in group 1 (total of $n_1$)</li>
+  <li>$y_{(2,1)}, y_{(2,2)}, …, y_{(2,n_2)}$: independent samples in group 2 (total of $n_2$)</li>
+  <li>$r_{(1, j)}$ : rank of $y_{(1, j)}, \quad (j=1, 2, … , n_1)$
+    <ul>
+      <li>data are ranked from lowest to highest over the combined samples</li>
+    </ul>
+  </li>
+  <li>$r_{(2, j)}$ : rank of $y_{(2, j)}, \quad (j=1, 2, … , n_2)$</li>
+</ul>
+
+<center>
+  <img src="/images/tests/wilcoxon3.png" width="120" height="50" /> 
+</center>
+
+<p><strong>&lt;Test Setting&gt;</strong></p>
+
+<p>When $H_0$ is true, we would expect the proportion of the rank sum from group 1 to be about $n_1 / N$ and the proportion from group 2 to be about $n_2 / N$.</p>
+
+<p>Hence, the expected value and variance of $R_1$ under $H_0$ is:</p>
+
+<center>
+  <img src="/images/tests/wilcoxon4.png" width="250" height="150" /> 
+</center>
+
+<p>For tied values,</p>
+
+<center>
+  <img src="/images/tests/wilcoxon5.png" width="500" height="200" /> 
+</center>
+
+<p>It has been shown that normal approximation to the <em>Wilcoxon rank sum test</em> is quite excellent even for samples as small as 8 per group in some cases.</p>
+
+<p>Thus, for a location parameter <strong>θ</strong>, the test statistic is defined based on an approximate normal distribution such that:</p>
+
+<center>
+  <img src="/images/tests/wilcoxon6.png" width="500" height="300" /> 
+</center>
+
+<ul>
+  <li>cf) we can of course, use the exact <em>Wilcoxon rank sum test</em> using <a href="https://www.real-statistics.com/statistics-tables/wilcoxon-rank-sum-table-independent-samples/"><em>Wilcoxon rank-sum</em> exact probabilities</a>.</li>
+</ul>
+
+<p> </p>
+
+<p><strong>&lt;Takeaways&gt;</strong></p>
+
+<ul>
+  <li>
+    <p>This test is used to compare location parameters, such as the mean or median between two independent populations “without the assumption of normality”.</p>
+  </li>
+  <li>
+    <p>It was originally developed for use with continuous numeric data. But it can also be applied to the analysis of ordered categorical data as well.</p>
+  </li>
+  <li>
+    <p>For skewed distributions with long tails to the right (i.e. positively skewed), the median is usually smaller than the mean and considered a better measure of the distributional “center” or location.</p>
+  </li>
+  <li>
+    <p><strong><em>Mann-Whitney U-test</em></strong> is another non-parametric test for comparing location parameters based on two independent samples. Mathematically, it can be shown that the <strong><em>Mann-Whitney test</em> is equivalent to the <em>Wilcoxon rank-sum test</em></strong>.</p>
+  </li>
+  <li>
+    <p><em>Wilcoxon rank-sum test</em> is roughly equivalent to the <em>two-sample t-test</em> on the ranked data (<a href="https://www.jstor.org/stable/2683975?seq=1">Conover 1981</a>).</p>
+  </li>
+</ul>
+
+<p> </p>
+
+<hr />
+
+<h1 id="9-kruskal-wallis-test">9. <strong>Kruskal-Wallis Test</strong></h1>
+
+<p>The Kruskal-Wallis test is a non-parametric analogue of the <strong><em>one-way ANOVA</em></strong>, which is used to compare population location parameters among two or more groups based on independent samples.</p>
+
+<p><strong>&lt;Test Setting&gt;</strong></p>
+
+<center>
+  <img src="/images/tests/kw1.png" width="500" height="300" /> 
+</center>
+
+<ul>
+  <li>The data are ranked, from lowest to highest, over the combined samples.</li>
+</ul>
+
+<p>For $i = 1, 2, … , k$ and $j = 1, 2, …, n_i$, let $r_{(i, j)}$ =rank of $y_{(i, j)}$ over the $k$ combined samples.</p>
+
+<p>For each group ($i = 1, 2, …, k$), compute:</p>
+
+<center>
+
+$$
+R_i = \sum_{j=1}^{n_i}r_{ij}
+$$
+
+</center>
+
+<ul>
+  <li>when the null hypothesis is true (i.e. no difference between average responses), the average rank for each group, namely $R_i / n_i$, should be close to $\bar R = (N+1) / 2$, where $N = n_1 + n_2 + \dots + n_k$. Also the following sum-of-squared deviations should be small.</li>
+</ul>
+
+<center>
+
+$$
+\sum_{i=1}^k n_i \big( \bar R_i - \bar R \big)^2
+$$
+
+</center>
+
+<p>In this setting, the <strong><em>Kruskal-Wallis test</em> statistic</strong> is a function of this sum of squares, which can be simplified as the following formula:</p>
+
+<center>
+
+$$
+h^* = \frac{12}{N(N+1)} \Big( \sum_{i=1}^k \frac{R_i^2}{n_i} \Big) - 3(N+1)
+$$
+
+</center>
+
+<p>When $H_0$ is true, $h^*$ has an approximate $\chi^2$ distribution with $k–1$ degrees of freedom, which completely defines the test.</p>
+
+<p>Under the existence of tied values, a minor adjustment to the test statistic is made such that for the number of tied values for $L$-th category $m$,</p>
+
+<center>
+  <img src="/images/tests/kw2.png" width="170" height="100" /> 
+</center>
+
+<center>
+  <img src="/images/tests/kw3.png" width="500" height="300" /> 
+</center>
+
+<p><strong>&lt;Takeaways&gt;</strong></p>
+
+<ul>
+  <li>Kruskal-Wallis test can also be seen as an multivariate <strong>extension of the <em>Wilcoxon rank-sum test</em></strong>. Specifically, when $k=2$, the Kruskal-Wallis chi-square value has 1 degree of freedom. Then the test is identical to the normal approximation used for the <em>Wilcoxon rank-sum test</em> such that the <strong><em>h-statistic</em> is the square of the <em>Wilcoxon rank-sum Z-test</em></strong>.</li>
+  <li>The effect of adjusting for tied ranks is to slightly increase the value of the test statistic <em>h</em>. Therefore, omission of this adjustment results in a more conservative test.</li>
+  <li>
+    <p>When the Kruskal-Wallis test is significant, <strong>pairwise comparisons</strong> can be carried out using the Wilcoxon rank-sum test for each pairs of groups (although multiplicity of the test has to be addressed).</p>
+  </li>
+  <li>When the $k$-levels of the Group factors can be “ordered”, we might want to test for association between response and increasing levels of group. The <em><a href="https://en.wikipedia.org/wiki/Jonckheere%27s_trend_test">Jonckheere-Terpstra test</a></em> can be utilized for this purpose.</li>
+</ul>
+
+<center>
+
+$$
+H_A: \theta_1\leq \theta_2 \leq \dots \leq \theta_k
+$$
+
+</center>
+
+<p> </p>
+
+<hr />
+
+<h1 id="10-binomial-test">10. <strong>Binomial Test</strong></h1>
+
+<p>The binomial test is used to make inferences about a <strong>proportion</strong> or <strong>response rate</strong> based on a series of independent observations, each resulting in one of two possible mutually exclusive outcomes represented as binary indicator variable.</p>
+
+<p><strong>&lt;Test Setting&gt;</strong></p>
+
+<ul>
+  <li>$n$ independent observations, each with one of two possible outcomes: <strong><em>event</em></strong> or <strong><em>non-event</em></strong>.</li>
+  <li>
+    <p>For each observation, the probability of the <em>event</em> is denoted by $p, \quad (0 &lt; p &lt; 1)$</p>
+  </li>
+  <li>The total number of <em>events</em> in $n$ observations $X$, follows the <strong>binomial distribution</strong> with parameter $p$. Thus $X = np$.</li>
+  <li>A natural estimator of the population success probability $p$ is the sample proportion $X / n$. In fact, this is the MLE of the natural parameter.</li>
+</ul>
+
+<center>
+  <img src="/images/tests/binomial.png" width="500" height="300" /> 
+</center>
+
+<p><strong>&lt;Takeaways&gt;</strong></p>
+
+<ul>
+  <li>
+    <p>By the CLT, a binomial response $X$ (number of success in $n$ trials) has an <strong>asymptotic normal distribution</strong>. Specifically, it approaches normal distribution with mean $np$ and variance $n^2 p(1–p)$.</p>
+  </li>
+  <li>
+    <p>The normal approximation to the binomial is generally a good approximation if:</p>
+  </li>
+</ul>
+
+<center>
+
+$$
+\begin{aligned}
+n \geq 4 \times \text{max}\Big\{(p/(1-p), (1-p)/p \Big\}
+\end{aligned}
+$$
+
+</center>
+
+<center>
+  <img src="/images/tests/binomial1.png" width="300" height="200" /> 
+</center>
+
+<ul>
+  <li>When $p_0 = 0.5$, the binomial test is sometimes called as the <strong><em>sign test</em></strong>.</li>
+</ul>
+
+<p> </p>
+
+<hr />
+
+<h1 id="11-chi-square-test">11. <strong>Chi-Square Test</strong></h1>
+
+<p>The chi-square test is used to <strong>compare two independent binomial proportions</strong>, $p_1$ and $p_2$.</p>
+
+<p><strong>&lt;Assumptions&gt;</strong></p>
+
+<ul>
+  <li>Two groups are <strong>independent</strong>.</li>
+  <li>normal approximation to the binomial distribution is valid.</li>
+</ul>
+
+<p><strong>&lt;Test Setting&gt;</strong></p>
+
+<p>Observations are made of $X_1$ responders out of $n_1$ subjects whom are studied in the first group, and $X_2$ responders out of $n_2$ subjects in the second group. Note that both groups are independent.</p>
+
+<center>
+  <img src="/images/tests/chisq1.png" width="500" height="300" /> 
+</center>
+
+<p>Assume that each of the $n_i$ subjects in $i$-th group ($i =1, 2$) have the same chance $p_i$ of responding, so that $X_1$ and $X_2$ are <strong>independent binomial random variables</strong>.</p>
+
+<p>In this setting, the goal is to <strong>compare population response rates</strong> between two groups (i.e. $p_1 \text{ vs } p_2$).</p>
+
+<p>Assuming that the normal approximation to the binomial distribution is valid, test is defined as the following:</p>
+
+<center>
+  <img src="/images/tests/chisq2.png" width="500" height="300" /> 
+</center>
+
+<p>Note that the chi-square statistic can be re-expressed as:</p>
+
+<center>
+  <img src="/images/tests/chisq3.png" width="400" height="250" /> 
+</center>
+
+<p><strong>&lt;Takeaways&gt;</strong></p>
+
+<ul>
+  <li>chi-square test is an <strong>approximate test</strong>, which may be used when the <strong>normal approximation **to the binomial distribution is valid. If this approximation is not guarenteed, an alternative approach is the **<em>Fisher’s exact test</em></strong> which is based on exact probabilities (to be discussed in a second).</li>
+  <li>As the <strong>square of a standard normal random variable</strong> is defined as a <strong>chi-square random variable with 1 degree of freedom</strong>, it can be shown algebraically that the chi-square test is equivalent to the <strong>Z-test</strong> when comparing only two binomial proportions.</li>
+</ul>
+
+<center>
+  <img src="/images/tests/chisq4.png" width="300" height="150" /> 
+</center>
+
+<ul>
+  <li>The approximate 95% confidence interval for the difference in proportions, $p_1 – p_2$ is given by:</li>
+</ul>
+
+<center>
+  <img src="/images/tests/chisq5.png" width="350" height="200" /> 
+</center>
+
+<p> </p>
+
+<hr />
+
+<h1 id="12-fishers-exact-test">12. <strong>Fisher’s Exact Test</strong></h1>
+
+<p>The <em>Fisher’s exact test</em> is an alternative to the <em>chi-square test</em> for comparing two independent binomial proportions $p_1$ and $p_2$.</p>
+
+<p>Specifically, it is useful when the <strong>normal approximation to the binomial might not be applicable</strong>, such as in the case of small cell sizes or extreme proportions.</p>
+
+<p><strong>&lt;Assumptions&gt;</strong></p>
+
+<ul>
+  <li>Two groups are <strong>independent</strong>.</li>
+</ul>
+
+<p><strong>&lt;Test Setting&gt;</strong></p>
+
+<p>Observations are made of $X_1$ responders out of $n_1$ subjects whom are studied in the first group, and $X_2$ responders out of $n_2$ subjects in the second group, both groups are independent (same as that of chi-square test).</p>
+
+<center>
+  <img src="/images/tests/fet1.png" width="500" height="300" /> 
+</center>
+
+<p>Given equal proportions $p_1 = p_2 (\because H_0)$, the probability of observing the configuration shown in the above table (marginal totals $n_1, n_2$ are fixed) is derived by the <strong>“hypergeometric distribution”</strong> with probability:</p>
+
+<center>
+  <img src="/images/tests/fet2.png" width="400" height="250" /> 
+</center>
+
+<p>Under this setting, the p-value for the test (i.e. <strong><em>Fisher’s exact probability</em></strong>) is the probability of the observed configuration plus the sum of the probabilities of all other configurations with a <strong>“more extreme result”</strong> for fixed row and column totals.</p>
+
+<p><strong>&lt;Takeaways&gt;</strong></p>
+
+<ul>
+  <li>So basically, in order to use this test, we have to compute all the possible combinations of the configurations which takes huge amount of time and effort.</li>
+  <li>
+    <p>For this reason, although <em>Fisher’s exact test</em> is valid no matter how large the sample size is, its usage is most often limited for small cell frequencies.</p>
+  </li>
+  <li>Fisher’s exact test can be extended to situations that involve more than two treatment groups or more than two response levels. This is sometimes referred to as the <strong><em>generalized Fisher’s exact test</em></strong> or the <em>Freeman-Halton test</em>.</li>
+</ul>
+
+<p> </p>
+
+<hr />
+
+<h1 id="13-mcnemars-test">13. <strong>McNemar’s Test</strong></h1>
+
+<p>The <em>McNemar’s test</em> is a special case of comparing two binomial proportions for <strong>paired samples</strong>.</p>
+
+<p>Paired samples are often collected in a clinical trials where <strong>dichotomous outcomes</strong> are recorded for each patient <strong>under two different conditions</strong> (e.g. before/after treatment is applied), and the goal is to compare response rates under the two sets of conditions or matched observations.</p>
+
+<p>Note that in these cases, the <strong>assumption of independence among groups is not met</strong>, so we <strong>cannot use the <em>chi-square test</em> or <em>Fisher’s exact test</em>.</strong></p>
+
+<p><strong>&lt;Assumptions&gt;</strong></p>
+
+<ul>
+  <li>normal approximation to the binomial distribution is valid.</li>
+</ul>
+
+<p><strong>&lt;Test Setting&gt;</strong></p>
+
+<p>There are $n$ pairs of observations, each observation in the pair resulting in a dichotomous outcome, say <strong>“response”</strong> or <strong>“non-response”</strong>.</p>
+
+<p>Considering all possible scenarios user this problem setting, the results can be partitioned into 4 subgroups such that:</p>
+
+<center>
+  <img src="/images/tests/mnt1.png" width="500" height="300" /> 
+</center>
+
+<p>Let $p_1$ represent the probability that the first observation of the pair is a ‘response’, and $p_2$ the probability that the second observation is a ‘response’.</p>
+
+<p>Then, the hypothesis of interest is the <strong>equality of the response proportions</strong> (i.e. $p_1$ = $p_2$), and the <strong>test statistic</strong> is constructed based on the difference in the <strong>“discordant”</strong> cell frequencies (B and C in above table) which follows $\chi^2$ distribution with 1 degrees of freedom under $H_0$.</p>
+
+<center>
+  <img src="/images/tests/mnt2.png" width="500" height="300" /> 
+</center>
+
+<p><strong>&lt;Takeaways&gt;</strong></p>
+
+<ul>
+  <li>In above setting, the natural estimate of $p_1$ is $\frac{A + B}{n}$, and that of $p_2$ is $\frac{A + C}{n}$.</li>
+  <li>The difference in proportions $p_1 – p_2$ is estimated by $\frac{A + B}{n} – \frac{A + C}{n} = \frac{B – C}{n}$.</li>
+  <li>An approximate 95% confidence interval for $p_1 – p_2$ is:</li>
+</ul>
+
+<center>
+  <img src="/images/tests/mnt3.png" width="300" height="200" /> 
+</center>
+
+<ul>
+  <li>
+    <p>Note that the $\chi^2$ test statistic is based only on the discordant cell sizes (B, C) and ignores the concordant cells (A, D). However, the estimates of $p_1, p_2$ and the size of the confidence interval are based on all cells, as they are inversely proportional to the total sample size $n$.</p>
+  </li>
+  <li>By the <strong>normal approximation of binomial random variable</strong>, it can be shown that <strong><em>McNemar’s test</em></strong> is equivalent to the <strong><em>binomial test</em></strong> with $H_0: p = 0.5$, where $p$ equals the fraction of the events that fall in one of the <strong>discordant cells</strong> (when $H_0$ is true, the discordant values B and C should be about the same so $\frac{B}{B+C} \approx 0.5$).</li>
+  <li>Thus, with $n = B + C$ and $X = B$,</li>
+</ul>
+
+<center>
+  <img src="/images/tests/mnt4.png" width="300" height="200" /> 
+</center>
+
+<ul>
+  <li>The condition for normal approximation is (need to be checked only if either B or C is less than 4):</li>
+</ul>
+
+<center>
+
+$$
+\begin{aligned}
+\big\{B^2 \geq C(4-B)\big\} \cup \big\{ C^2 \geq B(4-C) \big\}
+\end{aligned}
+$$
+
+</center>
+
+<ul>
+  <li><em>McNemar’s test</em> is often used to detect <strong>shifts in response rates</strong> between <strong>pre-</strong> and <strong>post</strong>-treatment measurements within a single treatment group such that (under the null hypothesis of no difference in shifts between groups):</li>
+</ul>
+
+<center>
+  <img src="/images/tests/mnt5.png" width="250" height="150" /> 
+</center>
+
+<p> </p>
+
+<hr />
+
+<h1 id="14-cochran-mantel-haenszel-test">14. <strong>Cochran-Mantel-Haenszel Test</strong></h1>
+
+<p>The <em>Cochran-Mantel-Haenszel test</em> is used to compare two <strong>binomial proportions</strong> from independent populations based on <strong>stratified samples</strong>.</p>
+
+<p>In clinical trials, it is often used in the comparison of response rates between two treatment groups in a <strong>multi-center study</strong> using the study centers as <strong>strata</strong>.</p>
+
+<p><strong>&lt;Test Setting&gt;</strong></p>
+
+<p>There are $k \geq 2$ strata with for a single stratum $j$, exists $N_j$ patients $(j = 1, 2, …, k)$, randomly assigned to one of two groups.</p>
+
+<p>In the first group, there are $n_{(j, 1)}$ patients with $X_{(j, 1)}$ of whom are considered <strong>“responders”</strong>. Similarly, the second group has $n_{(j, 2)}$ patients with $X_{(j, 2)}$ <strong>“responders”</strong>, as in the following table:</p>
+
+<center>
+  <img src="/images/tests/cmht1.png" width="500" height="300" /> 
+</center>
+
+<p>Let $p_1, p_2$ denote the <strong>overall response rates</strong> for Group 1 and Group 2 respectively. For the $j$-th stratum, compute the quantities:</p>
+
+<center>
+  <img src="/images/tests/cmht2.png" width="350" height="150" /> 
+</center>
+
+<p>Then, the <em>Cochran-Mantel-Haenszel test</em> is defined as the following:</p>
+
+<center>
+  <img src="/images/tests/cmht3.png" width="500" height="300" /> 
+</center>
+
+<p><strong>&lt;Takeaways&gt;</strong></p>
+
+<ul>
+  <li>The <strong>stratification factor</strong> can represent patient subgroups such as “study centers”, “gender”, “age group”, or “disease severity” and acts similar to the “blocking factor” in a <em>two-way ANOVA</em></li>
+  <li>It obtains an overall comparison of response rates “adjusted” for the stratification variable. The adjustment is simply a weighting of the 2×2 tables in proportion to the within-strata sample sizes.</li>
+  <li>A convenient way to summarize the test results by stratum is providing a summary table such that:</li>
+</ul>
+
+<center>
+  <img src="/images/tests/cmht4.png" width="500" height="300" /> 
+</center>
+
+<ul>
+  <li>
+    <p>The overall response rate for Group $i$ is estimated by $100 \times (\frac{X_{1i} +X_{2i} +X_{3i} +X_{4i}}{n_{1i} +n_{2i} +n_{3i} +n_{4i}})$ %</p>
+  </li>
+  <li>
+    <p>This Cochran-Mantel-Haenszel test can often be useful when there is a <strong>big difference in sample sizes among strata</strong> and the largest strata showing the biggest response rate differences.</p>
+  </li>
+  <li>
+    <p><strong><em>Cochran-Mantel-Haenszel</em> statistic</strong> can be understood as to be based on the within-strata response rate differences combined over all strata with some weight applied. Specifilly, the weight is:</p>
+  </li>
+</ul>
+
+<center>
+
+$$
+w_j = \Big( \frac{1}{n_{j1}} + \frac{1}{n_{j2}} \Big)^{-1}
+$$
+
+</center>
+
+<ul>
+  <li>Although the derivation is omitted here, to get a glimpse of what’s happening, <strong>greater weights are assigned to those strata that have larger sample sizes.</strong></li>
+</ul>
+
+<p> </p>
+
+<hr />
+
+<h1 id="15-logistic-regression">15. <strong>Logistic Regression</strong></h1>
+
+<p><em>Logistic regression analysis</em> is a statistical modeling method for analyzing <strong>categorical response data</strong> while accommodating adjustments for one or more explanatory variables, namely <strong>“covariates”</strong>.</p>
+
+<p><strong>&lt;Assumptions&gt;</strong></p>
+
+<ul>
+  <li>no interaction effects among covariates (equal slopes of the logit function among groups).</li>
+  <li>covariance structure of the response variable is held constant.</li>
+</ul>
+
+<p><strong>&lt;Test Setting&gt;</strong></p>
+
+<p>Suppose we have $N$ subjects with $k$ covariates $X_1, X_2, \dots, X_k$. Also, the response $y$ is a binary indicator (1: event // 0: non-event).</p>
+
+<center>
+  <img src="/images/tests/logistic1.png" width="400" height="250" /> 
+</center>
+
+<p>Since the response is confined in the probability interval between $[0, 1]$, we apply the <strong>logit link function</strong> to the response variable $y$ to statistically connect it to the linear combination of the covariates.</p>
+
+<p>In this setting, the model for the <strong>probability of “<em>event</em>“</strong>, say $P$ is:</p>
+
+<center>
+  <img src="/images/tests/logistic2.png" width="300" height="150" /> 
+</center>
+
+<p>, where the latter expression is in terms of <strong>log odds ratio</strong>.</p>
+
+<p>If all the $X$’s are continuous numeric covariates, the odds can be expressed as:</p>
+
+<center>
+  <img src="/images/tests/logistic3.png" width="300" height="150" /> 
+</center>
+
+<p>, with the odds ratio for Xi is $\text{OR}_{x_i} = \text{exp}(\beta_i)$.</p>
+
+<p>The interpretation of this odds ratio is to see the percentage increase in the odds of “<em>event</em>” occurrence when $X_i$ increases by 1 unit and all other $X$’s are held constant (i.e $100 \times (\text{exp}(\beta_i)-1)$)</p>
+
+<p>Then, the test becomes equivalent to see if a particular regression coefficient $\beta_i$ is statistically significant is based on the <em>Wald (chi-square) Test</em>.</p>
+
+<center>
+  <img src="/images/tests/logistic4.png" width="500" height="300" /> 
+</center>
+
+<p><strong>&lt;Takeaways&gt;</strong></p>
+
+<ul>
+  <li>It closely resembles the idea of linear regression and ANCOVA models, but the main difference is in the target variable to be applied such that <em>logistic regression</em> analyzes <em>proportions</em> based on categorical responses (most commonly <strong>binary responses</strong>).</li>
+  <li>For the purpose of seeing the “equality of response rates between groups” usually expressed as the hypothesis of a zero difference, we can compare response rates by measuring how close the odds ratio is to “1”. This ratio is called <strong>“<em>relative risk</em>“</strong> and as the odds ratio gets closer to the relative risk, the event becomes more rare.</li>
+  <li>We can compare the relative importance of covariates measured on <strong>different scales</strong> by standardizing the $\beta$ estimates by dividing by their standard errors.</li>
+</ul>
+
+<p> </p>
+
+<hr />
+
+<h2 id="reference">Reference</h2>
+
+<ul>
+  <li>Walker, G., &amp; Shostak, J. (2010). <em>Common statistical methods for clinical research with SAS examples</em>. SAS institute.</li>
+</ul>
+
+:ET
