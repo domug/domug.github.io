@@ -1,0 +1,211 @@
+I"R<p>This post is an overall summary of Chapter 5 of the textbook <em><a href="http://home.ustc.edu.cn/~zt001062/MaStmaterials/George%20Casella&amp;Roger%20L.Berger--Statistical%20Inference.pdf">Statistical Inference</a></em> by Casella and Berger.</p>
+
+<h2 id="table-of-contents">Table of Contents</h2>
+
+<p><strong>3.1. Convergence of Random Variables</strong></p>
+
+<ul>
+  <li>Convergence of Sequences</li>
+  <li>Almost-sure convergence</li>
+  <li>Convergence in probability</li>
+  <li>Convergence in quadratic mean</li>
+  <li>Convergence in distribution</li>
+  <li>Relationships among various convergences</li>
+  <li>Slutsky’s Theorem</li>
+</ul>
+
+<p><strong>3.2. Central Limit Theorem</strong></p>
+
+<ul>
+  <li>Classical CLT</li>
+  <li>Lyapunov CLT</li>
+  <li>Multivariate CLT</li>
+</ul>
+
+<p><strong>3.3. Delta Methods</strong></p>
+
+<ul>
+  <li>First-order delta method</li>
+  <li>Second-order delta method</li>
+  <li>Multivariate delta method</li>
+</ul>
+
+<p><strong>3.4. Some helpful theorems</strong></p>
+
+<ul>
+  <li>Dominated Convergence Theorem</li>
+  <li>Continuous Mapping Theorem</li>
+  <li>Stochastic Order Notation</li>
+</ul>
+
+<p> </p>
+
+<hr />
+
+<h2 id="3-large-sample-theory"><strong>3. Large Sample Theory</strong></h2>
+
+<p>In this section, we review some of the fundamental concepts and techniques in <strong>asymptotic statistics</strong>.</p>
+
+<p>Statistical inference often requires the knowledge of the underlying distribution of statistics which however, cannot often be derived in a closed form.</p>
+
+<p>To this end, one of the main goals in asymptotic statistics is to address this issue by observing what happens to the statistic under the assumption of <strong>infinite samples</strong> (i.e. $n \to \infty$). Thus, we want to find out the <strong>limiting distribution</strong> of a given statistic, which is often much easier to handle than the actual distribution while precise enough to be useful in practical scenarios.</p>
+
+<p> </p>
+
+<h3 id="31-convergence-of-random-variables">3.1 Convergence of Random Variables</h3>
+
+<h4 id="convergence-of-sequences">Convergence of Sequences</h4>
+
+<p>As a building block, let’s briefly review the concept of convergence in deterministic real numbers.</p>
+
+<p>We say that a sequence of real numbers $a_1, a_2, \dots $ converges to a fixed real number $a$, if for every positive number $\epsilon$ there exists a natural number $N(\epsilon)$ such that for all $n \geq N(\epsilon), \quad|a_n - a| &lt; \epsilon$.</p>
+
+<p>If this is the case, then we call $a$ the limit of the sequence and denote $\underset{n \to \infty}{\text{lim} a_n = a}$.</p>
+
+<p>Now we focus on how to extend of this notion to the “sequences” of <em>random variables</em>. Specifically, we will see the following convergences:</p>
+
+<ul>
+  <li><strong><em>almost sure convergence</em></strong></li>
+  <li><strong><em>convergence in probability</em></strong></li>
+  <li><strong><em>convergence in quadratic mean</em></strong></li>
+  <li><strong><em>convergence in distribution</em></strong></li>
+</ul>
+
+<p> </p>
+
+<h4 id="almost-sure-convergence"><em>Almost-sure convergence</em></h4>
+
+<p><strong>&lt;Definition&gt;</strong></p>
+
+<center>
+
+$$
+\begin{aligned}
+&amp;P\Big( \big\{\omega \in \Omega: \underset{n \to \infty}{\text{lim}}X_n(\omega) = X(\omega) \big\}\Big) =  1 \\[10pt]
+&amp;\Leftrightarrow \big| X_n(\omega) - X(\omega)\big| \leq \epsilon \quad \text{holds for every } \epsilon &gt; 0
+\end{aligned}
+$$
+
+</center>
+
+<p>Conceptually, this can be thought of as if there is some set of “exceptional” events on which the random variables can disagree, but these exceptional events have probability converging to 0 as $n \to \infty$.</p>
+
+<p> </p>
+
+<h4 id="convergence-in-probability"><em>Convergence in probability</em></h4>
+
+<p>A sequence of random variables $X_1, \dots, X_n$ converges in probability to a random variable $X$ if for every $\epsilon &gt; 0$, we have that</p>
+
+<center>
+
+$$
+\begin{aligned}
+&amp;\underset{n \to \infty}{\text{lim}} P\big(|X_n - X| \geq \epsilon \big) \leq \epsilon, \quad \forall\epsilon&gt;0 \\[8pt] 
+&amp;\Leftrightarrow \underset{n \to \infty}{\text{lim}} P\big(|X_n - X| \geq \epsilon \big) = 0 \\[8pt]
+&amp;\Leftrightarrow X_n \overset{p}{\to} X
+\end{aligned}
+$$
+
+</center>
+
+<p>Conceptually, <em>convergence in probability</em> implies that as $n$ gets large, the distribution of $X_n$ gets more peaked around the value of convergence. Hence the random variable converges in a “probabilistic” sense.</p>
+
+<p>A famous example of <em>convergence in probability</em> is the <strong>weak law of large numbers</strong>. Suppose that $Y_1,Y_2,\dots$ are i.i.d. with $E[Y]=\mu$ and $Var(Y_i) = \sigma^2 &lt; \infty$, then</p>
+
+<center>
+
+$$
+X_n = \frac{1}{n}\sum_{i=1}^nY_i \overset{p}{\rightarrow} \mu
+$$
+
+</center>
+
+<p> </p>
+
+<h4 id="convergence-in-quadratic-mean"><em>Convergence in quadratic mean</em></h4>
+
+<p><strong>&lt;Definition&gt;</strong></p>
+
+<p>We say that a sequence converges to $X$ in quadratic mean if:</p>
+
+<center>
+
+$$
+\begin{aligned}
+&amp;E\big(X_n-X\big)^2 \overset{p}{\to} 0 \quad\text{ as } n\to\infty \\[8pt]
+&amp;\Leftrightarrow X_n \overset{qm}{\to} 0
+\end{aligned}
+$$
+
+</center>
+
+<p>This convergence is often used to prove <em>convergence in probability</em> as it is a stronger condition.</p>
+
+<p> </p>
+
+<h4 id="convergence-in-distribution"><em>Convergence in distribution</em></h4>
+
+<p><strong>&lt;Definition&gt;</strong></p>
+
+<p>We say that a sequence converges to $X$ in distribution if:</p>
+
+<center>
+
+$$
+\underset{n \to \infty}{\text{lim}} F_{X_n}(t) = F_X(t), \quad \text{for all points }t \text{ where the }F_X \text{ is continuous}
+$$
+
+</center>
+
+<p>This convergence is by far, the weakest form of convergence.</p>
+
+<p>A fundamental example of <em>convergence in distribution</em> is the <strong>Central Limit Theorem (CLT)</strong> and we will see this in a second.</p>
+
+<p> </p>
+
+<h4 id="relationships-among-various-convergences">Relationships among various convergences</h4>
+
+<ol>
+  <li>
+    <p><strong><em>Convergence in probability</em></strong> does <strong>not</strong> imply <strong><em>almost sure convergence</em></strong></p>
+  </li>
+  <li>
+    <p><strong><em>Convergence in quadratic mean</em></strong> imples <strong><em>convergence in probability</em></strong> (reverse is not true)</p>
+  </li>
+</ol>
+
+<ul>
+  <li>Suppose that $X_1, \dots, X_n$  converges in quadratic mean to $X$. Then,</li>
+</ul>
+
+<center>
+
+$$
+P\big(|X_n - X| \geq \epsilon\big) = P\big(|X_n-X|^2 \geq \epsilon^2\big) \leq \frac{E[X_n-X]^2}{\epsilon^2} \to 0 \quad(\because \text{ Markov's inequality})
+$$
+
+</center>
+
+<ul>
+  <li><strong><em>Convergence in probability</em></strong> imples <strong><em>convergence in distribution</em></strong> (reverse is not true)
+    <ul>
+      <li>Although the mathematical detail is omitted here, this statement can be proved with the idea of “trapping” the CDF of $X_n$ by the CDF of $X$ with an interval of length converging to 0.</li>
+    </ul>
+  </li>
+</ul>
+
+<p> </p>
+
+<p>&lt;/center&gt;</p>
+
+<p> </p>
+
+<hr />
+
+<h1 id="reference">Reference</h1>
+
+<ul>
+  <li>Casella, G., &amp; Berger, R. L. (2002). <em>Statistical inference.</em> 2nd ed. Australia ; Pacific Grove, CA: Thomson Learning.</li>
+</ul>
+
+:ET

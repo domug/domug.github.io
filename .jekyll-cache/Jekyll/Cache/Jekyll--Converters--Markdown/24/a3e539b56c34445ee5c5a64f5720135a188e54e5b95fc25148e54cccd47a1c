@@ -1,0 +1,57 @@
+I"j<p>This post is an overall summary of Chapter 5 of the textbook <em><a href="http://home.ustc.edu.cn/~zt001062/MaStmaterials/George%20Casella&amp;Roger%20L.Berger--Statistical%20Inference.pdf">Statistical Inference</a></em> by Casella and Berger.</p>
+
+<p><strong>&lt;Table of Contents&gt;</strong></p>
+
+<p><strong>3.1. Convergence of Random Variables</strong></p>
+
+<ul>
+  <li>Convergence of Sequences</li>
+  <li>Almost-sure convergence</li>
+  <li>Convergence in probability</li>
+  <li>Convergence in quadratic mean</li>
+  <li>Convergence in distribution</li>
+  <li>Relationships among various convergences</li>
+  <li>Slutsky’s Theorem</li>
+</ul>
+
+<p><strong>3.2. Central Limit Theorem</strong></p>
+
+<ul>
+  <li>Classical CLT</li>
+  <li>Lyapunov CLT</li>
+  <li>Multivariate CLT</li>
+</ul>
+
+<p><strong>3.3. Delta Methods</strong></p>
+
+<ul>
+  <li>First-order delta method</li>
+  <li>Second-order delta method</li>
+  <li>Multivariate delta method</li>
+</ul>
+
+<p><strong>3.4. Some helpful theorems</strong></p>
+
+<ul>
+  <li>Dominated Convergence Theorem</li>
+  <li>Continuous Mapping Theorem</li>
+  <li>Stochastic Order Notation</li>
+</ul>
+
+<p> </p>
+
+<hr />
+
+<p>&lt;/center&gt;</p>
+
+<p> </p>
+
+<hr />
+
+<h1 id="reference">Reference</h1>
+
+<ul>
+  <li>Casella, G., &amp; Berger, R. L. (2002). <em>Statistical inference.</em> 2nd ed. Australia ; Pacific Grove, CA: Thomson Learning.</li>
+</ul>
+
+:ET

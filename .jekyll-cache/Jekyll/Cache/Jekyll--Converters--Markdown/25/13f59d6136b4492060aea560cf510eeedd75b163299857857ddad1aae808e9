@@ -1,0 +1,27 @@
+I"6<h2 id="ch-1-foundations-of-statistics"><strong>Ch 1. Foundations of Statistics</strong></h2>
+
+<h3 id="11-sigma-algebra">1.1 Sigma Algebra</h3>
+
+<p><strong>&lt;Definition&gt;</strong></p>
+
+<p>A collection of subsets of sample space <em>S</em> is called a <strong><em>sigma algebra</em></strong> denoted by <strong><em>B</em></strong>, if it satisfies the following three properties:
+\(\begin{aligned}
+&amp;1.\quad \emptyset \in B \quad(\text{ the empty set is an element of }B) \\[5pt]
+&amp;2.\quad \text{If } A \in B, \text{ then }A^c\in B \quad(B\text{ is closed under complementation}) \\[5pt]
+&amp;3. \quad \text{If }A_1,A_2,\dots \in B, \text{ then } \cup_{i=1}^\infty A_i \in B \quad(B\text{ is closed under countable unions})
+\end{aligned}\)</p>
+
+<p><strong>Q. Reason why we want to care about <em>sigma algebras</em>?</strong></p>
+
+<ul>
+  <li>when we deal with a large sample space like real line, there are some <strong>pathological sets</strong> that <strong>break down the probability theory</strong>.</li>
+  <li>To avoid such crazy sets (i.e. <strong>non-measurable sets</strong>), we restrict our attention to smaller but nicer subsets (i.e. <strong>measurable sets</strong>) for which the probability measure is well-defined and satisfies the <strong><em>Kolmogorov axioms</em> of probability</strong>.</li>
+</ul>
+
+\[\begin{aligned}
+&amp;1.\quad P(A) \geq 0 \text{ for all } A \in B \\[8pt]
+&amp;2.\quad P(S) = 1 \\
+&amp;3. \quad \text{If } A_1,A_2,\dots \in B \text{ are pairwise disjoint, then } P\big(\cup_{i=1}^\infty A_i \big) = \sum_{i=1}^\infty P(A_i)
+\end{aligned}\]
+
+:ET

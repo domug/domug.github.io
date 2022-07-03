@@ -1,0 +1,432 @@
+---
+layout: post
+title: "[MathStat] 1. Foundations of Statistics"
+date: 2022-04-21 00:00:00
+image: mathstat1.jpg
+tags: [statistics]
+categories: statistics
+use_math: true
+---
+
+This post is an overall summary of Chapter 1, 2 of the textbook *[Statistical Inference](http://home.ustc.edu.cn/~zt001062/MaStmaterials/George%20Casella&Roger%20L.Berger--Statistical%20Inference.pdf)* by Casella and Berger.
+
+## Table of Contents
+
+**1.1. Sigma Algebra**
+
+**1.2. Expected Values**
+
+**1.3. Moment Generating Functions**
+
+**1.4. Characteristic Functions**
+
+**1.5. Statistical Independence**
+
+**1.6. Covariance and Correlation**
+
+**1.7. Conditional Distributions**
+
+&nbsp;
+
+---
+
+## **1. Foundations of Statistics**
+
+&nbsp;
+
+### 1.1 Sigma Algebra
+
+**\<Definition>**
+
+A collection of subsets of sample space *S* is called a ***sigma algebra*** denoted by ***B***, if it satisfies the following three properties:
+
+<center>
+
+$$
+\begin{aligned}
+&1.\quad \emptyset \in B \quad(\text{ the empty set is an element of }B) \\[5pt]
+&2.\quad \text{If } A \in B, \text{ then }A^c\in B \quad(B\text{ is closed under complementation}) \\[5pt]
+&3. \quad \text{If }A_1,A_2,\dots \in B, \text{ then } \cup_{i=1}^\infty A_i \in B \quad(B\text{ is closed under countable unions}) \\[20pt]
+\end{aligned}
+$$
+
+</center>
+
+&nbsp;
+
+**Q. Reason why we want to care about *sigma algebras*?**
+
+- when we deal with a large sample space like real line, there are some **pathological sets** that **break down the probability theory**. 
+- To avoid such crazy sets (i.e. **non-measurable sets**), we restrict our attention to smaller but nicer subsets (i.e. **measurable sets**) for which the probability measure is well-defined and satisfies the ***Kolmogorov axioms* of probability**.
+
+<center>
+
+$$
+\begin{aligned}
+&1.\quad P(A) \geq 0 \text{ for all } A \in B \\[8pt]
+&2.\quad P(S) = 1 \\
+&3. \quad \text{If } A_1,A_2,\dots \in B \text{ are pairwise disjoint, then } P\big(\cup_{i=1}^\infty A_i \big) = \sum_{i=1}^\infty P(A_i)
+\end{aligned}
+$$
+
+</center>&nbsp;
+
+### 1.2 Expected Values
+
+**\<Definition>**
+
+The expected value or mean of a random variable $g(X)$, denoted as $E[g(X)]$ is defined as:
+
+<center>
+
+$$
+\begin{equation}
+  E[g(X)]=\left\{
+  \begin{array}{@{}ll@{}}
+    \int_{-\infty}^{\infty} g(x)f_X(x)dx , & \text{if } X \text{ is continuous} \\[10pt]
+    \sum_{x\in \chi} g(x)f_X(x) , & \text{if } X \text{ is discrete}
+  \end{array}\right.
+\end{equation}
+$$
+
+</center>
+
+provided that the integral or sum exists.
+
+&nbsp;
+
+**\<Relationship to tail probability>**
+
+Let X be a "nonnegative" random variable. Then in holds that:
+
+<center>
+
+$$
+E[X] = \int_{0}^{\infty} \big( 1 - F_X(x) \big)df = \int_{0}^{\infty}P(X > x)dx 
+$$
+
+$$
+\begin{aligned}
+&\Rightarrow x = \int_0^{x} 1dt = \int_0^{\infty} \mathbb{1}(t < x)dt \\[10pt]
+&\Leftrightarrow E[X] = E\Big[\int_0^{\infty} \mathbb{1}(t < x)dt\Big] = \int_0^{\infty} P(X > t)dt \quad (\because \text{Tonelli's theorm})
+\end{aligned}
+$$
+
+</center>
+
+A slight extension of this property to any random variable is that:
+
+<center>
+
+$$
+E[X] = \int_0^\infty P(X > x)dx - \int_{-\infty}^0 P(X < x)dx
+$$
+
+$$
+\begin{aligned}
+&\text{Since } x\mathbb{1}(X\geq 0) = \int_{0}^x\mathbb{1}(X \geq 0)dt = \int_{0}^\infty \mathbb{1}(X \geq 0) \mathbb{1}(X > t)dt = \int_0^\infty \mathbb{1}(X > t)dt, \\[5pt]
+&\text{and }x = x\mathbb{1}(X \geq 0) +  x\mathbb{1}(X < 0) =  x\mathbb{1}(X \geq 0) -  -(x)\mathbb{1}(-X > 0),
+\end{aligned}
+$$
+
+$$
+\begin{aligned}
+\Rightarrow &E[ \mathbb{1}(X\geq 0)] = E\big[\int_0^\infty \mathbb{1}(X>t)dt \big] = \int_0^\infty P(X>t)dt \\[7pt]
+& E[-x\mathbb{1}(-X \geq 0)] = E\big[\int_0^\infty \mathbb{1}(-X > t)dt\big] = \int_0^\infty P(X < -t)dt = \int_{-\infty}^0P(X < t)dt
+\end{aligned}
+$$
+
+$$
+\therefore E[X] = \int_0^\infty P(X > x)dx - \int_{-\infty}^0 P(X < x)dx
+$$
+
+</center>
+
+&nbsp;
+
+**\<Variance>**
+
+A useful alternative expression of variance is that for any arbitrary i.i.d. copy of random variable $X$ denoted by $X^\prime$, the variance is:
+
+<center>
+
+$$
+Var(X) = \frac{1}{2} E\big[ (X-X^\prime)^2\big]
+$$
+
+</center>
+
+From this, for a bounded random variable $x \in [a, b]$ the variance is upper bounded by:
+
+<center>
+
+$$
+Var(X) \leq \frac{(b-a)^2}{4}
+$$
+
+</center>
+
+This boundary cannot be improved in general.
+
+&nbsp;
+
+### 1.3 Moment Generating Functions
+
+**\<Definition>**
+
+<center>
+
+For each integer $n$, the n-th central moment of a random variable $X$ is defined as:
+$$
+\mu_n = E\big[(X-E[X])^n\big]
+$$
+</center>
+
+Then, the moment generating function (a.k.a. mgf) of a random variable $X$ is:
+
+<center>
+
+$$
+M_X(t) = E\big[ e^{tX} \big], \quad \;\forall t \in (-\delta, \delta), \;\delta >0
+$$
+
+</center>
+
+&nbsp;
+
+**Q. Why is mgf useful?**
+
+- The mgf of $X$ gives us all moments of $X$.
+- If the mgf exists, it uniquely determines the distribution of $X$.
+
+<center>
+
+$$
+M_X(t) = M_Y(t) \;\Leftrightarrow\; X \overset{d}{\approx} Y
+$$
+
+</center>
+
+- Convergence in mgf implies convergence in distribution. This property is used to prove the Central Limit Theorem.
+
+<center>
+
+$$
+\underset{n \to \infty}{\text{lim}}M_{X_n}(t) = M_X(t) \;\Leftrightarrow\; \underset{n \to \infty}{\text{lim}}F_{X_n}(t) = F_X(t)
+$$
+
+</center>
+
+- mgf is also useful to obtain a probability tail bound such as the *Hoeffding's inequality*.
+
+
+
+Note that **mgf doesn't necessarily exists for all random variables** (e.g. *Cauchy random variable*)
+
+<center>
+
+$$
+\begin{aligned}
+&\text{For Cauchy Random Variable }X, \\[5pt]
+&f(x) = \frac{1}{\pi}\frac{1}{x^2+1}, \quad (-\infty < x < \infty) \\[5pt]
+\end{aligned}
+$$
+
+$$
+\begin{aligned}
+\Rightarrow \int_{-\infty}^\infty e^{tx}\frac{1}{\pi}\frac{1}{x^2+1}dx &\geq \int_{0}^\infty e^{tx}\frac{1}{\pi}\frac{1}{x^2+1}dx \\[8pt]
+&\geq \int_{0}^\infty \frac{1}{\pi}\frac{tx}{x^2+1}dx \\[8pt]
+&= \underset{a \to \infty}{\text{lim}}\Big[\frac{t}{2\pi}log(a^2 + 1) \Big] = \infty
+\end{aligned}
+$$
+
+</center>
+
+&nbsp;
+
+### 1.4 Characteristic Functions
+
+**\<Definition>**
+
+The characteristic function of a random variable $X$ is defined as:
+
+<center>
+
+$$
+\phi_X(t) = E\big[ exp(itX) \big] = E\big[cos(tX) + isin(tX)\big], \quad t\in\mathbb{R}
+$$
+
+</center>
+
+- Characteristic function serves similar purposes with the moment generating function, but it exists for any kind of random variable.
+
+&nbsp;
+
+**\<Properties>**
+
+<center>
+
+$$
+\begin{aligned}
+&1.\quad \phi_X(0) = 1 \;\text{ and }\; |\phi_X(t)| \leq 0. \\[7pt]
+&2.\quad \phi_X(t) \text{ is uniformly continuous } \big(\text{i.e. exists }\psi \text{ such that }  |\phi_X(t+n) - \phi_X(t)| \leq \psi(h)\big). \\[5pt]
+&3.\quad \text{If } X \overset{d}{=} -X \text{ (i.e. symmetric)}, \phi_X(t) \text{ is real-valued}. \\[5pt]
+&4.\quad X \overset{d}{=} Y \text{ if and only if } \phi_X(t) = \phi_Y(t).
+
+\end{aligned}
+$$
+
+</center>
+
+&nbsp;
+
+### 1.5 Statistical Independence
+
+**\<Definition>**
+
+Two random variables $X$ and $Y$ are independent if and only if :
+
+<center>
+
+$$
+P(X\in A, \;Y\in B) = P(X \in A)\;P(Y \in B)
+$$
+
+$$
+\Leftrightarrow f_{XY}(x,y) = f_X(x)f_Y(y)
+$$
+
+</center>
+
+- Note that function of independent random variables are also independent:
+
+<center>
+
+$$
+\begin{aligned}
+P\big(g(X) \in A, \;h(Y)\in B \big) &= P\big(X \in g^{-1}(A), \; Y\in h^{-1}(B) \big) \\[5pt]
+&= P\big(X \in g^{-1}(A)\big) \;P\big( Y\in h^{-1}(B) \big) \\[5pt]
+&= P\big(g(X) \in A\big) \; P\big(h(Y)\in B \big)
+\end{aligned}
+$$
+
+</center>
+
+- If $X_1, \dots, X_n$ are independent, 
+
+<center>
+
+$$
+\begin{aligned}
+&\Rightarrow E\Big[\prod_{i=1}^n X_i \Big] = \prod_{i=1}^n E\big[ X_i\big] \\[5pt]
+&\Rightarrow Var\Big( \sum_{i=1}^n a_iX_i \Big) = \sum_{i=1}^na_i^2Var(X_i)
+\end{aligned}
+$$
+
+</center>
+
+&nbsp;
+
+### 1.6 Covariance and Correlation
+
+**\<Definition>**
+
+The covariance of two random variables $X$ and $Y$ is:
+
+<center>
+
+$$
+\text{Cov}(X, Y) = E\big[(X-E[X])(Y-E[Y])\big] = E[XY] - E[X]E[Y]
+$$
+
+</center>
+
+The correlation of random variables $X$ and $Y$ is:
+
+<center>
+
+$$
+\text{Corr}(X, Y) = \rho_{XY} = \frac{\text{Cov}(X,Y)}{\sqrt{Var(X)Var(Y)}}, \quad (-1\leq \rho_{XY} \leq 1)
+$$
+
+</center>
+
+- Note that covariance is scale-**variant**, while correlation is scale-**invariant**.
+
+</center>
+$$
+\text{Cov}(X, Y) \neq \text{Cov}(aX, bY)
+$$
+
+$$
+\text{Corr}(aX,aY) = \frac{\text{Cov}(aX, bY)}{\sqrt{Var(aX)Var(bY)}} = \frac{ab\;\text{Cov}(X,Y)}{\sqrt{a^2b^2Var(X)Var(Y)}} = \text{Corr}(X,Y)
+$$
+
+</center>
+
+&nbsp;
+
+### 1.7 Conditional Distributions
+
+**\<Definition>**
+
+Let $(X, Y)$ be a continuous bivariate random vector with joint pdf $f_{XY}$ and marginal pdfs $f_X$ and $f_Y$. For any $x$ such that $f_X(x)>0$, the conditional pdf of $Y$ given that $X=x$ is the function of $y$ denoted by $f(y\|x)$ defined as:
+
+<center>
+
+$$
+f(y|x) = \frac{f_{XY}(x,y)}{f_X(x)}
+$$
+
+</center>
+
+&nbsp;
+
+**\<Law of total expectation>**
+
+For any two random variables $X$ and $Y$, provided that expectations exist,
+
+<center>
+
+$$
+E[X] = E[E[X|Y]]
+$$
+
+</center>
+
+&nbsp;
+
+**\<Law of total variance>**
+
+For any two random variables $X$ and $Y$,
+
+<center>
+
+$$
+Var(X) = E[Var(X|Y) + Var(E[X|Y])]
+$$
+
+</center>
+
+&nbsp;
+
+**\<Law of total covariance>**
+
+For any three random variables $X, Y, Z$, it holds that:
+
+<center>
+
+$$
+\text{Cov}(X, Y) = E\big[ \text{Cov}(X,Y|Z)\big] + \text{Cov}\big(E[X|Z], E[Y|Z]\big)
+$$
+
+</center>&nbsp;
+
+&nbsp;
+
+---
+
+# Reference
+
+- Casella, G., & Berger, R. L. (2002). *Statistical inference.* 2nd ed. Australia ; Pacific Grove, CA: Thomson Learning.
+

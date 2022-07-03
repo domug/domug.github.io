@@ -29,7 +29,7 @@ This post is an overall summary of different testing methodologies used in clini
 
 - [8. Wilcoxon Rank-Sum Test](#8-wilcoxon-rank-sum-test)
 
-- [9 Kruskal-Wallis Test](#9-kruskal-wallis-test)
+- [9. Kruskal-Wallis Test](#9-kruskal-wallis-test)
 
 - [10. Binomial Test](#10-binomial-test)
 
