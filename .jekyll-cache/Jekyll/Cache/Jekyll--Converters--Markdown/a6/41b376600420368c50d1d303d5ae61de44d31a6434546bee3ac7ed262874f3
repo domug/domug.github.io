@@ -1,0 +1,57 @@
+I"c	<p>This post is an overall summary of Chapter 7 of the textbook <em><a href="http://home.ustc.edu.cn/~zt001062/MaStmaterials/George%20Casella&amp;Roger%20L.Berger--Statistical%20Inference.pdf">Statistical Inference</a></em> by Casella and Berger.</p>
+
+<p><strong>&lt;Table of Contents&gt;</strong></p>
+
+<p><strong>1.1. Sigma Algebra</strong></p>
+
+<p><strong>1.2. Expected Values</strong></p>
+
+<p><strong>1.3. Moment Generating Functions</strong></p>
+
+<p><strong>1.4. Characteristic Functions</strong></p>
+
+<p><strong>1.5. Statistical Independence</strong></p>
+
+<p><strong>1.6. Covariance and Correlation</strong></p>
+
+<p><strong>1.7. Conditional Distributions</strong></p>
+
+<p> </p>
+
+<hr />
+
+<h2 id="4-statistical-estimation">4. Statistical Estimation</h2>
+
+<p><strong>Statistical estimation</strong> is the very procedure of an endeavor to understand various aspects of an <strong>underlying population</strong> based on collected <strong>samples</strong>, so it can naturally be regarded as the core of statistics.</p>
+
+<p>But typically, we can’t afford to have lot of samples (at least those which are “meaningful”), so we need a <strong>statistical model</strong> that best reveals our understanding of the underlying distribution. In this sense, a statistical model is the set of all possible distributions <em>F</em> for a specific event of our interest. Broadly, we have two kinds of statistical models - “parametric” and “non”-parametric models.</p>
+
+<p>In a <strong>parametric model,</strong> the set of possible distributions <em>F</em> can be described by a finite number of parameters. A canonical example is the Gaussian model with the location $\mu$ and scale parameter $\sigma$ which can be represented as:</p>
+
+<center>
+
+$$
+\begin{aligned}
+F = \Big\{ f(x;\mu, \sigma) = \frac{1}{\sqrt{2\pi\sigma^2}}\text{exp}\Big(-\frac{(x-\mu)^2}{2\sigma^2} \Big), \quad \mu \in \mathbb{R}, \sigma &gt; 0 \Big\}
+\end{aligned}
+$$
+
+</center>
+
+<p>On the other hand, the <strong>non-parametric model</strong> is one in which $F$ cannot be parameterized by a finite number of parameters. The density estimation task is one of the popular examples.</p>
+
+<hr />
+
+<p>&lt;/center&gt;</p>
+
+<p> </p>
+
+<hr />
+
+<h1 id="reference">Reference</h1>
+
+<ul>
+  <li>Casella, G., &amp; Berger, R. L. (2002). <em>Statistical inference.</em> 2nd ed. Australia ; Pacific Grove, CA: Thomson Learning.</li>
+</ul>
+
+:ET

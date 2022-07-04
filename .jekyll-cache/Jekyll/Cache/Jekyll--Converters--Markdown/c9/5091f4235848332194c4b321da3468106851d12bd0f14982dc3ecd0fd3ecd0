@@ -1,0 +1,773 @@
+I"�y<p>This post is an overall summary of Chapter 7 of the textbook <em><a href="http://home.ustc.edu.cn/~zt001062/MaStmaterials/George%20Casella&amp;Roger%20L.Berger--Statistical%20Inference.pdf">Statistical Inference</a></em> by Casella and Berger.</p>
+
+<p><strong>&lt;Table of Contents&gt;</strong></p>
+
+<p><strong>1.1. Sigma Algebra</strong></p>
+
+<p><strong>1.2. Expected Values</strong></p>
+
+<p><strong>1.3. Moment Generating Functions</strong></p>
+
+<p><strong>1.4. Characteristic Functions</strong></p>
+
+<p><strong>1.5. Statistical Independence</strong></p>
+
+<p><strong>1.6. Covariance and Correlation</strong></p>
+
+<p><strong>1.7. Conditional Distributions</strong></p>
+
+<p> </p>
+
+<hr />
+
+<h2 id="4-statistical-estimation">4. Statistical Estimation</h2>
+
+<p><strong>Statistical estimation</strong> is the very procedure of an endeavor to understand various aspects of an <strong>underlying population</strong> based on collected <strong>samples</strong>, so it can naturally be regarded as the core of statistics.</p>
+
+<p>But typically, we can’t afford to have lot of samples (at least those which are “meaningful”), so we need a <strong>statistical model</strong> that best reveals our understanding of the underlying distribution. In this sense, a statistical model is the set of all possible distributions <em>F</em> for a specific event of our interest. Broadly, we have two kinds of statistical models - “parametric” and “non”-parametric models.</p>
+
+<p>In a <strong>parametric model,</strong> the set of possible distributions <em>F</em> can be described by a finite number of parameters. A canonical example is the Gaussian model with the location $\mu$ and scale parameter $\sigma$ which can be represented as:</p>
+
+<center>
+
+$$
+\begin{aligned}
+F = \Big\{ f(x;\mu, \sigma) = \frac{1}{\sqrt{2\pi\sigma^2}}\text{exp}\Big(-\frac{(x-\mu)^2}{2\sigma^2} \Big), \quad \mu \in \mathbb{R}, \sigma &gt; 0 \Big\}
+\end{aligned}
+$$
+
+</center>
+
+<p>On the other hand, the <strong>non-parametric model</strong> is one in which $F$ cannot be parameterized by a finite number of parameters. The density estimation task is one of the popular examples.</p>
+
+<p> </p>
+
+<hr />
+
+<h3 id="41-overview">4.1 Overview</h3>
+
+<p> </p>
+
+<h4 id="411-point-estimation">4.1.1. Point Estimation</h4>
+
+<p>First of all, we focus our attention to the <strong>point estimation</strong> where we are dealing with a single “best guess” from the possible values of an unknown quantity of interest. Here, the quantity of interest is often called as the <strong>parameter</strong> which we often denote as $\hat\theta$ or $\hat\theta_n$.</p>
+
+<p>So basically, a point <strong>estimator</strong> is a function of the random variables $X_1, \dots, X_n$ such that</p>
+
+<center>
+
+$$
+\hat\theta_n = g(X_1, \dots, X_n)
+$$
+
+</center>
+
+<p>which makes $\hat\theta_n$ itself another <strong>random variable</strong>.</p>
+
+<p>Because any function of the collected samples can be regarded as an estimator (it is easy to think of estimator as some kind of decision rule), we need some <strong>criteria</strong> to measure the performance of the many possible estimators and possibly define the best one. This was studied intensively in the field of mathematical statistics in the early 20th century, and most fundamental criteria include <strong>unbiasedness</strong> and <strong>consistency</strong>.</p>
+
+<p>The <strong>bias</strong> of an estimator $\hat\theta$ is defined as:</p>
+
+<center>
+
+$$
+b(\hat\theta) = \mathbb{E}_\theta \big[\hat\theta\big] - \theta
+$$
+
+</center>
+
+<p>So basically, the implication of an “<em>unbiasedness</em>” is that the expectation of an estimator is exactly the same as the true parameter.</p>
+
+<p>On the other hand, we call that an estimator is <em>“consistent”</em> if the estimator converges to the true parameter in probability such that:</p>
+
+<center>
+
+$$
+\text{for any }\epsilon&gt;0,\quad \mathbb{P}_\theta \big(|\hat\theta_n - \theta| \geq \epsilon\big) \to 0 \quad \text{as } n \to \infty
+$$
+
+</center>
+
+<p>So by the definition, It is no doubt that these two criteria are the very least conditions to be satisfied for an estimator to be statistically valid.</p>
+
+<p>Then for the class of estimators that passes the above two guardrail properties, the performance of an estimator is often measured by its <strong>variance</strong>, which is given by:</p>
+
+<center>
+
+$$
+\text{Var}_\theta[\hat\theta] = \mathbb{E}_\theta\big[(\hat\theta_n - \mathbb{E}_\theta[\hat\theta])^2\big]
+$$
+
+</center>
+
+<p>In this sense, the “best” estimator is the one that achieves the <strong>minimum variance</strong>, and the existance of such best estimator (a.k.a. <em>MVUE</em>) for various statistics have been studied intensively in the field of mathematical statistics.</p>
+
+<p> </p>
+
+<h4 id="412-confidence-sets">4.1.2. Confidence Sets</h4>
+
+<p>Remember that (classic) statistical inference consists of <em>estimation</em> and <em>hypothesis testing</em>, where in the latter a <strong>confidence set</strong> used to for decision making.</p>
+
+<p>Specifically in general, we define a $1-\alpha$ confidence set $C_n$ for a parameter $\theta$ to be any set which has the property such that:</p>
+
+<center>
+
+$$
+P_\theta(\theta \in C_n) \geq 1-\alpha
+$$
+
+</center>
+
+<p>where the left term $P_\theta(\theta \in C_n)$ is called as the <strong>coverage</strong> of the confidence set $C_n$. Intuitively, the implication of the coverage is that when an experiment is repeated sufficiently many times, then for every distinct confidence sets in different trials of experiments, the true parameter $\theta$ will be included in approximately $1-\alpha$ of those sets. This naturally connects to the definition of <em>confidence intervals</em> in a statistical testing procedure.</p>
+
+<p>Actually, we can use concentration inequalities to construct confidence intervals. However, these confidence intervals are often too loose to have practical meanings so we often resort to asymptotic properties.</p>
+
+<p>As an example, let’s consider a Bernoulli confidence set.</p>
+
+<p>For Bernoulli random variables $X_1, \dots, X_n \overset{i.i.d}{\sim} Bernoulli(p)$, the Hoeffding’s inequality assures:</p>
+
+<center>
+
+$$
+P\big(|\hat p - p| \geq t \big) \leq 2e^{-2nt^2} = \alpha
+$$
+
+</center>
+
+<p>By solving above inequality for $t$, it is straightforward that the confidence set is defined as:</p>
+
+<center>
+
+$$
+C_n = \Big( \hat p - \sqrt{\frac{log(2/\alpha)}{2n}}, \; \hat p + \sqrt{\frac{log(2/\alpha)}{2n}} \Big)
+$$
+
+</center>
+
+<p>On the other hand, let’s see what happens when we use the normal approximation. By the asymptotic nomality of the Binomial random variables, we have the following (asymptotic) confidence interval:</p>
+
+<center>
+
+$$
+C_n = \Big( \hat p - z_{\alpha/2}\sqrt{\frac{\hat p (1-\hat p)}{n}}, \; \hat p + z_{\alpha/2}\sqrt{\frac{\hat p (1-\hat p)}{n}} \Big)
+$$
+
+</center>
+
+<p>Then, by comparing the two confidence intervals, we know that the latter is always <strong>shorter</strong> than the interval obtained by Hoeffding’s inequality as long as the asymptoticity is valid.</p>
+
+<center>
+
+$$
+\Rightarrow z_{\alpha/2}\sqrt{\frac{\hat p (1-\hat p)}{n}} \leq \sqrt{\frac{log(2/\alpha)}{2n}}
+$$
+
+</center>
+
+<p> </p>
+
+<hr />
+
+<h3 id="42-method-of-estimation">4.2 Method of Estimation</h3>
+
+<p>Now let’s dive deeper into the methodogies of statistical estimation.</p>
+
+<p>In this section, we are going to take a look at the three classes of estimation methods:</p>
+
+<ul>
+  <li><strong>Method of Moments (MoM) Estimator</strong></li>
+  <li><strong>Maximum Likelihood Estimator (MLE)</strong></li>
+  <li><strong>Bayes Estimator</strong></li>
+</ul>
+
+<p>Basically, all of these different methods are devised to estimate the <strong>parameters</strong> of our assumed <strong>statistical model</strong>. To this end, one might have the following questions:</p>
+
+<ul>
+  <li>what happens if the model is wrong in the first place?</li>
+  <li>where do models really come from?</li>
+</ul>
+
+<p>Except for some rare cases when we have enough knowledge from our data to hypothesize a reasonable statistical model, the famous aphorism from George Box is always helpful as to not fall in a logical trap.</p>
+
+<center>
+  <img src="/images/mathstat/1.png" width="450" height="400" /> 
+</center>
+
+<p> </p>
+
+<p>That is, when we specify a statistical model, we do so hoping that it can provide a useful <strong>approximation</strong> to the data generation mechanism. In this sense, as long as our model can provide us some useful insight about the underlying population, there is no right or wrong and the model is regarded as valid.</p>
+
+<p>With this in mind, let’s firstly take a look at the <strong>Method of Moments Estimators</strong>.</p>
+
+<p> </p>
+
+<h4 id="421-method-of-moments-mom-estimators">4.2.1. Method of Moments (MoM) Estimators</h4>
+
+<p>Broadly, the idea of MoM estimators is to compare the <strong>estimated moments</strong> with the <strong>true (population) moments</strong>.</p>
+
+<p>First of all, the sample moments are defined in a straightforward way such that:</p>
+
+<center>
+
+$$
+\begin{aligned}
+&amp;m_1 = E[X] = \frac{1}{n} \sum_{i=1}^n X_i \\[10pt]
+&amp;m_2 = E[X^2] = \frac{1}{n} \sum_{i=1}^n X_i^2 \\[10pt]
+&amp;\quad\vdots \\[10pt]
+&amp;m_k = E[X^k] = \frac{1}{n}\sum_{i=1}^n X_i^k
+\end{aligned}
+$$
+
+</center>
+
+<p>Furthermore, let the <em>i</em>-th population moment be denoted as $\mu_i(\theta_1, \dots, \theta_k)$.</p>
+
+<p>Then we can solve the following system of equations to derive the MoM estimators $\hat \theta_1, \dots, \hat \theta_k$:</p>
+
+<center>
+
+$$
+\begin{aligned}
+&amp;\mu_1 = \mu_1(\theta_1, \dots, \theta_k) \\[10pt]
+&amp;\quad\vdots \\[10pt]
+&amp;\mu_k = \mu_k(\theta_1, \dots, \theta_k) 
+\end{aligned}
+$$
+
+</center>
+
+<p>To get a glimpse of what’s happening here, let’s take a look some examples.</p>
+
+<p> </p>
+
+<p><strong>&lt;Example 1&gt;</strong></p>
+
+<p>For a Gaussian random variables $X_1, \dots, X_n \sim N(\theta, \sigma^2)$, the MoM estimator is derived by solving:</p>
+
+<center>
+
+$$
+\begin{aligned}
+\mathbb{E}[X] &amp;= \frac{1}{n}\sum_{i=1}^n X_i = \theta \\[10pt]
+\text{Var}(X) + (\mathbb{E}[X])^2 &amp;=\frac{1}{n}\sum_{i=1}^n X_i^2 = \theta^2 + \sigma^2
+\end{aligned}
+$$
+
+</center>
+
+<p>As we have two unknown variables $\theta, \sigma^2$ and two independent equations, we can solve the equations to get the following MoM estimators:</p>
+
+<center>
+
+$$
+\begin{aligned}
+\hat\theta &amp;= \frac{1}{n}\sum_{i=1}^n X_i \\[20pt]
+\hat \sigma^2 &amp;= \frac{1}{n}\sum_{i=1}^n X_i^2 - \Big(\frac{1}{n}\sum_{i=1}^n X_i\Big)^2 \\[5pt]
+&amp;= \frac{1}{n} \sum_{i=1}^n \Big(X_i - \frac{1}{n}\sum_{j=1}^n X_j \Big)^2 \\[10pt]
+&amp;\Rightarrow \mathbb{E}[\hat\sigma^2] = \frac{n-1}{n} \sigma^2
+\end{aligned}
+$$
+
+</center>
+
+<p>From the result, we can see that the MoM estimators can naturally be <strong>biased</strong>.</p>
+
+<p> </p>
+
+<p><strong>&lt;Example 2&gt;</strong></p>
+
+<p>For a Binomial random variables $X_1, \dots, X_n \sim B(k, p)$, the MoM estimator can similarly be derived by solving:</p>
+
+<center>
+
+$$
+\begin{aligned}
+\mu_1 &amp;= \mathbb{E}[X] = \bar X = kp \\[10pt]
+\mu_2 &amp;= \mathbb{E}[X^2] = \frac{1}{n}\sum_{i=1}^n X_i^2 = kp(1-p) + k^2p^2
+\end{aligned}
+$$
+
+</center>
+
+<p>In this case, we don’t have a-priori “obvious” estimators for the parameter $k$ and $p$ because there can be multiple solutions to the above equation. Anyhow, one possible solution is:</p>
+
+<center>
+
+$$
+\begin{aligned}
+\hat p &amp;= \frac{\bar X - \frac{1}{n}\sum_{i=1}^n(X_i - \bar X)^2}{\bar X} \\[15pt]
+\hat k &amp;= \frac{\bar X^2}{\bar X - \frac{1}{n} \sum_{i=1}^n (X_i - \bar X)^2 }
+\end{aligned}
+$$
+
+</center>
+
+<p>However, from the result we can see that the estimator for parameter $p$ is <strong>not confined in the original parameter space</strong> (i.e. $p \in [0,1]$). This can be problematic and one possible remedy is by truncating the estimator.</p>
+
+<p> </p>
+
+<h4 id="422-maximum-likelihood-estimators-mle">4.2.2. Maximum Likelihood Estimators (MLE)</h4>
+
+<p>So we have seen that the previous MoM estimators can become inefficient for some problems (i.e. example 2).</p>
+
+<p>Supposedly most-commonly used method of defining an statistical estimator is from the <strong>likelihood function</strong>. Specifically, we want an estimator which maximizes the value of the likelihood function $L$ and denote it as the maximum likelihood estimator $\hat \theta_{MLE}$.</p>
+
+<center>
+
+$$
+\hat \theta_{MLE} = \underset{\theta}{\text{argmax}} \; L(\theta | X_1, \dots, X_n)
+$$
+
+</center>
+
+<p>Intuitively, the MLE is just the value of the parameter which is <strong>most likely to have generated the samples</strong>, so using MLE as a surrogate for the parameter seems very natural.</p>
+
+<p>Moreover, unlike the MoM estimators, MLE is always confined in the original parameter space (i.e. the support of MLE is the same as that of the parameter) and it has some desirable asymptotic properties which facilitates its use in many practical scenarios. In fact, much of the early theoretical development in statistics revolved around showing the optimality of MLE in various senses.</p>
+
+<p>The canonical way of computing the MLE is to either analytically or numerically solve the following system of equations:</p>
+
+<center>
+
+$$
+\begin{aligned}
+&amp;\frac{\partial}{\partial \theta_i} L(\theta | X_1, \dots, X_n) \overset{set}{\equiv} 0, \quad i = 1,\dots, k \\[10pt]
+&amp;\Leftrightarrow 
+\frac{\partial}{\partial \theta_i} \text{log}L(\theta | X_1, \dots, X_n) \overset{set}{\equiv} 0
+\end{aligned}
+$$
+
+</center>
+
+<p>, where logarithm of the original likelihood function is often taken for mathematical convenience.</p>
+
+<p> </p>
+
+<p><strong>&lt;Example&gt;</strong></p>
+
+<p>Apart from the trivial Gaussian and Binomial examples, let’s see the case where the MLE is not derived analytically.</p>
+
+<p>Suppose $X_1, \dots, X_n$ are i.i.d. uniform random variables from a distribution with density:</p>
+
+<center>
+
+$$
+\begin{aligned}
+f(x;\theta) = 
+\begin{cases} 
+\frac{1}{\theta}, &amp; \mbox{if } 0 \leq x &lt; \theta \;\text{ and }\; \theta &gt; 0 \\[10pt] 
+0, &amp; \mbox{otherwise} 
+\end{cases}
+
+\end{aligned}
+$$
+
+</center>
+
+<p>Then, the likelihood function is given by:</p>
+
+<center>
+
+$$
+\begin{aligned}
+L(\theta | X_1, \dots, X_n) = \prod_{i=1}^n \frac{1}{\theta}\mathbb{1}\Big(0 \leq X_i &lt; \theta \Big) = \frac{1}{\theta^n}\mathbb{1}\Big(0 \leq \underset{1\leq i\leq n}{\text{min}} X_i \Big) \; \mathbb{1}\Big(\underset{1\leq i\leq n}{\text{max}}X_i \leq \theta  \Big)
+\end{aligned}
+$$
+
+</center>
+
+<p>If we visualize this likelihood function, it would be something like:</p>
+
+<center>
+  <img src="/images/mathstat/2.jpeg" width="450" height="400" /> 
+</center>
+
+<p>Therefore the MLE is:</p>
+
+<center>
+
+$$
+\hat \theta_{MLE} = \underset{1\leq i \leq n}{\text{max}}X_i
+$$
+
+</center>
+
+<p> </p>
+
+<h4 id="423-properties-of-mle">4.2.3. Properties of MLE</h4>
+
+<p>Now let’s quickly take a look at some of the desirable properties of the maximum likelihood estimators.</p>
+
+<p>Note that many of the optimal properties are held under the so-called <strong>“regularity conditions”</strong>, and a brief introduction to some of the key conditions are:</p>
+
+<ul>
+  <li>parameter space is closed and bounded</li>
+  <li>true parameter lies within (interior of) the parameter space</li>
+  <li>likelihood function is smooth (countably differentiable)</li>
+</ul>
+
+<p>Also, as the MLEs cannot be derived analytically for most of the practical scenarios, we usually have to rely on numerical approximation techniques such as the <a href="https://en.wikipedia.org/wiki/Newton%27s_method">Newton-Rhapson method</a> or the <a href="https://en.wikipedia.org/wiki/Gradient_descent">gradient descent algorithm</a>.</p>
+
+<p> </p>
+
+<h5 id="invariance-property">Invariance property</h5>
+
+<p>The first property of MLE we are going to look at is the <strong>invariance property</strong>. Roughly, what this states is that for a MLE $\hat \theta$ of a parameter $\theta$, the MLE for a function of the parameter $g(\theta)$ is just $g(\hat\theta)$.</p>
+
+<p>A formal proof is <a href="http://epgp.inflibnet.ac.in/epgpdata/uploads/epgp_content/statistics/05._statistical_inference_iii_______/05._invariance_property_and_likelihood_equation_of_mle/et/9568_et_module_4_quadrant_1.pdf">(reference)</a>:</p>
+
+<center>
+
+$$
+\begin{aligned}
+&amp;\text{Define }\Omega_\gamma = \{ \theta:g(\theta) = \gamma \}, \\[10pt]
+&amp;\text{let } M_x(\gamma) = \underset{\theta \in \Omega_\gamma}{\text{sup}} L_x(\theta) \quad \text{(likelihood function induced by }g) \\[10pt]
+&amp;\text{Our goal is to find }\hat\gamma \text{ at which } M_x(\gamma) \text{ is maximized}.
+\end{aligned}
+$$
+
+$$
+\begin{aligned}
+&amp;\text{let } M_x(\hat \gamma_0) = \underset{\theta \in \Omega_{\hat\gamma_0}}{\text{sup}} L_x(\theta) \geq \underset{\theta \in \Omega_{\hat \gamma_0}}{L_x(\hat\theta)}, \quad \Omega_{\hat \gamma_0} = \{ \theta: g(\theta) = \hat \gamma_0 \}
+\end{aligned}
+$$
+
+$$
+\begin{aligned}
+\Rightarrow  M_x(\hat\gamma_0) \leq \underset{\hat\gamma \in \Gamma}{\text{sup}} M_x(\hat \gamma) &amp;= \underset{\hat\gamma \in \Omega}{\text{sup}} \; \underset{\theta \in \Omega_{\hat\gamma_0}}{\text{sup}} L_x(\theta) \\[10pt]
+&amp;= \underset{\theta \in \Omega}{\text{sup}} L_x(\theta) = L_x(\hat \theta) \\[10pt]
+\Leftrightarrow M_x(\hat \gamma_0) = L_x(\hat \theta) &amp;= \underset{\gamma \in \Gamma}{\text{sup}} M_x(\gamma) \\[10pt]
+\therefore \quad \hat\gamma_0 = g(\hat\theta) \text{ is the MLE of } &amp;\gamma = g(\theta)
+\end{aligned}
+$$
+
+</center>
+
+<p> </p>
+
+<h5 id="consistency">Consistency</h5>
+
+<p>The MLE is consistent under the regularity conditions (i.e. converge in probability to the true parameter).</p>
+
+<p>In order to establish the usefulness of this property, let’s recall the definition of the <strong>Kullback-Leibler Divergence (KL divergence)</strong>:</p>
+
+<center>
+
+$$
+D_{KL} (f ||g) = \int f(x) \text{log}\Big(\frac{f(x)}{g(x)}\Big)dx
+$$
+
+</center>
+
+<p>From this, we can show that <strong>maximizing the likelihood function is actually equivalent to minimizing the KL divergence to the true model for large samples</strong>.</p>
+
+<p>To see why this is the case,</p>
+
+<center>
+
+$$
+\begin{aligned}
+M_n(\theta) &amp;:= \frac{1}{n} \sum_{i=1}^n \{ \text{log}f_\theta(X_i) - \text{log}f_{\theta^*}(X_i) \} \\[5pt]
+&amp;= \frac{1}{n} \sum_{i=1}^n \Big\{ \text{log} \frac{f_\theta(X_i)}{f_{\theta^*}(X_i)}  \Big\} \\[5pt]
+&amp;\overset{p}{\to} \mathbb{E}_{f_{\theta^*}}\Big[ \text{log}\frac{f_\theta(X_i)}{f_{\theta^*}(X_i)} \Big] = -D_{KL}(f_{\theta^*} || f_\theta)
+\end{aligned}
+$$
+
+</center>
+
+<p>Since KL divergence is strictly positive and has <a href="https://www.researchgate.net/publication/263812795_Determining_parameter_identifiability_from_the_optimization_theory_framework_A_Kullback-Leibler_divergence_approach">identifiability property</a>, it is uniquely minimized when $\theta = \theta^<em>$.</em> Furthermore, since the MLE also asymptotically converges to the true parameter $\theta$, we can finally say that the maximum likelihood will be achieved at $\theta^*$ when the sample size is sufficiently large.</p>
+
+<p> </p>
+
+<h5 id="asymptotic-normality-w-fisher-information">Asymptotic Normality (w/ Fisher Information)</h5>
+
+<p>The next promising property of MLE is that it is (often) <strong>asymptotically normal</strong>. To establish this fact, we need to first define what’s called the <em>Fisher information</em>.</p>
+
+<p>First, the <strong>score function</strong> is define as the following:</p>
+
+<center>
+
+$$
+s_{\theta}(X) = \frac{\partial \;\text{log}_{f_\theta} (X)}{\partial \theta}
+$$
+
+</center>
+
+<p>We can show that score function at $\theta$ has zero mean such that:</p>
+
+<center>
+
+$$
+\begin{aligned}
+1 &amp;= \int_\theta f_\theta(x)dx \\[10pt]
+\Leftrightarrow
+0&amp;= \int \frac{\partial \;\text{log}f_\theta(x)}{\partial \theta} f_\theta(x)dx  \quad\quad  \Big( \because (\text{log}f)^\prime = \frac{f^\prime}{f}\Big) \\[10pt]
+&amp;= \mathbb{E}_\theta [s_\theta(X)]
+\end{aligned}
+$$
+
+</center>
+
+<p>Then, the <strong>Fisher information</strong> is defined as just the <strong>variance of the score function</strong>.</p>
+
+<center>
+
+$$
+I(\theta) = Var\Big(s_\theta(X)\Big) = \mathbb{E}[s_\theta(X)^2] \quad\quad (\because \mathbb{E}[S_\theta(X)] = 0)
+$$
+
+</center>
+
+<p>Also, under some mild regularity conditions the Fisher information can be expressed as the second order partial derivative of the log likelihood such that:</p>
+
+<center>
+
+$$
+\begin{aligned}
+&amp;\frac{d}{d\theta} \mathbb{E}_\theta \Big[ \frac{\partial}{\partial\theta} \text{log}f_\theta(X) \Big] = 0 \\[10pt]
+\Leftrightarrow
+&amp;\int\Big[ \frac{\partial}{\partial\theta} \Big( f_\theta(X) \frac{\partial}{\partial\theta} \text{log}f_\theta(X) \Big) \Big]dx = 0 \\[10pt]
+
+&amp;= \int\Big[\frac{\partial}{\partial\theta}f_\theta(X) \cdot  \frac{\partial}{\partial\theta} \text{log}f_\theta(X) \Big]dx 
++
+\int\Big[ f_\theta(X) \cdot \frac{\partial^2}{\partial\theta^2} \text{log}f_\theta(X) \Big]dx \\[10pt]
+\Leftrightarrow
+&amp;\;\; \mathbb{E}_\theta\Big[ \frac{\partial^2}{\partial\theta^2} \text{log}f_\theta(X) \Big]
++  
+ \mathbb{E}_\theta\Big[ \Big( \frac{\partial}{\partial\theta} \text{log}f_\theta(X) \Big)^2 \Big] = 0 \\[10pt]
+\therefore
+&amp;\;\; I(\theta) = -\mathbb{E}_\theta\Big[ \frac{\partial^2}{\partial\theta^2} \text{log}f_\theta(X) \Big]
+\end{aligned}
+$$
+
+</center>
+
+<p>So at a high level, what Fisher information does is that it measures the variance of the score function to examine <strong>how confidently we can estimate the unknown parameter</strong>. Roughly, if the log-likelihood is very flat, then even if the likelihood of our estimator is indeed very close to that of the true parameter, $\theta$ and $\hat \theta$ can still be located far apart.</p>
+
+<p>On the other hand, we can see that the Fisher information depends on the unknown parameter $\theta$, so there are occasions when it cannot be computed analytically. In these cases, we define the <strong>observed fisher information</strong> as:</p>
+
+<center>
+
+$$
+I_n(\hat \theta) = -\frac{1}{n}\sum_{i=1}^n \Big[\frac{\partial^2}{\partial \theta^2} \text{log}f_\theta(X_i)|_{\theta=\hat \theta} \Big]
+$$
+
+</center>
+
+<p>Then under the regularity conditions, we can show the asymptotic normality of an MLE $\hat \theta$ such that:</p>
+
+<center>
+
+$$
+\begin{aligned}
+&amp;\sqrt{n I_n(\hat \theta)}\;(\hat \theta - \theta) \overset{d}{\to} N(0,1) \\[10pt]
+\Leftrightarrow  \;\;
+&amp;(\hat \theta - \theta) \overset{d}{\to} N\Big(0, \frac{1}{nI_n(\hat\theta)} \Big)
+\end{aligned}
+$$
+
+</center>
+
+<p>Therefore, we can conclude that the (observed) Fisher information is the <strong>asymptotic variance</strong> of the maximum likelihood estimator.</p>
+
+<p>The formal proof of this asymptotic normality can be found in the <a href="https://domug.github.io/2021/09/05/asymptoticity_MLE/">previous post</a> (written in Korean).</p>
+
+<p> </p>
+
+<h5 id="summary">Summary</h5>
+
+<p>We have seen various optimal properties of the MLE which makes it a great estimator when some regularity conditions are met. Namely, these are:</p>
+
+<ul>
+  <li>MLE is <strong>invariant</strong> to a transformation</li>
+  <li>MLE is <strong>consistent</strong></li>
+  <li>MLE is <strong>asymptotically normal</strong> with a variance we can compute (Fisher information)</li>
+  <li>MLE is <strong>asymptotically unbiased and efficient</strong> (i.e. its variance attains the Rao-Cramer lower bound - discussed in previous post)</li>
+</ul>
+
+<p>In fact, many of modern statistical theories aim to understand what will happen to the MLE when (1) the regularity conditions are not met, (2) the asymptotic theory is not valid (e.g. high-dimensional settings) and (3) when MLE is intractable to compute.</p>
+
+<p> </p>
+
+<h4 id="424-bayes-estimators">4.2.4. Bayes Estimators</h4>
+
+<p>The last general method to derive estimators is a bit different in a philosophical sense from the aforementioned two methodologies, which is the <strong>Bayes estimator</strong>. We’ll not dig into the philosophical difference between the frequentist and Bayesian as it was discussed previously in this <a href="https://domug.github.io/2021/02/09/BS1/">post</a>.</p>
+
+<p>The key point is that in the Bayesian approach, we consider the parameter $\theta$ to be a <strong>random variable</strong> itself. Then, the parameter is allowed to have its own probability distribution based on our knowledge, which is often called as the <strong><em>prior distribution</em></strong>. Then it is a straightforward application of the <strong>Bayes rule</strong> to derive the <strong><em>posterior distribution</em></strong> based on the collected samples.</p>
+
+<center>
+
+$$
+\pi(\theta | X_1, \dots, X_n) = \frac{\pi(\theta) L(\theta | X_1, \dots, X_n) }{\int \pi(\theta) L(\theta | X_1, \dots, X_n)d\theta}
+$$
+
+</center>
+
+<p>In practice, the integration part of the denominator of the Bayes rule cannot be solved analytically unless we restrict the prior distribution to some special families called as the <strong><em>conjugate family</em></strong>. Hence the priors are often chosen out of convenience rather than any real prior belief.</p>
+
+<p>Anyhow, the derived posterior distribution is a distribution over the possible parameter values upon seeing the collected samples. Then with respect to point estimation, a <strong>Bayes estimator</strong> is just some kind of a summary statistic of the posterior distribution where one common candidate is the <strong>posterior mean</strong>.</p>
+
+<p> </p>
+
+<p><strong>&lt;Example&gt;</strong></p>
+
+<p>Let’s take a quick look at example of a Binomial Bayes estimator.</p>
+
+<p>Suppose we have $X_1, \dots, X_n \sim Bernoulli(p)$. Then the binomial likelihood (distribution of the samples) is written as:</p>
+
+<center>
+
+$$
+\begin{aligned}
+f(X_1, \dots, X_n | p) &amp;= \prod_{i=1}^n p^{X_i} (1-p)^{1-X_i}  \\[5pt]
+&amp;= p^{n\bar X} (1-p)^{n(1-\bar X)}
+\end{aligned}
+$$
+
+</center>
+
+<p>Now we have to specify a prior distribution for the parameter $p$.</p>
+
+<p>The first choice is the uninformative prior such that $\pi(p) \propto 1$ for $0 \leq p \leq 1$. The posterior distribution for this case is:</p>
+
+<center>
+
+$$
+\begin{aligned}
+f(p | X_1, \dots, X_n) &amp;\propto p^{n\bar X} (1-p)^{n(1-\bar X)} \\[5pt]
+&amp;= p^{(n\bar X + 1) - 1} (1-p)^{(n(1-\bar X) + 1) -1} \\[10pt]
+&amp;\sim \text{Beta}(n\bar X + 1, n(1-\bar X)+1) \\[10pt]
+\Rightarrow \hat p = \frac{n\bar X + 1}{n+2} &amp;= \frac{n}{n+2}\bar X + \frac{2}{n+2} \cdot\frac{1}{2}
+\end{aligned}
+$$
+
+</center>
+
+<p>Thus we have our Bayes estimator (posterior mean) from the property of beta distribution, which is a <strong>weighted average</strong> of the <strong>MLE of the parameter</strong> $p$, and <strong>mean of the prior</strong> (uniform).</p>
+
+<p>Another natural choice for the $p$ is the Beta distribution which conjugate to the Binomial likelihood. By specifying a beta prior $\pi(p) \sim \text{Beta}(\alpha, \beta)$, the posterior distribution is <a href="https://towardsdatascience.com/conjugate-prior-explained-75957dc80bfb">(proof)</a>:</p>
+
+<center>
+
+$$
+\begin{aligned}
+f(p | X_1, \dots, X_n) &amp;\sim \text{Beta}(\alpha + n\bar X,\; \beta+n(1-\bar X)) \\[10pt]
+\Rightarrow \hat p &amp;= \frac{\alpha + n\bar X}{\alpha + \beta + n} \\[5pt]
+&amp;= \Big(\frac{\alpha + \beta}{\alpha + \beta + n} \cdot \frac{\alpha}{\alpha + \beta}\Big) + \Big(\frac{n}{\alpha + \beta + n}\bar X\Big)
+\end{aligned}
+$$
+
+</center>
+
+<p>We can similarly decompose the estimator to show that the Bayes estimator is a compromise between the prior and the likelihood.</p>
+
+<p> </p>
+
+<hr />
+
+<h3 id="43-evaluating-estimators">4.3 Evaluating Estimators</h3>
+
+<p> </p>
+
+<h4 id="431-loss-function-and-risk">4.3.1. Loss function and risk</h4>
+
+<p>Okay so by now, we know that there can be multiple ways to define an estimator which are all statistically valid. Then how can we evaluate these different estimators?</p>
+
+<p>One key idea from the <em>decision theory</em> is to minimize the <strong>expected loss</strong> for an action $a$ under the parameter $\theta$. So basically, the loss function is measuring <strong>how far is the taken action from the true target</strong>. By focusing on the point estimation, the loss function will roughly return a large value if $a$ is far from $\theta$ and small if our guess (action) is good.</p>
+
+<p>To this end, there can be various choices of the loss function where some of the most common ones are:</p>
+
+<center>
+
+$$
+\begin{aligned}
+\text{1. Squared Loss}: L(a, \theta) &amp;= (a-\theta)^2 \\[10pt]
+\text{2. Absolute Loss}: L(a, \theta) &amp;= |a-\theta|
+\end{aligned}
+$$
+
+</center>
+
+<p>We can define some custom loss functions such that if we want to penalize errors more for small values of $\theta$, then the loss function can be something like:</p>
+
+<center>
+
+$$
+L(a, \theta) = \frac{(a - \theta)^2}{|\theta| + 1}
+$$
+
+</center>
+
+<p>Anyways, once we have a <strong>loss function</strong> and an <strong>estimator</strong> $\hat \theta (X)$, we define the <strong>risk</strong> as the <strong>expected value of the loss function</strong> as:</p>
+
+<center>
+
+$$
+R(\theta, \hat \theta(X)) = \mathbb{E}_\theta\Big[ L(\hat\theta(X), \theta) \Big]
+$$
+
+</center>
+
+<p>Naturally, we would want to find an estimator $\hat\theta$ that has the smallest risk compared to any other estimators $\tilde\theta$ such that:</p>
+
+<center>
+
+$$
+R(\theta, \hat\theta(X)) \leq R(\theta, \tilde\theta(X))
+$$
+
+</center>
+
+<p>, albeit such an optimal estimator rarely exists for real problems.</p>
+
+<p> </p>
+
+<p><strong>&lt;Example&gt;</strong></p>
+
+<p>To better understand what we’ve been doing so far, let’s consider the problem of Bernoulli estimation where we want to compare the performance of <strong>MLE</strong> and <strong>Bayes Estimator</strong> (w/ Beta prior).</p>
+
+<p>As we have derived earlier, the estimators are:</p>
+
+<center>
+$$
+\begin{aligned}
+\text{MLE}&amp;: \hat p_1 = \frac{1}{n}\sum_{i=1}^n X_i \\[10pt]
+\text{Bayes Estimator}&amp;: \hat p_2 = \frac{n\bar X + \alpha}{n + \alpha + \beta}
+\end{aligned}
+$$
+Let's consider a squared loss of the two estimators:
+$$
+\begin{aligned}
+R(p, \hat p_1) &amp;= \frac{p(1-p)}{n} \\[10pt]
+R(p, \hat p_2) &amp;= \text{Var}\Big( \frac{n\bar X + \alpha}{n + \alpha + \beta} \Big) + \Big( \mathbb{E}\Big[ \frac{n \bar X + \alpha}{n + \alpha + \beta} \Big] - p \Big)^2 \\[10pt]
+ &amp;=\frac{n}{4(n + \sqrt{n})^2}, \quad (\text{let }\alpha=\beta=\sqrt{\frac{n}{4}})
+\end{aligned}
+$$
+Okay, so the results shows that we **cannot clearly distinguish the winner** as neither estimators dominate the other. For instance, the MLE $\hat p_1$ is better if $p$ is close to 0 or 1, whereas the Bayes estimator $\hat p_2$ is better when $p \approx 0.5$. 
+
+Hence, we need some extra criteria to find the single "best" estimator.
+
+&nbsp;
+
+#### 4.3.2. Admissibility
+
+
+
+
+
+
+
+---
+
+</center>
+
+<p> </p>
+
+<hr />
+
+<h1 id="reference">Reference</h1>
+
+<ul>
+  <li>Casella, G., &amp; Berger, R. L. (2002). <em>Statistical inference.</em> 2nd ed. Australia ; Pacific Grove, CA: Thomson Learning.</li>
+</ul>
+
+:ET

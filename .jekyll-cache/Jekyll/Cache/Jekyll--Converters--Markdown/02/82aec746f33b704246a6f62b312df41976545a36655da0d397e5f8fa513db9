@@ -1,0 +1,323 @@
+I"o/<p>This post is an overall summary of Chapter 7 of the textbook <em><a href="http://home.ustc.edu.cn/~zt001062/MaStmaterials/George%20Casella&amp;Roger%20L.Berger--Statistical%20Inference.pdf">Statistical Inference</a></em> by Casella and Berger.</p>
+
+<p><strong>&lt;Table of Contents&gt;</strong></p>
+
+<p><strong>1.1. Sigma Algebra</strong></p>
+
+<p><strong>1.2. Expected Values</strong></p>
+
+<p><strong>1.3. Moment Generating Functions</strong></p>
+
+<p><strong>1.4. Characteristic Functions</strong></p>
+
+<p><strong>1.5. Statistical Independence</strong></p>
+
+<p><strong>1.6. Covariance and Correlation</strong></p>
+
+<p><strong>1.7. Conditional Distributions</strong></p>
+
+<p> </p>
+
+<hr />
+
+<h2 id="4-statistical-estimation">4. Statistical Estimation</h2>
+
+<p><strong>Statistical estimation</strong> is the very procedure of an endeavor to understand various aspects of an <strong>underlying population</strong> based on collected <strong>samples</strong>, so it can naturally be regarded as the core of statistics.</p>
+
+<p>But typically, we can’t afford to have lot of samples (at least those which are “meaningful”), so we need a <strong>statistical model</strong> that best reveals our understanding of the underlying distribution. In this sense, a statistical model is the set of all possible distributions <em>F</em> for a specific event of our interest. Broadly, we have two kinds of statistical models - “parametric” and “non”-parametric models.</p>
+
+<p>In a <strong>parametric model,</strong> the set of possible distributions <em>F</em> can be described by a finite number of parameters. A canonical example is the Gaussian model with the location $\mu$ and scale parameter $\sigma$ which can be represented as:</p>
+
+<center>
+
+$$
+\begin{aligned}
+F = \Big\{ f(x;\mu, \sigma) = \frac{1}{\sqrt{2\pi\sigma^2}}\text{exp}\Big(-\frac{(x-\mu)^2}{2\sigma^2} \Big), \quad \mu \in \mathbb{R}, \sigma &gt; 0 \Big\}
+\end{aligned}
+$$
+
+</center>
+
+<p>On the other hand, the <strong>non-parametric model</strong> is one in which $F$ cannot be parameterized by a finite number of parameters. The density estimation task is one of the popular examples.</p>
+
+<p> </p>
+
+<hr />
+
+<h3 id="41-overview">4.1 Overview</h3>
+
+<p> </p>
+
+<h4 id="point-estimation">Point Estimation</h4>
+
+<p>First of all, we focus our attention to the <strong>point estimation</strong> where we are dealing with a single “best guess” from the possible values of an unknown quantity of interest. Here, the quantity of interest is often called as the <strong>parameter</strong> which we often denote as $\hat\theta$ or $\hat\theta_n$.</p>
+
+<p>So basically, a point <strong>estimator</strong> is a function of the random variables $X_1, \dots, X_n$ such that</p>
+
+<center>
+
+$$
+\hat\theta_n = g(X_1, \dots, X_n)
+$$
+
+</center>
+
+<p>which makes $\hat\theta_n$ itself another <strong>random variable</strong>.</p>
+
+<p>Because any function of the collected samples can be regarded as an estimator (it is easy to think of estimator as some kind of decision rule), we need some <strong>criteria</strong> to measure the performance of the many possible estimators and possibly define the best one. This was studied intensively in the field of mathematical statistics in the early 20th century, and most fundamental criteria include <strong>unbiasedness</strong> and <strong>consistency</strong>.</p>
+
+<p>The <strong>bias</strong> of an estimator $\hat\theta$ is defined as:</p>
+
+<center>
+
+$$
+b(\hat\theta) = \mathbb{E}_\theta \big[\hat\theta\big] - \theta
+$$
+
+</center>
+
+<p>So basically, the implication of an “<em>unbiasedness</em>” is that the expectation of an estimator is exactly the same as the true parameter.</p>
+
+<p>On the other hand, we call that an estimator is <em>“consistent”</em> if the estimator converges to the true parameter in probability such that:</p>
+
+<center>
+
+$$
+\text{for any }\epsilon&gt;0,\quad \mathbb{P}_\theta \big(|\hat\theta_n - \theta| \geq \epsilon\big) \to 0 \quad \text{as } n \to \infty
+$$
+
+</center>
+
+<p>So by the definition, It is no doubt that these two criteria are the very least conditions to be satisfied for an estimator to be statistically valid.</p>
+
+<p>Then for the class of estimators that passes the above two guardrail properties, the performance of an estimator is often measured by its <strong>variance</strong>, which is given by:</p>
+
+<center>
+
+$$
+\text{Var}_\theta[\hat\theta] = \mathbb{E}_\theta\big[(\hat\theta_n - \mathbb{E}_\theta[\hat\theta])^2\big]
+$$
+
+</center>
+
+<p>In this sense, the “best” estimator is the one that achieves the <strong>minimum variance</strong>, and the existance of such best estimator (a.k.a. <em>MVUE</em>) for various statistics have been studied intensively in the field of mathematical statistics.</p>
+
+<p> </p>
+
+<h4 id="confidence-sets">Confidence Sets</h4>
+
+<p>Remember that (classic) statistical inference consists of <em>estimation</em> and <em>hypothesis testing</em>, where in the latter a <strong>confidence set</strong> used to for decision making.</p>
+
+<p>Specifically in general, we define a $1-\alpha$ confidence set $C_n$ for a parameter $\theta$ to be any set which has the property such that:</p>
+
+<center>
+
+$$
+P_\theta(\theta \in C_n) \geq 1-\alpha
+$$
+
+</center>
+
+<p>where the left term $P_\theta(\theta \in C_n)$ is called as the <strong>coverage</strong> of the confidence set $C_n$. Intuitively, the implication of the coverage is that when an experiment is repeated sufficiently many times, then for every distinct confidence sets in different trials of experiments, the true parameter $\theta$ will be included in approximately $1-\alpha$ of those sets. This naturally connects to the definition of <em>confidence intervals</em> in a statistical testing procedure.</p>
+
+<p>Actually, we can use concentration inequalities to construct confidence intervals. However, these confidence intervals are often too loose to have practical meanings so we often resort to asymptotic properties.</p>
+
+<p>As an example, let’s consider a Bernoulli confidence set.</p>
+
+<p>For Bernoulli random variables $X_1, \dots, X_n \overset{i.i.d}{\sim} Bernoulli(p)$, the Hoeffding’s inequality assures:</p>
+
+<center>
+
+$$
+P\big(|\hat p - p| \geq t \big) \leq 2e^{-2nt^2} = \alpha
+$$
+
+</center>
+
+<p>By solving above inequality for $t$, it is straightforward that the confidence set is defined as:</p>
+
+<center>
+
+$$
+C_n = \Big( \hat p - \sqrt{\frac{log(2/\alpha)}{2n}}, \; \hat p + \sqrt{\frac{log(2/\alpha)}{2n}} \Big)
+$$
+
+</center>
+
+<p>On the other hand, let’s see what happens when we use the normal approximation. By the asymptotic nomality of the Binomial random variables, we have the following (asymptotic) confidence interval:</p>
+
+<center>
+
+$$
+C_n = \Big( \hat p - z_{\alpha/2}\sqrt{\frac{\hat p (1-\hat p)}{n}}, \; \hat p + z_{\alpha/2}\sqrt{\frac{\hat p (1-\hat p)}{n}} \Big)
+$$
+
+</center>
+
+<p>Then, by comparing the two confidence intervals, we know that the latter is always <strong>shorter</strong> than the interval obtained by Hoeffding’s inequality as long as the asymptoticity is valid.</p>
+
+<center>
+
+$$
+\Rightarrow z_{\alpha/2}\sqrt{\frac{\hat p (1-\hat p)}{n}} \leq \sqrt{\frac{log(2/\alpha)}{2n}}
+$$
+
+</center>
+
+<p> </p>
+
+<hr />
+
+<h3 id="42-method-of-estimation">4.2 Method of Estimation</h3>
+
+<p>Now let’s dive deeper into the methodogies of statistical estimation.</p>
+
+<p>In this section, we are going to take a look at the three classes of estimation methods:</p>
+
+<ul>
+  <li><strong>Method of Moments (MoM) Estimator</strong></li>
+  <li><strong>Maximum Likelihood Estimator (MLE)</strong></li>
+  <li><strong>Bayes Estimator</strong></li>
+</ul>
+
+<p>Basically, all of these different methods are devised to estimate the <strong>parameters</strong> of our assumed <strong>statistical model</strong>. To this end, one might have the following questions:</p>
+
+<ul>
+  <li>what happens if the model is wrong in the first place?</li>
+  <li>where do models really come from?</li>
+</ul>
+
+<p>Except for some rare cases when we have enough knowledge from our data to hypothesize a reasonable statistical model, the famous aphorism from George Box is always helpful as to not fall in a logical trap.</p>
+
+<center>
+  <img src="/images/mathstat/1.png" width="400" height="300" /> 
+</center>
+
+<p> </p>
+
+<p>That is, when we specify a statistical model, we do so hoping that it can provide a useful <strong>approximation</strong> to the data generation mechanism. In this sense, as long as our model can provide us some useful insight about the underlying population, there is no right or wrong and the model is regarded as valid.</p>
+
+<p>With this in mind, let’s firstly take a look at the <strong>Method of Moments Estimators</strong>.</p>
+
+<p> </p>
+
+<h4 id="method-of-moments-mom-estimators">Method of Moments (MoM) Estimators</h4>
+
+<p>Broadly, the idea of MoM estimators is to compare the <strong>estimated moments</strong> with the <strong>true (population) moments</strong>.</p>
+
+<p>First of all, the sample moments are defined in a straightforward way such that:</p>
+
+<center>
+
+$$
+\begin{aligned}
+&amp;m_1 = E[X] = \frac{1}{n} \sum_{i=1}^n X_i \\[10pt]
+&amp;m_2 = E[X^2] = \frac{1}{n} \sum_{i=1}^n X_i^2 \\[10pt]
+&amp;\quad\vdots \\[10pt]
+&amp;m_k = E[X^k] = \frac{1}{n}\sum_{i=1}^n X_i^k
+\end{aligned}
+$$
+
+</center>
+
+<p>Furthermore, let the <em>i</em>-th population moment be denoted as $\mu_i(\theta_1, \dots, \theta_k)$.</p>
+
+<p>Then we can solve the following system of equations to derive the MoM estimators $\hat \theta_1, \dots, \hat_theta_k$:</p>
+
+<center>
+
+$$
+\begin{aligned}
+&amp;\mu_1 = \mu_1(\theta_1, \dots, \theta_k) \\[10pt]
+&amp;\quad\vdots \\[10pt]
+&amp;\mu_k = \mu_k(\theta_1, \dots, \theta_k) 
+\end{aligned}
+$$
+
+</center>
+
+<p>To get a glimpse of what’s happening here, let’s take a look some examples.</p>
+
+<p> </p>
+
+<p><strong>&lt;Example 1&gt;</strong></p>
+
+<p>For a Gaussian random variables $X_1, \dots, X_n \sim N(\theta, \sigma^2)$, the MoM estimator is derived by solving:</p>
+
+<center>
+
+$$
+\begin{aligned}
+\mathbb{E}[X] &amp;= \frac{1}{n}\sum_{i=1}^n X_i = \theta \\[10pt]
+\text{Var}(X) + (\mathbb{E}[X])^2 &amp;=\frac{1}{n}\sum_{i=1}^n X_i^2 = \theta^2 + \sigma^2
+\end{aligned}
+$$
+
+</center>
+
+<p>As we have two unknown variables $\theta, \sigma^2$ and two independent equations, we can solve the equations to get the following MoM estimators:</p>
+
+<center>
+
+$$
+\begin{aligned}
+\hat\theta &amp;= \frac{1}{n}\sum_{i=1}^n X_i \\[20pt]
+\hat \sigma^2 &amp;= \frac{1}{n}\sum_{i=1}^n X_i^2 - \Big(\frac{1}{n}\sum_{i=1}^n X_i\Big)^2 \\[5pt]
+&amp;= \frac{1}{n} \sum_{i=1}^n \Big(X_i - \frac{1}{n}\sum_{j=1}^n X_j \Big)^2 \\[10pt]
+&amp;\Rightarrow \mathbb{E}[\hat\sigma^2] = \frac{n-1}{n} \sigma^2
+\end{aligned}
+$$
+
+</center>
+
+<p>From the result, we can see that the MoM estimators can naturally be <strong>biased</strong>.</p>
+
+<p> </p>
+
+<p><strong>&lt;Example 2&gt;</strong></p>
+
+<p>For a Binomial random variables $X_1, \dots, X_n \sim B(k, p)$, the MoM estimator can similarly be derived by solving:</p>
+
+<center>
+
+$$
+\begin{aligned}
+\mu_1 &amp;= \mathbb{E}[X] = \bar X = kp \\[10pt]
+\mu_2 &amp;= \mathbb{E}[X^2] = \frac{1}{n}\sum_{i=1}^n X_i^2 = kp(1-p) + k^2p^2
+\end{aligned}
+$$
+
+</center>
+
+<p>In this case, we don’t have a-priori “obvious” estimators for the parameter $k$ and $p$ because there can be multiple solutions to the above equation. Anyhow, one possible solution is:</p>
+
+<center>
+
+$$
+\begin{aligned}
+\hat p &amp;= \frac{\bar X - \frac{1}{n}\sum_{i=1}^n(X_i - \bar X)^2}{\bar X} \\[15pt]
+\hat k &amp;= \frac{\bar X^2}{\bar X - \frac{1}{n} \sum_{i=1}^n (X_i - \bar X)^2 }
+\end{aligned}
+$$
+
+</center>
+
+<p>However, from the result we can see that the estimator for parameter $p$ is <strong>not confined in the original parameter space</strong> (i.e. $p \in [0,1]$). This can be problematic and one possible remedy is by truncating the estimator.</p>
+
+<p> </p>
+
+<hr />
+
+<p>&lt;/center&gt;</p>
+
+<p> </p>
+
+<hr />
+
+<h1 id="reference">Reference</h1>
+
+<ul>
+  <li>Casella, G., &amp; Berger, R. L. (2002). <em>Statistical inference.</em> 2nd ed. Australia ; Pacific Grove, CA: Thomson Learning.</li>
+</ul>
+
+:ET
