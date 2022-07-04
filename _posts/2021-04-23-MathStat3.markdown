@@ -48,11 +48,11 @@ This post is an overall summary of Chapter 5 of the textbook *[Statistical Infer
 
 ## **3. Large Sample Theory**
 
-In this section, we review some of the fundamental concepts and techniques in **asymptotic statistics**.
+In this section, we'll review some of the fundamental concepts and techniques in **asymptotic statistics**.
 
 Statistical inference often requires the knowledge of the underlying distribution of statistics which however, cannot often be derived in a closed form.
 
-To this end, one of the main goals in asymptotic statistics is to address this issue by observing what happens to the statistic under the assumption of **infinite samples** (i.e. $n \to \infty$). Thus, we want to find out the **limiting distribution** of a given statistic, which is often much easier to handle than the actual distribution while precise enough to be useful in practical scenarios.
+To this end, one of the main goals in asymptotic statistics is to address this issue by observing what happens to the statistic under the assumption of **infinite samples** (i.e. $n \to \infty$). Thus, we want to find out the **limiting distribution** of a given statistic, which is often much easier to handle than the actual distribution albeit precise enough to be useful in practical scenarios.
 
 &nbsp;
 
@@ -438,7 +438,7 @@ $$
 
 #### Dominated Convergence Theorem
 
-If ${f_n : \mathbb{R} \to \mathbb{R} }$ is a sequence of measureable functions which converge pointwise almost everywhere to $f$, and if there exists an integrable function $g$ which converges almost everywhere to $f$, and if there exists an integrable function $g$ such that $|f_n(x)| \leq |g(x)|$ for all $n$ and for all $x$, then $f$ is integrable and
+If ${f_n : \mathbb{R} \to \mathbb{R} }$ is a sequence of measureable functions which converge pointwise almost everywhere to $f$, and if there exists an integrable function $g$ which converges almost everywhere to $f$, and if there exists an integrable function $g$ such that $\|f_n(x)\| \leq \|g(x)\|$ for all $n$ and for all $x$, then $f$ is integrable and
 
 <center>
 
