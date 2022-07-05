@@ -1,0 +1,776 @@
+---
+layout: post
+title: "[MathStat] 5. Hypothesis Testing"
+date: 2022-04-25 02:00:00
+image: mathstat5.jpg
+tags: [statistics]
+categories: statistics
+use_math: true
+---
+
+This post is an overall summary of Chapter 8 of the textbook *[Statistical Inference](http://home.ustc.edu.cn/~zt001062/MaStmaterials/George%20Casella&Roger%20L.Berger--Statistical%20Inference.pdf)* by Casella and Berger.
+
+
+
+## Table of Contents
+
+**5.1 Basics of Hypothesis Testing**
+
+- Overview of statistical testing procedure
+- Type I error & Type II error
+- Construction of Tests
+- Evaluating Tests
+
+**5.2 Neyman-Pearson Test**
+
+- Simple hypothesis
+- Power of a statistical test
+- The Neyman-Pearson testing procedure
+- The Neyman-Pearson Lemma
+
+**5.3. Wald Test**
+
+- Power of Wald Test
+
+**5.4 Likelihood Ratio Test (LRT)**
+
+&nbsp;
+
+---
+
+# 5. Hypothesis Testing
+
+&nbsp;
+
+---
+
+## 5.1 Basics of Hypothesis Testing
+
+&nbsp;
+
+### 5.1.1. Overview of statistical testing procedure
+
+The typical and most clichéic setting of a statistical hypothesis testing is that from the observations $X_1, \dots, X_n \overset{i.i.d.}{\sim} f_\theta$, we want to test if $\theta = \theta_0$ or not. 
+
+A more concrete example is where we have a coin and we are interested in finding out whether the coin is fair (i.e. equal probability of heads and tails) or not. This procedure can formally be expressed as:
+
+<center>
+
+$$
+\begin{aligned}
+X_1, \dots, X_n &\overset{i.i.d.}{\sim} \text{Bernoulli}(p)\\[10pt]
+H_0&: p = \frac{1}{2} \\
+H_1&: p \neq \frac{1}{2}
+\end{aligned}
+$$
+
+</center>
+
+&nbsp;
+
+To generalize this problem, we have two sets of parameters $\Theta_0$ and $\Theta_1$ which are **non-overlapping** (i.e. $\Theta_0 \cap \Theta_1 = \emptyset$), and would like to test the hypothesis:
+
+<center>
+
+$$
+\begin{aligned}
+H_0&: \theta \in \Theta_0 \\[5pt]
+H_1&: \theta \in \Theta_1
+\end{aligned}
+$$
+
+</center>
+
+&nbsp;
+
+For the case when $\Theta_0$ is a single point, we call it as a **simple null**, whereas the more general case is refered to as a **composite null**.
+
+As a general reminder, **statistical hypothesis testing never guarentees optimality**. Namely, the question is never if the null hypothesis is true or not. Rather, it is whether we have sufficient evidence to reject the null hypothesis or not, because the result of a hypothesis test is one of the two possibilities - "reject the null" or "retain the null".
+
+&nbsp;
+
+### 5.1.2. Type I error & Type II error
+
+Since the hypothesis testing is based on random samples, it is always prone to result in incorrect decisions. Regarding this, there are two important concepts in hypothesis testing called as ***Type I error*** and ***Type II error***. At a high level, the more critical error among these two are the "type I error", so often the strategy is to first bound the type I error at a desired level ($\alpha$) and minimize the type II error subsequently.
+
+<center>
+  <img src="{{site.baseurl}}/images/mathstat/4.png"/> 
+  <br>
+  <em><span style="color:grey">Results of a statistical test</span></em>
+</center>
+
+&nbsp;
+
+### 5.1.3. Construction of Tests
+
+In a nutshell, the canonical way of constructing a test is:
+
+<center>
+
+$$
+\begin{aligned}
+&\text{1. Choose a test statistic }T_n = T(X_1, X_2, \dots, X_n) \\[5pt]
+&\text{2. Choose a rejection region }R \\[5pt]
+&\text{3. If }T_n \in R, \text{ reject }H_0\text{ and otherwise retain }H_0 \\[5pt]
+\end{aligned}
+$$
+
+</center>
+
+&nbsp;
+
+### 5.1.4. Evaluating Tests
+
+Then let's discuss how to evaluate different tests.
+
+Suppose our decision rule for a specific testing problem is that the null hypothesis is rejected when $T(X_1, \dots, X_n) \in R$. 
+
+In this setting, we can define the **power function** as:
+
+<center>
+
+$$
+\beta(\theta) = P_\theta\Big( (X_1, \dots, X_n) \in R \Big)
+$$
+
+</center>
+
+Naturally, we would want $\beta(\theta)$ to be small under the null hypothesis $\Theta_0$ and big over $\Theta_1$.
+
+In this sense, the **Neyman-Pearson paradigm** is the following:
+
+<center>
+
+$$
+\begin{aligned}
+&\text{1. Fix the type I error  }\alpha \in (0,1) \\[5pt]
+&\text{2. Then try to maximize the power }\beta(\theta) \text{ over }\Theta_1, \text{ subject to } \underset{\theta \in \Theta_0}{\text{sup}} \beta(\theta) \leq \alpha
+\end{aligned}
+$$
+
+</center>
+
+Tests of this form are called as **level-alpha tests** which guarentees the boundedness of type I error.
+
+&nbsp;
+
+
+
+#### Example: A One-sided Test
+
+Okay, so let's quickly go over an example. 
+
+Suppose $X_1, \dots, X_n \overset{i.i.d.}{\sim} N(\theta, \sigma^2)$, with known $\sigma^2$. 
+
+We want to test the *one-sided alternative* such that:
+
+<center>
+
+$$
+\begin{aligned}
+H_0&: \theta = \theta_0 \\[5pt]
+H_1&: \theta > \theta_0
+\end{aligned}
+$$
+
+</center> 
+
+&nbsp;
+
+A natural test statistic we can think of is the scaled average of the samples:
+
+<center> 
+
+$$
+T_n(X_1, \dots, X_n) = \frac{\bar X - \theta_0}{\sigma / \sqrt{n}}
+$$
+
+</center> 
+
+&nbsp;
+
+Then, our strategy is to reject the null if $T_n > t$ for some threshold $t$. To choose the optimal threshold, let's consider the power function:
+
+<center> 
+
+$$
+\begin{aligned}
+\beta(\theta) &= P_\theta(T_n > t) = P_\theta\Big( 
+\frac{\bar X - \theta_0}{\sigma / \sqrt{n}} > t \Big) \\[5pt]
+&= P\Big( \frac{\bar X}{\sigma / \sqrt{n}} >  t + \frac{\theta_0}{\sigma/\sqrt{n}} \Big) \\[5pt]
+&= P\Big( \frac{\bar X - \theta}{\sigma / \sqrt{n}} >  t + \frac{\theta_0 - \theta}{\sigma/\sqrt{n}} \Big) \\[5pt]
+&= P\Big( Z > t + \frac{\theta_0 - \theta}{\sigma/\sqrt{n}} \Big), \quad\quad \because \frac{\bar X - \theta}{\sigma / \sqrt{n}} \sim N(0,1) \text{ by CLT} \\[5pt]
+&= 1 - \Phi\Big( t + \frac{\theta_0 - \theta}{\sigma/\sqrt{n}} \Big)
+\end{aligned}
+$$
+
+</center> 
+
+, where $\Phi$ is the cdf of standard normal distribution.
+
+&nbsp;
+
+Then, following the Neyman-Pearson paradigm, we can define the optimal threshold $t$ that maximizes the power subject to:
+
+<center> 
+
+$$
+\begin{aligned}
+&\underset{\theta \in \Theta_0}{\text{sup}}\Big\{  1 - \Phi\Big( t + \frac{\theta_0 - \theta}{\sigma/\sqrt{n}} \Big) \Big\} \leq \alpha \\[10pt]
+\Leftrightarrow \quad &1 - \Phi(t) \leq \alpha \\[10pt]
+\therefore \quad &t = \Phi^{-1}(1-\alpha)
+\end{aligned}
+$$
+
+</center> 
+
+&nbsp;
+
+Similarly, for the *two-sided alternative* such that:
+
+<center> 
+
+$$
+\begin{aligned}
+H_0&: \theta = \theta_0 \\[5pt]
+H_1&: \theta \neq \theta_0
+\end{aligned}
+$$
+
+</center> 
+
+The decision rule becomes:
+
+<center> 
+
+$$
+|T_n| > t
+$$
+
+</center> 
+
+ and the corresponding power function is:
+
+<center> 
+
+$$
+\beta(\theta) = P_\theta(T_n < -t) + P_\theta(T_n > t)
+$$
+
+</center> 
+
+which as before can be expanded as:
+
+<center> 
+
+$$
+\begin{aligned}
+\beta(\theta) &= P\Big( \frac{\bar X - \theta}{\sigma / \sqrt{n}} >  -t + \frac{\theta_0 - \theta}{\sigma/\sqrt{n}} \Big) + 
+P\Big( \frac{\bar X - \theta}{\sigma / \sqrt{n}} >  t + \frac{\theta_0 - \theta}{\sigma/\sqrt{n}} \Big) \\[10pt]
+&= \Phi\Big( -t + \frac{\theta_0 - \theta}{\sigma/\sqrt{n}} \Big) + 1 - \Phi\Big( t + \frac{\theta_0 - \theta}{\sigma/\sqrt{n}} \Big)
+\end{aligned}
+$$
+
+</center> 
+
+&nbsp;
+
+To implement the Neyman-Pearson paradigm under this setting, we just have to plug in the null parameter $\theta_0$ which gives us:
+
+<center> 
+
+$$
+\begin{aligned}
+\beta(\theta_0) &= \Phi(-t) + 1 - \Phi(t) \\[5pt]
+&= 2 \Phi(-t) \leq \alpha, \quad\quad \because \Phi(t) = 1 - \Phi(-t) \\[10pt]
+\Leftrightarrow \quad t &= -\Phi^{-1}(\alpha/2) = \Phi^{-1}(1 - \alpha/2)
+\end{aligned}
+$$
+
+</center> 
+
+&nbsp;
+
+To summarize what we've been doing so far, we have discussed how to set up a statistical hypothesis testing problem formally, and how we can find the optimal rejection threshold that controls the Type I error while at the same times attains the maximum power, i.e. Neyman-Pearson paradigm.
+
+&nbsp;
+
+---
+
+## 5.2 Neyman-Pearson Test
+
+Next, let's discuss a general method for constructing an **optimal test**. For simplicity, we will focus on a simple hypothesis testing problems, but the general idea also applies to the more extended settings as well.
+
+&nbsp;
+
+### 5.2.1. Simple hypothesis
+
+The setting we are going to consider is where both the null and alternate hypotheses are simple:
+
+<center>
+
+$$
+\begin{aligned}
+H_0&: \theta = \theta_0 \\[5pt]
+H_1&: \theta = \theta_1
+\end{aligned}
+$$
+
+</center>
+
+Furthermore, let's denote the null density as $f_0$ and the alternate density as $f_1$.
+
+&nbsp;
+
+### 5.2.3. Power of a statistical test
+
+To recap, the power of a test is defined as **the probability of correctly rejecting the null hypothesis when the alternative hypothesis is true**. This is by definition, the inverse probability of a type II error $\beta$.
+
+<center>
+
+$$
+1 - \beta = P\Big(\text{reject } H_0 \;\Big|\; H_1 = \text{True} \Big)
+$$
+
+</center>
+
+On the other hand, remember that our primary goal was to bound the type I error to a certain level of **significance level** $\alpha$ in advance. Since type I error and type II error have tradeoff relationship, we can infer that an "optimal" test will be the case **when the type I error actually attains the upper bound** (i.e. significance level). We will see how we can make this happen in a second, but first let's define some terminologies:
+
+<center>
+
+$$
+\begin{aligned}
+&\text{Define test function }\phi(\mathbf{x}) \text{ such that: }\quad 
+\phi(\mathbf{x})  = \begin{cases} 1, \quad \text{if }\mathbf{x} \in R  \\[7pt]
+0, \quad \text{if }\mathbf{x} \notin R \end{cases} \\[15pt]
+&\Rightarrow \quad \text{power} = \int \phi(\mathbf{x}) f_1(\mathbf{x})d\mathbf{x} \\[5pt]
+&\Rightarrow \quad \text{size} = \int \phi(\mathbf{x}) f_0(\mathbf{x})d\mathbf{x}
+\end{aligned}
+$$
+
+</center>
+
+, where $R$ is the rejection region.
+
+&nbsp;
+
+### 5.2.4 The Neyman-Pearson testing procedure
+
+The key takeaway of the Neyman-Pearson procedure is that it provides a "general recipe" for creating an optimal test - **to make the *type I error* equal to the significance level**, allbeit it is only applied to the restricted class of simple hypothesis tests. 
+
+For $\mathbf{x} = (x_1, \dots, x_n)$, the Neyman-Pearson test statistic is to take the likelihood ratio such that:
+
+<center>
+
+$$
+\Lambda(\mathbf{x}) = \frac{L(\theta_0 | \mathbf{x})}{L(\theta_1 | \mathbf{x})} = \frac{f_0(\mathbf{x})}{f_1(\mathbf{x})}
+$$
+
+</center>
+
+and reject the null hypothesis if the value is within the rejection region. 
+
+Since we want our test to be "optimal", we can define the threshold for the rejection region such that the t*ype I error* attains the upper bound (significance level):
+
+<center>
+
+$$
+P_{H_0}\Big(\Lambda(\mathbf{x}) \leq t^* \Big) = \alpha
+$$
+
+</center>
+
+Then for a simple hypothesis testing problem, we can analytically find the threshold $t^*$, which guarentees the optimality of the test. So in a nutshell, this kind of test is the best we can think of whenever it is applicable. There is a theoretical foundation of this result, which is called as the **Neyman-Pearson Lemma**.
+
+&nbsp;
+
+### 5.2.5. The Neyman-Pearson Lemma
+
+Let's formally state the Neyman-Pearson lemma.
+
+**\<Definition>**
+
+<center>
+
+$$
+\begin{aligned}
+&\text{Consider a test with hypotheses } H_0:\theta=\theta_0 \text{ and }H_1:\theta=\theta_1, \text{ where the pdf (of pmf) is } f_i(\mathbf{x}) \quad (i\in\{0,1\}). \\[10pt]
+&\text{The Neyman-Pearson test is defined such that} \\[5pt]
+&: \phi_{NP}(\mathbf{x}) = \mathbb{1}\Big( \frac{f_0(\mathbf{x})}{f_1(\mathbf{x})} \leq t^* \Big), \quad \text{where }t^* \text{ is chosen to satisfy }\int \phi_{NP}(\mathbf{x}) f_0(\mathbf{x}) d\mathbf{x} = \alpha. \\[10pt]
+&\text{Then the power of }\phi_A(\mathbf{x}) \text{ is at most the power of the Neyman-Pearson test, that is} \\[5pt]
+\quad&\Rightarrow \quad \int \phi_{NP}(\mathbf{x}) f_1(\mathbf{x}) d\mathbf{x} \geq \int \phi_{A}(\mathbf{x}) f_0(\mathbf{x}) d\mathbf{x} \\[15pt]
+&\therefore \quad \text{NP test is optimal.}
+\end{aligned}
+$$
+
+</center>
+
+&nbsp;
+
+**<Proof\>**
+
+First, let's clarify some notations:
+
+<center>
+
+$$
+\begin{aligned}
+&\phi_{NP}(\mathbf{x}) = \mathbb{1}\Big(\mathbf{x} \in C\Big), \\[5pt]
+&\Rightarrow C = \Big\{ x: \frac{f_0(\mathbf{x})}{f_1(\mathbf{x})} \leq t^* \Big\} \text{ and }\int_C f_0(\mathbf{x}) d\mathbf{x} = \alpha \quad (\cdots \;\text{NP test}) \\[15pt]
+
+&\phi_{A}(\mathbf{x}) = \mathbb{1}\Big(\mathbf{x} \in A\Big), \\[5pt]
+&\Rightarrow \int_A f_0(\mathbf{x}) d\mathbf{x} \leq \alpha \quad (\cdots \;\text{level }\alpha \text{ test})
+
+\end{aligned}
+$$
+
+</center>
+
+Our goal is to show that the power of NP test is always greater than any level $\alpha$ tests:
+
+<center>
+
+$$
+\Leftrightarrow \quad \int_C f_1(\mathbf{x}) d\mathbf{x} \geq \int_A f_1(\mathbf{x}) d\mathbf{x} \quad\cdots\quad (*)
+$$
+
+</center>
+
+Then, we use the property of set operations, namely:
+
+<center>
+
+$$
+\begin{aligned}
+C &= C \cap \Big[A \cup A^c\Big] = \Big[C \cap A\Big] \cup \Big[C \cap A^c\Big] \\[5pt]
+A &= \Big[ A \cap C \Big] \cup \Big[ A \cap C^c \Big]
+\end{aligned}
+$$
+
+</center>
+
+Therefore,
+
+<center>
+
+$$
+\begin{aligned}
+(*) &= 
+\int_{C \cap A} f_1(\mathbf{x})d\mathbf{x} + 
+\int_{C \cap A^c} f_1(\mathbf{x})d\mathbf{x} - 
+\int_{A \cap C} f_1(\mathbf{x})d\mathbf{x} - 
+\int_{A \cap C^c} f_1(\mathbf{x})d\mathbf{x} 
+\geq 0 \\[15pt]
+
+&\Leftrightarrow \quad 
+\int_{C \cap A^c} f_1(\mathbf{x})d\mathbf{x} - 
+\int_{A \cap C^c} f_1(\mathbf{x})d\mathbf{x}
+\geq 0 \\[15pt]
+
+\end{aligned}
+$$
+
+$$
+\begin{aligned}
+&\text{If } \mathbf{x} \in C, \; \\[5pt]
+& \Rightarrow \quad \frac{f_0(\mathbf{x})}{f_1(\mathbf{x})} \leq t^* \\[5pt]
+& \Leftrightarrow \quad f_1(\mathbf{x}) \geq \frac{f_0(\mathbf{x})}{t^*} \\[20pt]
+
+&\text{Likewise if } \mathbf{x} \in C^c, \; \\[5pt]
+& \Rightarrow f_1(\mathbf{x}) < \frac{f_0(\mathbf{x})}{t^*}
+
+\end{aligned} \\[10pt]
+$$
+
+$$
+\begin{aligned}
+\therefore \quad
+
+\int_{C \cap A^c} f_1(\mathbf{x})d\mathbf{x} - 
+\int_{A \cap C^c} f_1(\mathbf{x})d\mathbf{x}
+&\geq
+\frac{1}{t^*}\Big[ \int_{C \cap A^c} f_0(\mathbf{x})d\mathbf{x} - \int_{A \cap C^c} f_0(\mathbf{x})d\mathbf{x} \Big] \\[10pt]
+&\geq 
+\frac{1}{t^*}\Big[
+\int_{C \cap A^c} f_0(\mathbf{x})d\mathbf{x} - 
+\int_{A \cap C} f_0(\mathbf{x})d\mathbf{x} + 
+\int_{C \cap A} f_0(\mathbf{x})d\mathbf{x} - 
+\int_{A \cap C^c} f_0(\mathbf{x})d\mathbf{x}
+\Big] \\[10pt]
+&= 
+\frac{1}{t^*}\Big[
+\Big(
+\int_{C \cap A^c} f_0(\mathbf{x})d\mathbf{x} + \int_{C \cap A} f_0(\mathbf{x})d\mathbf{x} 
+\Big)
+- 
+\Big( 
+\int_{A \cap C^c} f_0(\mathbf{x})d\mathbf{x} + \int_{A \cap C} f_0(\mathbf{x})d\mathbf{x}
+\Big)
+\Big] \\[10pt]
+&= 
+\frac{1}{t^*}\Big[
+\int_C f_0(\mathbf{x})d\mathbf{x} - \int_A f_0(\mathbf{x})d\mathbf{x}
+\Big] \\[10pt]
+&= \frac{1}{t^*}\Big(\alpha - \int_A f_0(\mathbf{x})d\mathbf{x} \Big) \\[10pt]
+&\geq 0 \quad\quad (\because \int_A f_0(\mathbf{x}) d\mathbf{x} \leq \alpha)
+
+\end{aligned}
+$$
+
+</center>
+
+, which completes the proof.
+
+&nbsp;
+
+---
+
+## 5.3. Wald Test
+
+By now, we know that the Neyman-Pearson test is by its definition, the optimal test as long as it is defined. However, the **NP test was very restrictive** in that it cannot be defined when the test setting becomes more complex than the simple hypothesis testing.
+
+Therefore as an alternative, we can consider other forms of testing procedures which are not the "best", but still very useful. More specifically, these tests are guaranteed to bound the type I error while at the same time achieves reasonably sufficient test powers. In this sense, we are going to take a look at two asymptotic tests - the **Wald Test** and **Likelihood Ratio Test**.
+
+Okay, so firstly let's discuss the **Wald Test** which relies on the **asymptotic normaility of the MLE**. The Wald test considers hypothesis testing problems of the form:
+
+<center>
+
+$$
+\begin{aligned}
+H_0&: \theta \in \Theta_0 \\[5pt]
+H_1&: \theta \notin \Theta_0
+\end{aligned}
+$$
+
+</center>
+
+The basic idea of this test is that we can **use an estimator which is aympototically normal under the null**, where one possible candidate is the **MLE**. Namely, the MLE satisfies (w/ mild regularity conditions):
+
+<center>
+
+$$
+\sqrt{n I(\theta)}(\hat \theta_{MLE} - \theta) \overset{d}{\to} N(0, 1)
+$$
+
+</center>
+
+With respect to the MLE, we can define the Wald test statistic such that:
+
+<center>
+
+$$
+T_{Wald} = \sqrt{n I(\hat\theta_{MLE})}(\hat \theta_{MLE} - \theta_0)
+$$
+
+</center>
+
+and reject the null hypothesis if:
+
+<center>
+
+$$
+|T_{Wald}| \geq \Phi^{-1}\Big(1-\frac{\alpha}{2}\Big)
+$$
+
+</center>
+
+, which is an asymptotical level-$\alpha$ test.
+
+&nbsp;
+
+
+
+**<Example\>**
+
+A simple example will be helpful in demonstrating the Wald testing procedure.
+
+Suppose $X_1, \dots, X_n \overset{i.i.d.}{\sim} \text{Bernoulli}(p)$, and we would like to test the hypothesis $H_0: p = p_0$.
+
+Then the Wald test statistic is:
+
+<center>
+
+$$
+\begin{aligned}
+T_{Wald} &= \sqrt{n I(\hat p)}(\hat p - p_0) \\[10pt]
+&= \frac{\hat p - p_0}{\sqrt{\hat p (1 - \hat p)/n}} \\[10pt]
+\because \quad & I(p) = \frac{1}{p(1-p)}, \quad \hat p = \frac{1}{n} \sum_{i=1}^n X_i \quad\text{(MLE)}
+\end{aligned}
+$$
+
+</center>
+
+and the corresponding rejection region is:
+
+<center>
+
+$$
+|T_{Wald}| \geq \Phi^{-1}\Big(1 - \frac{\alpha}{2}\Big)
+$$
+
+</center>
+
+&nbsp;
+
+### 5.3.1. Power of Wald Test
+
+Using the fact that the Wald test statistic converges to a normal distribution, we can derive an (asymptotic) power function of the Wald test in a closed form.
+
+For a Wald test statistic:
+
+<center>
+
+$$
+T_{Wald} = \sqrt{n I(\hat\theta)}(\hat \theta - \theta_0) 
+= \sqrt{n I(\hat\theta)}(\hat \theta - \theta_1) + \sqrt{n I(\hat\theta)}(\theta_1 - \theta_0)
+$$
+
+</center>
+
+, the probability that the Wald test correctly rejects the null hypothesis is roughly (w/o proof):
+
+<center>
+
+$$
+1 - \Phi\Big( \sqrt{n I(\theta_1)}(\theta_0 - \theta_1) - \Phi^{-1}\big( 1 - \frac{\alpha}{2} \big) \Big)
++ \Phi\Big( \sqrt{n I(\theta_1)}(\theta_0 - \theta_1) + \Phi^{-1}\big( 1 - \frac{\alpha}{2} \big) \Big)
+$$
+
+</center>
+
+&nbsp;
+
+Some noteworthy points form this result are:
+
+- If the difference between $\theta_0$ and $\theta_1$ is very small (i.e. supports the null hypothesis), the power will approach $\alpha$.
+- As $n \to \infty$, the two $\Phi$ terms will approach either 0 or 1, which makes the maximum power of 1.
+- As a rule of thumb, the Wald test has non-trivial power if 
+
+<center>
+
+$$
+|\theta_0 - \theta_1| \gg \frac{1}{\sqrt{nI(\theta_1)}}
+$$
+
+</center>
+
+&nbsp;
+
+---
+
+## 5.4 Likelihood Ratio Test (LRT)
+
+The second testing procedure is the **likelihood ratio test**, which is one of the most commonly used test procedure for various problems.
+
+Suppose we want to test the composite hypothesis.
+
+<center>
+
+$$
+\begin{aligned}
+H_0&: \theta \in \Theta_0 \\[5pt]
+H_1&: \theta \notin \Theta_0
+\end{aligned}
+$$
+
+</center>
+
+Then the LRT statistic is defined as:
+
+<center>
+
+$$
+\lambda(X_1, \dots, X_n) = \frac{\underset{\theta \in \Theta_0}{\text{sup}} L(\theta)}{\underset{\theta \in \Theta}{\text{sup}} L(\theta)} = \frac{L(\hat \theta_0)}{L(\hat \theta)}
+$$
+
+</center>
+
+, where the numerator corresponds to MLE under the null, whereas the denominator uses MLE of the entire parameter space.
+
+Then, the decision rule is to reject $H_0$ if $\lambda(X_1, \dots, X_n) \leq c$, where the threshold $c$ is determined according to the significance level $\alpha$.
+
+&nbsp;
+
+One very useful property of the LRT is that the test statistic converges to the chi-square distribution, which is formally called as the **Wilk's phenomenon**.
+
+<center>
+
+$$
+-2 \text{log} \lambda(X_1, \dots, X_n) \overset{d}{\to} \chi^2(1)
+$$
+
+</center>
+
+Thus, if we let $T_{LRT} = -2 \text{log} \lambda(X^n)$, then it becomes:
+
+<center>
+
+$$
+P_{\theta_0}(T_{LRT} > \chi^2_{1,\alpha}) \to \alpha \quad \text{as} \quad n \to \infty
+$$
+
+</center>
+
+where $\chi^2_{\nu, \alpha}$ is the upper $\alpha$ quantile of 
+$$
+\chi^2_{\nu}
+$$
+.
+
+
+
+&nbsp;
+
+**<proof\>**
+
+For the log-likelihood $l(\theta)$, a straightforward application of the Taylor expansion is:
+
+<center>
+
+$$
+\text{log} L(\theta) = l(\theta) \approx l(\hat \theta) + l^{\prime\prime}(\hat \theta) \frac{(\theta - \hat \theta)^2}{2} + const.
+$$
+
+</center>
+
+, because under the regularity conditions, the likelihood function is strictly concave, which makes the first derivative $l^{\prime} = 0$.
+
+So we have
+
+<center>
+
+$$
+\begin{aligned}
+-2 \text{log} \lambda(X_1, \dots, X_n) &= 2 l(\hat \theta) - 2l(\theta_0) \\[10pt]
+&= 2l(\hat \theta) - 2l(\hat \theta) - l^{\prime\prime}(\hat \theta)(\theta_0 - \hat \theta)^2 \\[10pt]
+&= -l^{\prime\prime}(\hat \theta)(\theta_0 - \hat \theta)^2 \\[10pt]
+&= \frac{-\frac{1}{n}l^{\prime\prime}(\hat \theta)}{I(\theta_0)} \Big( \sqrt{n I(\theta_0)}(\hat \theta - \theta_0) \Big)^2 \\[10pt]
+&\overset{d}{\to} \quad \chi^2(1)
+\end{aligned}
+$$
+
+</center>
+
+, whereby the last convergence holds because of the **slutsky's theorem** with the fact that:
+
+<center>
+
+$$
+\begin{aligned}
+\frac{-\frac{1}{n}l^{\prime\prime}(\hat \theta)}{I(\theta_0)} &\overset{p}{\to} 1 \quad (\because \text{WLLN}) \\[10pt]
+ \Big( \sqrt{n I(\theta_0)}(\hat \theta - \theta_0) \Big)^2 &\overset{d}{\to} N(0,1) \quad (\because \text{CLT})
+\end{aligned}
+$$
+
+</center>
+
+&nbsp;
+
+&nbsp;
+
+---
+
+# Reference
+
+- Casella, G., & Berger, R. L. (2002). *Statistical inference.* 2nd ed. Australia ; Pacific Grove, CA: Thomson Learning.
+
