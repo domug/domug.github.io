@@ -1,4 +1,4 @@
-title: Domug's Blog
+title: Dongwook Kim
 description: Graduate School of Statistics & Data Science at Yonsei University, Korea
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "domug.github.io" # the base hostname & protocol for your site, e.g. http://example.com
@@ -6,8 +6,8 @@ url: "domug.github.io" # the base hostname & protocol for your site, e.g. http:/
 # Author
 author-name:    Dongwook Kim
 author-image:   profile.jpg
-author-job:     Graduate Student, Yonsei Univ of Korea
-author-email:   domugii@yonsei.com # Add your email for contant form.
+author-job:     Graduate Student, Yonsei University Korea
+author-email:   https://formspree.io/domugii@yonsei.ac.kr # Add your email for contant form.
 author-twitter:  # Add your twitter account
 about-author:    
 

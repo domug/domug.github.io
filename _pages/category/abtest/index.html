@@ -15,10 +15,10 @@
   </style>
 </head>
 <body>
-<p class="p1"><span class="s1">--- layout: home title: abtest permalink: /category/abtest/ --- {% include header.html %}</span></p>
+<p class="p1"><span class="s1">--- layout: home title: Abtest permalink: /category/abtest/ --- {% include header.html %}</span></p>
 <p class="p1"><span class="s1">{% for post in site.categories[‘abtest’] %}</span></p>
 <p class="p1"><span class="s1">{% if post.image %} {% else %} {% endif %}</span></p>
-<h2 style="margin: 0.0px 0.0px 14.9px 0.0px; font: 18.0px Times; color: #0000e9; -webkit-text-stroke: #0000e9"><span class="s2"><a href="file:///Users/kakao/Desktop/%E1%84%80%E1%85%B5%E1%86%BA%E1%84%92%E1%85%A5%E1%84%87%E1%85%B3%E1%84%87%E1%85%B3%E1%86%AF%E1%84%85%E1%85%A9%E1%84%80%E1%85%B3/_pages/category/abtest/%7B%7Bpost.url%20%7C%20prepend:%20site.baseurl%7D%7D"><b>{{post.title}}</b></a></span><span class="s3"><b><span class="Apple-converted-space"> </span></b></span></h2>
+<h2 style="margin: 0.0px 0.0px 14.9px 0.0px; font: 18.0px Times; color: #0000e9; -webkit-text-stroke: #0000e3"><span class="s2"><a href="file:///Users/kakao/Desktop/%E1%84%80%E1%85%B5%E1%86%BA%E1%84%92%E1%85%A5%E1%84%87%E1%85%B3%E1%84%87%E1%85%B3%E1%86%AF%E1%84%85%E1%85%A9%E1%84%80%E1%85%B3/_pages/category/abtest/%7B%7Bpost.url%20%7C%20prepend:%20site.baseurl%7D%7D"><b>{{post.title}}</b></a></span><span class="s3"><b><span class="Apple-converted-space"> </span></b></span></h2>
 <p class="p3"><span class="s1">{{ post.content | strip_html | truncatewords: 15 }}</span></p>
 <p class="p1"><span class="s1">{{post.date | date: '%b %d, %Y'}}<span class="Apple-converted-space"> </span></span></p>
 <p class="p1"><span class="s1">{% endfor %}<span class="Apple-converted-space"> </span></span></p>
