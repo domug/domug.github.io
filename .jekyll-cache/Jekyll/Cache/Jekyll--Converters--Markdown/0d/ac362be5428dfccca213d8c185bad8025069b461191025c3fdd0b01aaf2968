@@ -1,0 +1,2 @@
+I"<p>일반적인 A/B Test (i.e. “Fixed-Horizon Test”, “Fixed-Sample Test”) 에서는 사전에 계산된 샘플 사이즈가 충족되기 전까지 p-value를 계산하는 것이 금지된다. 그 이유는 앞서 살펴본 <a href="">다중 검정의 문제</a> 때문인데, 샘플 사이즈가 충분하지 않은 상태에서 p-value를 계산하고 이를 바탕으로 결론을 도출할 경우 family-wise type I error가 의도했던 유의 수준 $\alpha$ 를 훨씬 상회하는 문제점이 발생합니다.</p>
+:ET

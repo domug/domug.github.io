@@ -1,0 +1,90 @@
+I"� <p>일반적인 A/B Test (i.e. “Fixed-Horizon Test”, “Fixed-Sample Test”) 에서는 사전에 계산된 샘플 사이즈가 충족되기 전까지 p-value를 계산하는 것이 금지된다. 그 이유는 앞서 살펴본 <a href="">다중 검정의 문제</a> 때문인데, 샘플 사이즈가 충분하지 않은 상태에서 p-value를 계산하고 이를 바탕으로 결론을 도출할 경우 family-wise type I error가 의도했던 유의 수준 $\alpha$ 를 훨씬 상회하는 문제점이 발생한다. 이를 흔히 <strong>p-hacking</strong> 이라고 부른다.</p>
+
+<p>한편, 그럼에도 불구하고 진행되고 있는 실험을 조기에 종료하고 싶은 상황은 분명히 존재할 수 있다. 가령, 어떤 실험의 경우 control과 treatment의 차이가 너무 명확해서 실험을 끝까지 진행하는 것이 시간 낭비일 수 있다. 혹은 treatment의 새로운 기능이 user experience에 상당히 안좋은 영향을 미쳐서 실험을 더 이상 진행하는 것에 리스크가 따를 수 있다.</p>
+
+<p>이러한 맥락에서 실험을 끝까지 진행하지 않더라도 family-wise type I error를 유의수준 이하로 컨트롤하면서 통계적으로 타당한 결론을 내릴 수 있는 방법론이 존재한다. 즉, 실험의 “early-stopping”을 지원할 수 있는 특별한 실험 디자인이 있는데, 이를 통계학에서는 “<strong>group sequential test (design)</strong>“라고 부르며, 관련해서 많은 <a href="https://scholar.google.co.kr/scholar?q=group+sequential+tests&amp;hl=ko&amp;as_sdt=0&amp;as_vis=1&amp;oi=scholart">선행 연구들</a>이 존재한다.</p>
+
+<p>비록 해당 방법론들은 임상 통계학의 도메인에서 연구되었으나, Online A/B Test에도 자연스레 적용될 수 있으며 실제로 이와 관련한 몇가지 포스팅들이 있는 것을 찾아볼 수 있었다. (<a href="https://www.aarondefazio.com/tangentially/?p=83">참고 1</a>, <a href="https://bytepawn.com/early-stopping-in-ab-testing.html">참고 2</a>)</p>
+
+<p>이러한 맥락에서 group sequential test의 대표적인 방법론들을 소개하고, 해당 방법론들을 사용해서 실험을 조기 종료하는 것이 어떻게 가능한지에 대해 정리해보도록 하겠다.</p>
+
+<p> </p>
+
+<hr />
+
+<h1 id="1-group-sequential-tests">1. Group Sequential Tests</h1>
+
+<p>일반적인 Fixed Horizon Test를 떠올려보자. 이 경우 실험이 종료된 다음 각 그룹별로 수집된 데이터를 바탕으로 통계분석을 수행하게 된다.</p>
+
+<p>이와는 반대로 <strong>“group sequential test”</strong>는 실험이 진행되는 과정에서 “일정한 시점” 별로 <strong>누적된 데이터</strong>에 대해 분석을 수행하는 방법이다. 예를 들어, 일주일 단위로 p-value를 계산한 다음 기존과 동일하게 의사결정을 내리는 것이다. 만약 해당 결과가 유의하다면 실험은 조기에 종료된다.</p>
+
+<p>한편, 저번 포스트의 내용을 바탕으로 할 때 이는 결과적으로 가설 검정을 여러번 수행하는 것이기 때문에 <strong>다중 검정</strong>의 문제가 발생한다는 것을 직관적으로 알 수 있다. 따라서 이를 해결하기 위한 group sequential test 의 가장 핵심적인 아이디어는, 만약 검정통계량이 <strong>정규분포</strong>를 따르는 경우 여러 시점별로 <strong>false-positive</strong>의 확률을 근사적으로 계산하는 것이 가능하다는 내용이다. 이처럼 만약 각 시점별로 false-positive의 확률을 알고 있다면, 앞서 다중 검정을 처리했던 것처럼 유의수준을 보정해서 FWER을 유의수준 이하로 컨트롤 할 수 있을 것이다.</p>
+
+<p>예를 들어 실험이 10일 동안 진행되고 하루를 주기로 총 10번의 중간 분석을 수행할 경우, <strong>각 시점들에서의 false-positive 확률값들을 더한 전체 값이 유의 수준보다 작아질 수 있도록 각 시점마다 사용될 유의수준을 정의할 수 있다</strong>.</p>
+
+<p>후술할 모든 방법론들은 모두 이러한 아이디어를 바탕으로 하고 있으며, 이후 구체적인 예시를 통해서 살펴보면 이해가 빠를 것이라고 생각한다.</p>
+
+<p>이와 같은 group sequential test 중에 가장 기초적인 방법은 <a href="https://academic.oup.com/biomet/article-abstract/64/2/191/384776">“Pocock’s Test”</a> 이며, 이를 바탕으로 <a href="https://pubmed.ncbi.nlm.nih.gov/497341/">“O’Brien &amp; Flemming Test”</a> 와 <a href="https://www.jstor.org/stable/2336502?seq=1">”</a><a href="https://www.jstor.org/stable/2336502?seq=1">alpha-spending function method</a>” 가 제안되었으며 현재 임상 통계 분야에서 널리 활용되고 있다. 이후 자세히 살펴보겠지만, A/B Test의 도메인에서 활용될 수 있는 방법론은 <strong>“alpha-spending function method”</strong> 라는 방법이다. 앞의 세가지 방법론은 group sequential test의 전체적인 맥락을 이해하는데 도움이 될 것 같아 간략하게 소개를 하고자 한다.</p>
+
+<p> </p>
+
+<h2 id="a-pococks-test">(a) Pocock’s Test</h2>
+
+<p>가장 기초적인 group sequential test 방법론이며, 개념적으로 다중 검정 보정에서의 “<strong>Bonferroni correction</strong>“과 유사하다고 생각하면 편하다.</p>
+
+<p>Pocock’s Test에서는 각 <strong>중간 분석</strong>의 시점 ($1, 2, …, k$) 별로 샘플 사이즈가 일정하게 $m$ 만큼 증가한다고 가정한다. 이 때 시점 $k$ 에서 사용되는 검정통계량은 다음과 같다. 이는 간단하게 말하자면 두 집단의 평균 차이 (two sample t-test의 검정통계량) 를 약간 변형한 것에 불과하다.</p>
+
+<center>
+
+$$
+\begin{aligned}
+&amp;Z_k = \frac{1}{\sqrt{2mks^2}} \Big( \sum_{i=1}^{mk}X_{T,i} - \sum_{i=1}^{mk}X_{C,i} \Big) \\[15pt]
+&amp;\;\;\;\quad s^2: \text{sample variance} \\[5pt]
+&amp;\quad C, T: \text{control, treatment group}
+
+\end{aligned}
+$$
+
+</center>
+
+<p> </p>
+
+<p>이를 바탕으로 $i (i \leq k)$ 시점까지의 모든 중간 분석에 대해서 계산된 검정 통계량 $Z_i$ 가 일정한 기각역 $C$ 에 포함될 경우 (i.e. $Z_i &gt; C$), treatment가 효과가 있다고 결론을 내리고 실험을 조기 종료하게 된다.</p>
+
+<p>이 때, Pocock’s Test의 가장 큰 특징은 모든 시점에서의 분석에서 <strong>동일한 기각역</strong> $C$를 사용한다는 점이다. 구체적으로, 기각역의 값은 다음과 같이 구해진다.</p>
+
+<center>
+
+$$
+C = P\Big( \{\text{reject }H_0 \text{ at }i=1\} \cup \{\text{reject }H_0 \text{ at }i=2\} \cup \dots \cup \{\text{reject }H_0 \text{ at }i=k\} \Big)
+$$
+
+</center>
+
+<p> </p>
+
+<p>단, 해당 기각역은 closed-form expression이 존재하지 않으므로 수치해석적인 방법을 사용해서 구하게 된다. 만약 유의수준 $\alpha$가 0.05 일 때, 중간분석의 개수 $k$에 따라 기각역 $C$의 값을 계산한 표는 다음과 같다.</p>
+
+<center>
+  <img src="/images/abtest/22.png" width="700" height="500" /> 
+ <br />
+ <em><span style="color:grey">Pocock's Method의 기각역</span></em>
+</center>
+
+<p> </p>
+
+<p>위 표에서 중간 분석의 횟수 $k$가 증가할 수록 대응되는 기각역 $C$의 값이 증가하는 것을 확인할 수 있다. $k = 1$ 인 경우에는 일반적인 fixed horizon test가 되므로, 정규분포에서 유의수준 $0.05$에 대응되는 기각역 $1.96$이 사용되는 것은 당연하다.</p>
+
+<p>이는 직관적으로, 중간 분석의 횟수가 많아질수록 중간분석에서 귀무가설을 기각하는 것이 점점 <strong>어려워지도록</strong> 만들어 전체적으로는 family-wise type I error가 유의 수준 (0.05) 이하로 유지되도록 맞춰지는 것이라고 이해할 수 있다. 가령, $k = 5$ 의 경우 사용될 기각역은 2.413이므로 대응되는 유의수준은 <strong>0.0158</strong> 입니다 (정규분포의 cdf를 바탕으로 계산).</p>
+
+<p>즉, 계산된 p-value가 0.0158보다 작아야 귀무가설이 기각되고 treatment의 유의성을 주장할 수 있게 되는 것입니다.</p>
+
+<p> </p>
+
+<hr />
+
+<p> </p>
+
+<h2 id="reference">Reference</h2>
+
+:ET
