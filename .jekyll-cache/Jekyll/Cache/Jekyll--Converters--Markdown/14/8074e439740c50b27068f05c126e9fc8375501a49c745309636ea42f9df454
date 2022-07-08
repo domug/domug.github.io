@@ -1,0 +1,52 @@
+I"?	<p>통계적 가설 검정에서 <strong>다중 검정 (Multiple Testing)</strong> 이란, 특정한 하나의 실험에서 여러번의 가설 검정을 동시에 수행하는 경우를 의미한다.</p>
+
+<p>비록 여러번의 가설 검정을 수행하는 것 자체는 문제가 되지 않으나, 도출된 결과의 해석에 있어서 <strong>다중 검정은 1종 오류 (Type 1 error) 를 의도했던 유의수준보다 증가시킬 수 있다는 점에서 상당한 주의가 필요하다</strong>. 이러한 맥락에서, 해당 포스트에서는 다중 검정의 전체적인 개념을 소개한 다음, 이를 처리할 수 있는 통계적 방법론 몇가지를 살펴보도록 하겠다.</p>
+
+<p> </p>
+
+<hr />
+
+<h2 id="1-다중-검정이-문제가-되는-이유">1. 다중 검정이 문제가 되는 이유</h2>
+
+<p>일반적인 통계적 가설 검정 문제를 생각해보자. 특정한 한 번의 가설 검정 (i.e. 단일 검정) 절차에서 우리가 잘못된 결론을 내릴 확률, 즉 <strong>1종 오류</strong>는 유의수준 $\alpha$ 이하로 보장된다는 사실은 자명하다.</p>
+
+<p>한편, 이러한 가설 검정 절차를 총 $m$ 번 반복한다고 가정해보자. 이 때, i-번째 귀무가설을 $H_{0i}$ 라고 정의할 경우, 전체 $m$ 개의 가설 검정 중에서 <strong>적어도 한 개 이상의 가설에 대해서 잘못된 결론을 내릴 확률</strong> (i.e. <strong>family-wise type I error</strong>) 은 역확률의 정의에 의해 다음과 같이 구해진다.</p>
+
+<center>
+
+$$
+\begin{aligned}
+P\Big(\text{at least one }H_{0i} \text{ is False} \;|\; H_{0i} \text{ is True} \Big) &amp;= 1 - P\Big(\text{all least one }H_{0i} \text{ is True} \;|\; H_{0i} \text{ is True} \Big) \\[10pt]
+&amp;= 1 - (1-\alpha)^m
+\end{aligned}
+$$
+
+</center>
+
+<p> </p>
+
+<p>이를 바탕으로 가설 검정의 개수 ($m$) 에 따른 family-wise type I error의 함수를 그래프를 다음과 같이 잡을 수 있다.</p>
+
+<center>
+  <img src="/images/abtest/11.png" width="500" height="400" /> 
+ <br />
+ <em><span style="color:grey"></span></em>
+</center>
+
+<p> </p>
+
+<hr />
+
+<p>&lt;/center&gt;</p>
+
+<p> </p>
+
+<hr />
+
+<h1 id="reference">Reference</h1>
+
+<ul>
+  <li>Casella, G., &amp; Berger, R. L. (2002). <em>Statistical inference.</em> 2nd ed. Australia ; Pacific Grove, CA: Thomson Learning.</li>
+</ul>
+
+:ET
