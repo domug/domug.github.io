@@ -1,0 +1,30 @@
+I"F<hr />
+
+<p> </p>
+
+<hr />
+
+<center>
+  <img src="/images/abtest/20.png" width="700" height="500" /> 
+ <br />
+ <em><span style="color:grey">Optimizely</span></em>
+</center>
+<p> </p>
+
+<h2 id="reference">Reference</h2>
+
+<ul>
+  <li><a href="[https://support.google.com/optimize/answer/7364397?hl=ko#use-analytics-segments&amp;zippy=%2C%EC%9D%B4-%EB%8F%84%EC%9B%80%EB%A7%90%EC%97%90%EC%84%9C%EB%8A%94-%EB%8B%A4%EC%9D%8C-%EB%82%B4%EC%9A%A9%EC%9D%84-%EB%8B%A4%EB%A3%B9%EB%8B%88%EB%8B%A4](https://support.google.com/optimize/answer/7364397?hl=ko#use-analytics-segments&amp;zippy=%2C이-도움말에서는-다음-내용을-다룹니다)">Google Analytics 1</a></li>
+  <li><a href="[https://support.google.com/analytics/answer/3125360?hl=ko&amp;ref_topic=3123779#zippy=%2C%EC%9D%B4-%EB%8F%84%EC%9B%80%EB%A7%90%EC%97%90-%EB%82%98%EC%99%80-%EC%9E%88%EB%8A%94-%EB%82%B4%EC%9A%A9%EC%9D%80-%EB%8B%A4%EC%9D%8C%EA%B3%BC-%EA%B0%99%EC%8A%B5%EB%8B%88%EB%8B%A4](https://support.google.com/analytics/answer/3125360?hl=ko&amp;ref_topic=3123779#zippy=%2C이-도움말에-나와-있는-내용은-다음과-같습니다)">Google Analytics 2</a></li>
+  <li><a href="https://help.vwo.com/hc/en-us/articles/360020418454-Using-Segmentation-in-VWO">VWO</a></li>
+  <li><a href="https://experienceleague.adobe.com/docs/analytics-learn/tutorials/components/segmentation/segment-builder-overview.html?lang=ko">Adobe Analytics 1</a></li>
+  <li><a href="https://experienceleague.adobe.com/docs/analytics-learn/tutorials/analysis-workspace/applying-segments/using-segments-in-analysis-workspace.html?lang=ko">Adobe Analytics 2</a></li>
+  <li><a href="https://docs.developers.optimizely.com/full-stack/docs/analyze-results">Optimizely 1</a></li>
+  <li><a href="https://support.optimizely.com/hc/en-us/articles/4410284017421#Segment_experiment_results">Optimizely 2</a></li>
+  <li>https://www.sciencedirect.com/science/article/abs/pii/S0378375807002431</li>
+  <li>https://cxl.com/blog/segment-ab-test-results/</li>
+  <li>https://www.widerfunnel.com/blog/3-mistakes-invalidate-ab-test-results/</li>
+  <li>https://pubmed.ncbi.nlm.nih.gov/16279352/</li>
+</ul>
+
+:ET

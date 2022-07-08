@@ -1,0 +1,53 @@
+I"[<p>일반적인 A/B Test (i.e. “<strong>Fixed-Horizon Test” or “Fixed-Sample Test”</strong>)에서는 일정한 샘플 사이즈가 충족되기 전까지 p-value를 계산하는 것이 금지된다.</p>
+
+<p>그 이유는 앞서 계속해서 살펴본 다중검정의 문제 때문인데요, 샘플 사이즈가 충분하지 않은 상태에서 p-value를 계산하고 이를 바탕으로 의사결정을 내리는 경우 FWER가 의도했던 0.05를 훨씬 상회하는 문제점이 발생합니다.</p>
+
+<p>이를 <strong>early-stopping problem</strong>, 또는 <strong>p-hacking</strong> 이라고 정의합니다.</p>
+
+<p>한편, 그럼에도 불구하고 <strong>early-stopping이 필요한 상황과 니즈는 분명히 있을 수 있습니다</strong>.</p>
+
+<p>가령, 어떤 실험의 경우 control과 treatment의 차이가 너무 명확해서 실험을 끝까지 진행하는 것이 불필요할 수 있습니다. 또는 treatment가 user-experience에 상당히 안좋은 영향을 미쳐서 실험을 조기 종료하는 것이 필요할 수도 있습니다.</p>
+
+<p>이러한 맥락에서 실험을 끝까지 진행하지 않더라도, FWER을 유의수준 이하로 컨트롤하면서 (다중 검정을 보정하면서) 통계적으로 타당한 결론을 내릴 수 있는 방법론이 존재합니다. 즉, 통계적으로 early-stopping을 지원할 수 있는 방안이 있습니다.</p>
+
+<p>이러한 실험 디자인을 통계학에서는 “<strong>group sequential test (design)</strong>“라고 부르며, 이와 관련해 많은 <a href="https://scholar.google.co.kr/scholar?q=group+sequential+tests&amp;hl=ko&amp;as_sdt=0&amp;as_vis=1&amp;oi=scholart">선행 연구들</a>이 존재합니다.</p>
+
+<p>비록 해당 방법론들은 임상 통계학의 도메인에서 연구되었으나, Online A/B Test에도 자연스레 적용될 수 있으며 실제로 이와 관련한 몇가지 포스팅들이 있었습니다.</p>
+
+<ul>
+  <li>https://www.aarondefazio.com/tangentially/?p=83</li>
+  <li>https://bytepawn.com/early-stopping-in-ab-testing.html</li>
+</ul>
+
+<p>따라서 group sequential test의 몇가지 대표적 방법론들을 소개하고, 해당 방법론들을 사용해서 실험을 조기 종료하는 것이 어떻게 가능한지에 대해 정리하도록 하겠습니다.</p>
+
+<hr />
+
+<p> </p>
+
+<hr />
+
+<center>
+  <img src="/images/abtest/20.png" width="700" height="500" /> 
+ <br />
+ <em><span style="color:grey">Optimizely</span></em>
+</center>
+<p> </p>
+
+<h2 id="reference">Reference</h2>
+
+<ul>
+  <li><a href="[https://support.google.com/optimize/answer/7364397?hl=ko#use-analytics-segments&amp;zippy=%2C%EC%9D%B4-%EB%8F%84%EC%9B%80%EB%A7%90%EC%97%90%EC%84%9C%EB%8A%94-%EB%8B%A4%EC%9D%8C-%EB%82%B4%EC%9A%A9%EC%9D%84-%EB%8B%A4%EB%A3%B9%EB%8B%88%EB%8B%A4](https://support.google.com/optimize/answer/7364397?hl=ko#use-analytics-segments&amp;zippy=%2C이-도움말에서는-다음-내용을-다룹니다)">Google Analytics 1</a></li>
+  <li><a href="[https://support.google.com/analytics/answer/3125360?hl=ko&amp;ref_topic=3123779#zippy=%2C%EC%9D%B4-%EB%8F%84%EC%9B%80%EB%A7%90%EC%97%90-%EB%82%98%EC%99%80-%EC%9E%88%EB%8A%94-%EB%82%B4%EC%9A%A9%EC%9D%80-%EB%8B%A4%EC%9D%8C%EA%B3%BC-%EA%B0%99%EC%8A%B5%EB%8B%88%EB%8B%A4](https://support.google.com/analytics/answer/3125360?hl=ko&amp;ref_topic=3123779#zippy=%2C이-도움말에-나와-있는-내용은-다음과-같습니다)">Google Analytics 2</a></li>
+  <li><a href="https://help.vwo.com/hc/en-us/articles/360020418454-Using-Segmentation-in-VWO">VWO</a></li>
+  <li><a href="https://experienceleague.adobe.com/docs/analytics-learn/tutorials/components/segmentation/segment-builder-overview.html?lang=ko">Adobe Analytics 1</a></li>
+  <li><a href="https://experienceleague.adobe.com/docs/analytics-learn/tutorials/analysis-workspace/applying-segments/using-segments-in-analysis-workspace.html?lang=ko">Adobe Analytics 2</a></li>
+  <li><a href="https://docs.developers.optimizely.com/full-stack/docs/analyze-results">Optimizely 1</a></li>
+  <li><a href="https://support.optimizely.com/hc/en-us/articles/4410284017421#Segment_experiment_results">Optimizely 2</a></li>
+  <li>https://www.sciencedirect.com/science/article/abs/pii/S0378375807002431</li>
+  <li>https://cxl.com/blog/segment-ab-test-results/</li>
+  <li>https://www.widerfunnel.com/blog/3-mistakes-invalidate-ab-test-results/</li>
+  <li>https://pubmed.ncbi.nlm.nih.gov/16279352/</li>
+</ul>
+
+:ET
