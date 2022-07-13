@@ -353,7 +353,8 @@ $$
 
 - Note that covariance is scale-**variant**, while correlation is scale-**invariant**.
 
-</center>
+<center>
+
 $$
 \text{Cov}(X, Y) \neq \text{Cov}(aX, bY)
 $$

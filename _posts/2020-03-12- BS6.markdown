@@ -74,7 +74,7 @@ To reduce this local random walk behaviour of previous MCMC algorithms, Hamilton
 
 &nbsp;
 
-So in a nutshell, the direction of the HMC sampler is effected by the gradient of the log likelihood, allowing us to get reliable samples that realistically represents the target distribution. This might sound gibbserish at the moment, but let's take a look at the step by step details of HMC algorithm.
+So in a nutshell, the direction of the HMC sampler is effected by the gradient of the log likelihood, allowing us to get reliable samples that realistically represents the target distribution. This might sound gibberish at the moment, so let's take a look at the step by step details of HMC algorithm.
 
 &nbsp;
 

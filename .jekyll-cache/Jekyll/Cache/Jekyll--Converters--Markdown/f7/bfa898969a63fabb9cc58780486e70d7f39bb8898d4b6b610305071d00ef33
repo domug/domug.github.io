@@ -1,0 +1,226 @@
+I"�8<p>A/B Test는 실험하고자 하는 기능에 대한 <strong>인과적인 효과</strong>를 파악하기 위해서 수행된다.</p>
+
+<p>&gt;&gt; e.g. 결제 버튼의 폰트 색깔을 검정색에서 회색으로 바꾸었을 때 전환율이 $x$%만큼 증가 / 감소.</p>
+
+<p>그리고 이를 가능케 하는 이론적 배경은 바로 <strong>무작위 배정 (randomization)</strong> 이며, A/B Test에서 해당 개념의 중요성은 아무리 강조해도 충분치 않다.</p>
+
+<p>A/B Test가 진행되는 과정에서 유저들은 시험군과 대조군에 완벽하게 랜덤하게 배정된다. 비록 사소해보일 수 있으나, 이로 인해 두 실험 그룹의 유저들은 실험하고자 하는 기능을 제외한 나머지 모든 요인들이 동일한 수준으로 통일된다 (추후 구체적인 수식을 통해서 다시 살펴볼 예정이다). 따라서 무작위 배정이 수행된 A/B Test를 바탕으로 얻은 결과에서 결과변수가 $x$ 만큼 변했다는 것은, 우리가 실험하고자 하는 기능이 바로 그 $x$ 만큼의 변화를 발생시킨 “원인”이라는 것과 일맥상통하게 된다.</p>
+
+<p>이렇게 무작위 배정을 통해 수집된 데이터를 바탕으로 결론을 도출하는 일련의 절차를 통계학에서는 <strong>“실험 연구”</strong>라고 하며, 실험 연구는 인과적인 결론을 도출하기 위한 <strong>유일한</strong> 방법으로 여겨진다.</p>
+
+<p> </p>
+
+<p>그럼에도 불구하고, 현실적인 이유들로 인해 무작위 배정을 진행하기가 어려운 경우 역시 많을 수 있다.</p>
+
+<ul>
+  <li>
+    <p>항암제에 대한 3상 임상 시험에서, 무작위 배정을 바탕으로 대조군에 배정된 환자에게 위약 (placebo) 을 투약하는 것은 윤리적인 이유로 불가능하다.</p>
+  </li>
+  <li>
+    <p>결과 변수를 통제할 수 없는 경우가 있다 (e.g. user behaviour)</p>
+  </li>
+  <li>
+    <p>구글의 검색엔진에서 광고를 제거하는 것처럼 대조군을 설정하기 위한 비용이 너무 큰 경우가 있다.</p>
+  </li>
+</ul>
+
+<p>이러한 상황들에서 수집되는 데이터는 여러 외부 요인들의 영향력이 공평한 수준으로 보정되지 않았기 때문에, 실험의 결과에서 인과성을 주장할 수 <strong>없다</strong>. 이처럼 실험 연구와는 반대로 무작위 배정이 수행되지 않은 데이터를 바탕으로 결론을 도출하는 연구를 통계학에서는 <strong>“관찰 연구 (observation studies)”</strong> 라고 표현한다.</p>
+
+<p> </p>
+
+<p>그렇다면 여러 이유들로 인해 무작위 배정이 이뤄지지 않은 <strong>관찰 연구의 데이터</strong>로부터 인과적인 결론을 도출할 수 있는 방법은 없을까?</p>
+
+<p>이러한 물음에 대한 탐구로, 해당 포스트에서는 <strong>observational causal inference (인과적 추론)</strong> 라는 통계학의 한 분야를 살펴볼 예정이다. 해당 분야의 선구자는 하버드 대학교의 <a href="https://scholar.google.com/citations?user=5q4fhUoAAAAJ&amp;hl=en">Donald Rubin</a> 교수인데, 그는 다소 추상적이고 애매모호했던 “인과성”의 개념을 수학적으로 명확히 정립하고, 이를 바탕으로 <strong>성향점수분석 (Propensity Score Analysis)</strong> 이라는 방법론을 개발한 것으로 유명하다. 2022년 7월 기준으로 그의 <a href="https://www.researchgate.net/publication/243082748_The_Central_Role_of_the_Propensity_Score_in_Observational_Studies_For_Causal_Effects">논문</a>의 피인용수가 32,000 건을 넘어간다는 점은 해당 연구가 사회과학 전반에 걸쳐 얼마나 큰 영향력을 가졌는지를 여실히 보여준다.</p>
+
+<p> </p>
+
+<p>인과적 추론을 위한 통계 방법론의 핵심은 결국 관찰 연구 데이터로부터 “인과성”을 발견하는 것이다. 그리고 이를 위해서는 여러 <strong>가정 사항</strong>들이 필요하다. 당연히 공짜 점심은 없기 때문에, 무작위 배정이 수행되지 않은 것을 보정하기 위해 필요한 가정들은 다소 비현실적 측면이 있다 (추후에 구체적으로 살펴보겠다). 그래서 이러한 방법론들을 비판하는 사람들도 많은데, 필자도 개인적으로는 이러한 방법론들이 분명한 한계점을 갖고 있다고 생각한다.</p>
+
+<p>그럼에도 불구하고 인과적 추론의 프레임워크를 이해하는 것은 A/B Test를 설계하고 결과를 분석함에 있어서 식견을 넓힐 수 있는 좋은 기회라고 생각한다. 이러한 맥락에서 해당 포스트에서는 인과적 추론을 이해하기 위한 기본적인 개념들과 프레임워크, 그리고 이를 바탕으로 Rubin이 제안한 <strong>성향 점수 분석</strong>에 대해 대략적으로 살펴볼 예정이다.</p>
+
+<p> </p>
+
+<hr />
+
+<h1 id="1-counterfactual-model">1. Counterfactual Model</h1>
+
+<p>우선 가장 먼저 Rubin 교수가 제시한 인과 관계를 이론적으로 정의하는 프레임워크를 간략히 소개하겠다.</p>
+
+<p>구체적으로, 여기서는 그가 제안한 “<strong>counterfactual outcome</strong>“이라는 개념을 응용해서 인과 관계에 대한 분석을 수행하는 과정을 살펴볼텐데, 이를 위해 사용될 몇가지 용어들을 먼저 정의하도록 하겠다.</p>
+
+<p> </p>
+
+<p><strong>1. 실험 집단 (treatment group)</strong></p>
+
+<ul>
+  <li>원인이 되는 사건 (i.e. 실험하고자 하는 기능) 에 <strong>“노출된”</strong> 유저들을 의미한다.</li>
+</ul>
+
+<p> </p>
+
+<p><strong>2. 대조 집단 (control group)</strong></p>
+
+<ul>
+  <li>원인이 되는 사건 (i.e. 실험하고자 하는 기능) 에 <strong>“노출되지 않은”</strong> 유저들을 의미한다.</li>
+</ul>
+
+<p> </p>
+
+<p><strong>3. 원인 변수</strong></p>
+
+<ul>
+  <li>알아내고자 하는 인과 관계에서 <strong>“원인”이 되는 사건의 발생 여부</strong>를 나타내는 변수를 의미한다.</li>
+  <li>A/B Test의 맥락에서 이는 대조군 또는 시험군으로의 배정 여부를 의미한다.</li>
+  <li>물론 시험군이 여러개인 경우로 확장 가능하지만, 여기서는 설명의 편의를 위해 control과 treatment 두개의 그룹만을 고려한다.</li>
+</ul>
+
+<p> </p>
+
+<p><strong>4. 결과 변수</strong></p>
+
+<ul>
+  <li>알아내고자 하는 인과 관계에서 <strong>“결과”가 되는 사건의 발생 여부</strong>를 나타내는 변수를 의미한다.</li>
+  <li>A/B Test의 맥락에서 이는 1차 유효성 평가변수(primary metric)을 의미한다.</li>
+</ul>
+
+<p> </p>
+
+<p>이를 바탕으로, 우리가 알아내고자 하는 것은 어떠한 실험에서의 <strong>원인 변수와 결과 변수간의 인과 관계</strong>이다.</p>
+
+<p>이제 설명의 편의상 구체적인 예시로 원인 변수를 “<strong>추천 시스템 (A, B)”</strong>, 결과 변수를 “<strong>평균 매출액”</strong>이라고 가정하겠다. 이러한 맥락에서 두 변수간 인과 관계를 가장 정확하게 파악하는 방법은 실험에 참여한 각 유저마다 <strong>동일한 시점에서</strong> 추천 시스템 A에 노출되었을 때의 매출액과, 추천 시스템 B에 노출되었을 때의 평균 매출액 각각을 측정한 다음 두 값의 차이를 계산하는 것이다 (일반적인 A/B Test).</p>
+
+<center>
+  <img src="/images/abtest/29.png" width="700" height="500" /> 
+ <br />
+ <em><span style="color:grey"></span></em>
+</center>
+
+<p> </p>
+
+<p>하지만 당연하게도, 완벽히 <strong>동일한 시점</strong>에서 어떠한 유저를 동시에 서로 다른 추천 시스템 A와 B 각각에 노출시키는 것은 물리적으로 불가능할 것이다. 그렇기 때문에 우리는 결국 <strong>유저 레벨에서 인과 관계를 추론하는 것은 불가능하다는 결론에 다다르게 된다</strong>.</p>
+
+<p>분명히 앞서 무작위 배정을 이용한 A/B Test에서는 인과 관계를 도출할 수 있다고 했는데, 갑자기 무슨 뚱딴지같은 소리를 하냐는 의문이 들 수 있다. 이와 관련해서, 비록 우리는 개별적인 <strong>유저 레벨</strong>에서의 인과 관계는 절대로 알 수 없지만 무작위 배정을 사용하게 되는 경우 <strong>모집단 레벨</strong>에서의 인과 관계는 정확히 도출할 수 있다. 이를 좀 더 구체적으로 살펴보자.</p>
+
+<p> </p>
+
+<h3 id="11-counterfactual-model-rubin-causal-model">1.1. Counterfactual Model <a href="https://en.wikipedia.org/wiki/Rubin_causal_model">(Rubin Causal Model)</a></h3>
+
+<p>앞서 살펴본 내용을 Rubin 교수가 제안한 방식대로 수식을 도입해서 정의해보도록 하겠다.</p>
+
+<center>
+  <img src="/images/abtest/30.png" width="500" height="350" /> 
+ <br />
+ <em><span style="color:grey"></span></em>
+</center>
+
+<p> </p>
+
+<p>위 표에서 $Y_i(0)$와 $Y_i(1)$을 <strong>“counterfactuals”</strong>, 혹은 <strong>“potential outcomes”</strong> 라고 부르며 여기서는 편의상 <strong>“잠재적 결과”</strong> 정도로 의역해서 사용하도록 하겠다.</p>
+
+<p><strong>여기서 핵심은 어떠한 유저의 잠재적 결과들은 절대로 두 값을 동시에 관찰할 수 없다는 점이다</strong>. 그리고 실제 관측값 $Y_i$ 는 잠재적 결과들 중 하나와 완벽하게 일치하는 것이 당연하다.</p>
+
+<p>앞서 언급한 예시에서 유저들에 대한 (가상의) 잠재적 결과는 다음과 같을 수 있다.</p>
+
+<center>
+  <img src="/images/abtest/31.png" width="700" height="500" /> 
+ <br />
+ <em><span style="color:grey"></span></em>
+</center>
+
+<p> </p>
+
+<p>이러한 맥락에서 우리는 <strong>잠재적 결과와 실제 관측값의 관계</strong>를 다음과 같이 수학적으로 정의할 수 있다.</p>
+
+<center>
+
+$$
+\begin{aligned}
+Y_i &amp;= Z_i Y_i(1) + (1-Z_i) Y_i(0)\;, \\[10pt]
+
+&amp;Z_i = \begin{cases} \mbox{1}\;, &amp; \mbox{(i-th user is in treatment group)} \\ 
+\mbox{0}\;, &amp; \mbox{(i-th user is in control group)} \end{cases} 
+
+\end{aligned}
+$$
+
+</center>
+
+<p> </p>
+
+<p>여기서 새로운 변수 $Z_i$ 는 $i$ 번째 유저가 대조군로의 배정될 시 $0$, 시험군으로 배정될 시 $1$의 값을 갖는 더미 변수이다.</p>
+
+<p>자 그렇다면 이를 바탕으로 우리가 추정하고 싶은 인과 관계를 수식적으로 정의해보자. $i$ 번째 유저에 대해 새로운 추천 시스템 B의 매출액에 대한 효과 $\Delta$ 는 다음과 같이 정의된다.</p>
+
+<center>
+
+$$
+\begin{aligned}
+\Delta_i = Y_i(1) - Y_i(0)
+\end{aligned}
+$$
+
+</center>
+
+<p> </p>
+
+<p>이는 지극히 당연한 내용인데, 두 잠재적 결과의 차이를 발생시키는 원인은 어떤 추천 시스템을 적용했는지에 대한 여부 밖에 없기 때문에 위 식에서의 $\Delta$가 바로 우리가 구하고자 하는 <strong>인과 관계</strong>라는 것을 쉽게 이해할 수 있다.</p>
+
+<p>앞서 살펴본 예시를 바탕으로 $\Delta$의 구체적인 값을 계산하면 다음과 같을 수 있다.</p>
+
+<center>
+  <img src="/images/abtest/32.png" width="700" height="500" /> 
+ <br />
+ <em><span style="color:grey"></span></em>
+</center>
+
+<p> </p>
+
+<p>결론적으로 만약 위 예시처럼 $\Delta$의 값들이 양수일 경우 새로운 추천 시스템 B를 도입하는 것이 효과가 있었다고 주장할 수 있을 것이다.</p>
+
+<p>하지만 앞서 살펴본 것처럼, 두 잠재적 결과를 동시에 관측하는 것은 불가능하기 때문에 우리는 $\Delta$의 값을 직접적으로 추정할 수 없다. 여기에서 델타를 “직접” 추정한다는 것은, <strong>개별적인 유저 레벨</strong>에서 인과 관계를 도출하려는 것을 의미한다.</p>
+
+<p>한편, 이제부터 살펴볼 내용은 바로 <strong>“모집단” 수준에서의 인과 관계를 알아내는 것은 가능하다</strong>는 내용이다. 모집단 수준에서의 인과 관계란, 앞서 살펴본 델타의 <strong>“평균”</strong>을 추정하고자 하는 것과 일맥상통하다.</p>
+
+<center>
+
+$$
+\mathbb{E} \big[\Delta_i \big] = \mathbb{E} \big[ Y_i(1) - Y_i(0) \big]
+$$
+
+</center>
+
+<p> </p>
+
+<p>이제 구체적으로 위 기댓값이 계산되는 과정을 <strong>1) 무작위 배정이 이뤄졌을 때</strong>와 <strong>2) 무작위 배정이 이뤄지지 않았을 때</strong>의 두가지 측면에서 살펴보겠다. 이를 통해서 A/B Test에서 무작위 배정이 왜 그렇게 중요한지를 다시 한번 체감할 수 있을 것이다.</p>
+
+<p> </p>
+
+<hr />
+
+<h3 id="12-randomization-the-gold-standard">1.2. Randomization: The Gold Standard</h3>
+
+<p>위 내용을 바탕으로 <strong>무작위 배정이 이뤄졌다는 가정 하에</strong> 인과 관계를 의미하는 $\Delta$에 대한 기댓값을 구체적으로 계산해보자.</p>
+
+<p>우선 결과 변수에 영향을 미칠 수 있는 모든 외부 변수들을 $\mathbf{X}$ 라는 변수로 정의하겠다. 이러한 외부 변수들을 인과적 추론 모형에서는 <strong>교란 변수 (confounders)</strong> 라고 표현한다. 그리고 이러한 교란 변수들은 직접적으로 관찰되기 전까지는 그 값을 알 수 없으므로 <strong>확률 변수 (random variable)</strong> 로 취급하는 것이 자연스럽다.</p>
+
+<p>자 이러한 상황에서, 만약 i 번째 유저가 control group 또는 treatment group 으로 <strong>“무작위 배정”</strong>될 경우 어떤 일이 발생하는지를 살펴보겠습니다.</p>
+
+<p>당연하게도, 무작위 배정이 이뤄졌기 때문에 특정한 유저가 control 또는 treatment group에 배정되는 사건은 (Z_i), 각 유저들의 잠재적 결과 (Y_i(0), Y_i(1)) 와 아무런 연관이 없을 것입니다.</p>
+
+<p>&gt;&gt; 각 그룹에 배정되는 것은 완벽히 랜덤하게 이루어지기 때문에, control group에 배정되었다고 해서 매출액이 줄어들거나, 또는 treatment group에 배정되었다고 해서 매출액이 오르는 등의 일은 벌어지지 않습니다.</p>
+
+<p>다시 말해, 확률 변수 Z_i 와 Y_i 는 서로 <strong>독립</strong>입니다.</p>
+
+<hr />
+
+<p> </p>
+
+<hr />
+
+<h1 id="reference">Reference</h1>
+
+<ul>
+  <li>Casella, G., &amp; Berger, R. L. (2002). <em>Statistical inference.</em> 2nd ed. Australia ; Pacific Grove, CA: Thomson Learning.</li>
+</ul>
+
+:ET
