@@ -27,7 +27,7 @@ mailchimp: # Add your MailChimp form identifier. For example - blogenjoyfreedom.
 # Google Analytics
 #google-analytics: # Add your identifier. For example UA-99631805-1
 analytics:
-  provider               : google-gtag"
+  provider               : google-gtag
                           # false (default), "google", "google-universal", "google-gtag", "custom"
   google:
     tracking_id          : G-Z14BLD8386
