@@ -1,0 +1,37 @@
+I"<p>해당 포스트에서는 A/B Test에서 아웃라이어의 처리가 필요한 이유와 이를 위한 몇가지 방법론들을 살펴볼 예정이다.</p>
+
+<p> </p>
+
+<hr />
+
+<h1 id="1-outliers-in-ab-test">1. Outliers in A/B Test</h1>
+
+<p>본격적인 내용을 살펴보기에 앞서, 아웃라이어의 의미에 대해서 간략하게 생각해보도록 하자.</p>
+
+<p>통계학에서 <strong>“아웃라이어”</strong>란, 대다수의 <strong>“정상적인”</strong> 데이터와 그 성질이 사뭇 다른 데이터를 의미한다. 따라서 컴퓨터 과학, 머신러닝, 통계학의 범주를 아우르는 <strong>아웃라이어 탐지 과제</strong>는 주어진 데이터로부터 정상적인 패턴과 비정상적인 패턴을 구분하는 것이 주된 관심사라고 할 수 있다.</p>
+
+<p>한편, 아웃라이어를 정의하는 것은 그리 간단하지만은 않다. 가령, 대한민국 남성의 평균 키가 약 170cm 중반이라는 점을 감안할 때, 일반적으로 <strong>키가</strong> <strong>200cm가 넘어가는 남성</strong>들은 아웃라이어라고 판단할 수 있을 것이다. 한편, 만약 우리의 관심사가 <strong>농구 선수</strong>들의 키라고 한다면 이 때는 키가 200cm가 넘어가는 남성들을 아웃라이어라고 판단하기는 다소 어려울 수 있다.</p>
+
+<p>이처럼</p>
+
+<p>중에서 키가 200cm가 넘어가는 사람들은</p>
+
+<p>“아웃라이어”의 포괄적인 정의는 정상적인 데이터의 패턴에서 벗어난 데</p>
+
+<p> </p>
+
+<hr />
+
+<p>&lt;/center&gt;</p>
+
+<p> </p>
+
+<hr />
+
+<h1 id="reference">Reference</h1>
+
+<ul>
+  <li>Casella, G., &amp; Berger, R. L. (2002). <em>Statistical inference.</em> 2nd ed. Australia ; Pacific Grove, CA: Thomson Learning.</li>
+</ul>
+
+:ET

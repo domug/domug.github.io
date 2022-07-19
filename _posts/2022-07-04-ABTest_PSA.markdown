@@ -3,7 +3,7 @@ layout: post
 title: "[A/B Test] 관찰 연구에서의 인과적 추론 (Observational Causal Studies)"
 date: 2022-07-04 00:00:00
 image: abtest8.jpg
-tags: [abtest]
+tags: [abtest, randomization, counterfactual, causal inference, propensity score analysis]
 categories: abtest
 use_math: true
 ---
@@ -306,7 +306,7 @@ $$
 
 ---
 
-# 2. Propensity Score Analysis
+# 2. Propensity Score Analysis 개요
 
 앞서 무작위 배정이 수행되었을 경우 $\Delta$, 즉 average treatment effect (ATE) 에 대한 인과적인 결론을 얻을 수 있다는 것에 대한 이론적 증명을 살펴보았다. 그리고 이와는 반대로, 무작위 배정이 수행되지 않은 관찰 연구의 경우에는 ATE가 단순히 대조군과 시험군의 평균 차이로 구해지지 않는다는 점도 살펴보았다.
 

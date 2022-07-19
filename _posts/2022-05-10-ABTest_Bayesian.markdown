@@ -2,8 +2,8 @@
 layout: post
 title: "[A/B Test] 베이지안 A/B Test"
 date: 2022-05-10 00:00:00
-image: abtest9.jpg
-tags: [abtest]
+image: thumbnail_bayes.png
+tags: [bayesian ab test]
 categories: abtest
 use_math: true
 ---
@@ -16,7 +16,7 @@ use_math: true
 
 
 
-# 1. 베이지안 A/B Test란?
+# 1. 베이지안 A/B Test의 특징
 
 베이지안 방법론의 가장 핵심적인 아이디어는 추정하고자 하는 **모수 (parameter) 를 확률 변수라고 생각하는 것**이다.
 

@@ -3,7 +3,7 @@ layout: post
 title: "[A/B Test] 실험의 조기 종료 (Early Stopping)"
 date: 2022-04-30 00:00:00
 image: abtest7.jpg
-tags: [abtest]
+tags: [abtest, early stopping, group sequential tests, alpha spending function]
 categories: abtest
 use_math: true
 ---

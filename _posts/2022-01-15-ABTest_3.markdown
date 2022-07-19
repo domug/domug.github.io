@@ -3,7 +3,7 @@ layout: post
 title: "[A/B Test] 신뢰 구간"
 date: 2022-01-15 00:00:00
 image: abtest3.jpg
-tags: [abtest]
+tags: [abtest, confidence interval]
 categories: abtest
 use_math: true
 ---

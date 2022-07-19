@@ -3,7 +3,7 @@ layout: post
 title: "[A/B Test] 통계적 가설 검정과 p-value"
 date: 2022-01-13 00:00:00
 image: abtest2.jpg
-tags: [abtest]
+tags: [abtest, pvalue, statistics]
 categories: abtest
 use_math: true
 ---
