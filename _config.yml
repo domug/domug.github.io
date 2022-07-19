@@ -57,3 +57,7 @@ exclude:
   - Gemfile
   - Gemfile.lock
   - vendor
+
+# Disqus
+disqus_url: https://https-domug-github-io.disqus.com/
+disqus_id: https://https-domug-github-io.disqus.com/
