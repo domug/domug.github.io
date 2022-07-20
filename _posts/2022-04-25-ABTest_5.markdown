@@ -368,7 +368,7 @@ $$
 
 ## Reference
 
-- https://www.optimizely.com/insights/blog/tricked-by-statistics/
-- https://vwo.com/testing/multivariate-testing/
-- https://experienceleague.adobe.com/docs/target/using/activities/abtest/common-ab-testing-pitfalls.html?lang=ko
-- https://www.microsoft.com/en-us/research/group/experimentation-platform-exp/articles/alerting-in-microsofts-experimentation-platform-exp/
+- [https://www.optimizely.com/insights/blog/tricked-by-statistics/](https://www.optimizely.com/insights/blog/tricked-by-statistics/)
+- [https://vwo.com/testing/multivariate-testing/](https://vwo.com/testing/multivariate-testing/)
+- [https://experienceleague.adobe.com/docs/target/using/activities/abtest/common-ab-testing-pitfalls.html?lang=ko](https://experienceleague.adobe.com/docs/target/using/activities/abtest/common-ab-testing-pitfalls.html?lang=ko)
+- [https://www.microsoft.com/en-us/research/group/experimentation-platform-exp/articles/alerting-in-microsofts-experimentation-platform-exp/](https://www.microsoft.com/en-us/research/group/experimentation-platform-exp/articles/alerting-in-microsofts-experimentation-platform-exp/)

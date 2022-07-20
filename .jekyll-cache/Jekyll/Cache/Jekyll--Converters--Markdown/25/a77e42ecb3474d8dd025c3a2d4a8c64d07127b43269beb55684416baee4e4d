@@ -1,0 +1,2 @@
+I"�<p><a href="https://domug.github.io/2022/06/22/ABTest_multi_layer/">앞서</a>, 여러개의 동시다발적인 실험이 동일한 유저의 모집단을 바탕으로 진행될 수 있도록 설계된 multi-layer experiment의 개념에 대해 살펴보았다. 단 이를 위해서는 한 가지 조건이 만족되어야 했었는데, 이는 바로 실험 간 <strong>“interaction effect”가 발생하지 않아야 한다</strong>는 점이었다.</p>
+:ET

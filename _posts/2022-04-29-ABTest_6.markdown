@@ -200,10 +200,10 @@ Guardrail metric 등의 보조 지표에 대해서는 **유의수준을 보정�
 - [Adobe Analytics 2](https://experienceleague.adobe.com/docs/analytics-learn/tutorials/analysis-workspace/applying-segments/using-segments-in-analysis-workspace.html?lang=ko)
 - [Optimizely 1](https://docs.developers.optimizely.com/full-stack/docs/analyze-results)
 - [Optimizely 2](https://support.optimizely.com/hc/en-us/articles/4410284017421#Segment_experiment_results)
-- https://www.sciencedirect.com/science/article/abs/pii/S0378375807002431
-- https://cxl.com/blog/segment-ab-test-results/
-- https://www.widerfunnel.com/blog/3-mistakes-invalidate-ab-test-results/
-- https://pubmed.ncbi.nlm.nih.gov/16279352/
+- [https://www.sciencedirect.com/science/article/abs/pii/S0378375807002431](https://www.sciencedirect.com/science/article/abs/pii/S0378375807002431)
+- [https://cxl.com/blog/segment-ab-test-results/](https://cxl.com/blog/segment-ab-test-results/)
+- [https://www.widerfunnel.com/blog/3-mistakes-invalidate-ab-test-results/](https://www.widerfunnel.com/blog/3-mistakes-invalidate-ab-test-results/)
+- [https://pubmed.ncbi.nlm.nih.gov/16279352/](https://pubmed.ncbi.nlm.nih.gov/16279352/)
 
 
 

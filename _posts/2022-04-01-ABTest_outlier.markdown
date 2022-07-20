@@ -451,9 +451,9 @@ OTPSM에 대한 파이썬 기반의 pseudo-code는 다음과 같다.
 
 # Reference
 
-- https://www.dynamicyield.com/lesson/outliers-detection/
-- https://towardsdatascience.com/68-95-99-7-the-three-sigma-rule-of-thumb-used-in-power-bi-59cd50b242e2
-- https://uxplanet.org/how-to-clean-ab-testing-data-before-analysis-113e6bfeb164
+- [https://www.dynamicyield.com/lesson/outliers-detection/](https://www.dynamicyield.com/lesson/outliers-detection/)
+- [https://towardsdatascience.com/68-95-99-7-the-three-sigma-rule-of-thumb-used-in-power-bi-59cd50b242e2](https://towardsdatascience.com/68-95-99-7-the-three-sigma-rule-of-thumb-used-in-power-bi-59cd50b242e2)
+- [https://uxplanet.org/how-to-clean-ab-testing-data-before-analysis-113e6bfeb164](https://uxplanet.org/how-to-clean-ab-testing-data-before-analysis-113e6bfeb164)
 - He, Y. (2018). Implementation of A Robust Universal Outlier Filter for Online Experimentation.
 - Y. He and M. Chen, "A Probabilistic, Mechanism-Indepedent Outlier Detection Method for Online Experimentation," 2017 IEEE International Conference on Data Science and Advanced Analytics (DSAA), 2017, pp. 640-647, doi: 10.1109/DSAA.2017.64.
 - Deng, A., Xu, Y., Kohavi, R., & Walker, T. (2013). Improving the sensitivity of online controlled experiments by utilizing pre-experiment data. *WSDM '13*.

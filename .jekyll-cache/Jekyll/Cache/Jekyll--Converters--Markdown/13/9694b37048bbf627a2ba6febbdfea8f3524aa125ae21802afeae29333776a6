@@ -1,0 +1,126 @@
+I")<p>해당 포스트에서는 여러개의 실험이 동시다발적으로 진행되는 플랫폼에서 (i.e. multi-layer experiments) 효율적으로 무작위 배정을 수행할 수 있는 방법에 대해서 살펴볼 예정이다.</p>
+
+<p> </p>
+
+<hr />
+
+<h1 id="1-parallel-vs-non-parallel-design">1. Parallel vs Non-parallel Design</h1>
+
+<p>A/B Test는 특정한 기능의 성과에 대한 인과적인 결론을 내리기 위해서 수행되며, 이를 위해서는 당연하게도 대조군과 시험군의 성질이 “실험하고자 하는 기능”을 제외한 모든 측면에서 비슷해야 한다. 따라서 성공적인 실험 플랫폼을 위해서는 여러개의 실험이 동시에 진행되더라도 각 실험들이 서로에게 영향을 미치지 않고 <strong>실험 간 독립성이 보장되어야만 하는데</strong>, 결국 이는 실험에 참여하는 유저들을 임의로 나누어 놓은 <strong>“버켓”</strong>의 퀄리티와 직접적인 연관이 있다.</p>
+
+<p>이러한 맥락에서 <strong>“parallel experiment platform”</strong>이란, 동일한 유저들(모수)을 여러 실험들에서 중복해 사용할 수 있도록 설계된 실험 플랫폼을 의미한다. 만약 실험에 가용될 수 있는 전체 유저 수가 10만명이며 동시에 두개의 실험을 진행한다고 할 때, parallel experiment platform에서는 매 실험마다 10만명의 표본을 전부 활용할 수 있다.</p>
+
+<p>한편, 이와는 반대로 <strong>“non-parallel experiment platform”</strong>에서는 동시에 진행되는 두개의 실험에 대해 각각 5만명씩의 유저가 할당된다. 즉, parallel experiment platform에 비해 각 실험마다 약 절반 정도의 표본 크기를 손해보게되는 것이다.</p>
+
+<p>각각에 대해서 좀 더 구체적으로 살펴보자.</p>
+
+<p> </p>
+
+<h3 id="non-parallel-experiment-platform">Non-parallel Experiment Platform</h3>
+
+<p>설명의 편의를 위해, 총 $N=10000$ 의 모집단 크기와 대조군 시험군 각각에 절반의 샘플이 할당되는 (i.e. 50/50 split) 서로 다른 두개의 실험 $P_1, P_2$ 가 있다고 가정하겠다. 만약 해당 실험에서 모든 표본을 사용한다고 할 때, non-parallel experiment platform에서 각 실험 집단별 버켓 $B$ 의 크기는 다음과 같다.</p>
+
+<p> </p>
+
+<center>
+
+$$
+\begin{aligned}
+|B_{P_1, c}| &amp;= |B_{P_1, t}| = |B_{P_2, c}| =|B_{P_2, t}| =2500 \\[10pt]
+&amp;c: \text{control} \\
+&amp;t: \text{treatment}
+\end{aligned}
+$$
+
+</center>
+
+<p> </p>
+
+<p>즉 실험이 두개이므로 각 실험에 5천명씩의 표본이 할당되었으며, 각 실험 내에서 또 다시 대조군과 시험군의 두 그룹으로 나뉘기 때문에 최종적으로 각 버켓에는 2500명의 유저가 배정되는 것이다.</p>
+
+<p>이러한 실험 플랫폼 디자인의 장단점은 다음과 같다.</p>
+
+<p><strong>&lt;장점&gt;</strong></p>
+
+<ul>
+  <li>쉽고 간단하다.</li>
+  <li>모든 실험은 각각 독립적인 버켓(샘플)을 바탕으로 수행되기 때문에, 각 실험 간에 <strong>교호 작용 (interaction) 이 발생하지 않는다.</strong></li>
+</ul>
+
+<p><strong>&lt;단점&gt;</strong></p>
+
+<ul>
+  <li>버켓별 <strong>표본의 크기가 줄어든다</strong> (실험의 개수에 따라서 각 버켓에 할당되는 표본수가 linear하게 감소).</li>
+  <li>버켓의 개수가 충분하지 않을 경우, <strong>동시에 여러개의 실험을 진행할 수 없다</strong>.</li>
+</ul>
+
+<p> </p>
+
+<h3 id="parallel-experiment-platform">Parallel Experiment Platform</h3>
+
+<p>한편, 이러한 단점을 보완하기 위해서 <strong>전체 모집단(population)이 여러 실험에 동시에 활용되도록 실험 플랫폼을 설계할 수 있다</strong>. 하루에도 수백, 수천개의 A/B Test가 동시에 진행되는 구글과 마이크로소프트, 페이스북 등의 플랫폼들이 그 예시라고 할 수 있다.</p>
+
+<p>앞서 살펴본 예시에서, parallel experiment platform의 경우 각 실험 집단별 버켓 $B$ 의 크기는 다음과 같다.</p>
+
+<p> </p>
+
+<center>
+
+$$
+\begin{aligned}
+|B_{P_1, c}| &amp;= |B_{P_1, t}| = |B_{P_2, c}| =|B_{P_2, t}| = 5000 \\[10pt]
+&amp;c: \text{control} \\
+&amp;t: \text{treatment}
+\end{aligned}
+$$
+
+</center>
+
+<p> </p>
+
+<p>즉, non-parallel design에 비해 각 버켓에 할당되는 표본 수가 두배로 늘어났으며, 늘어난 표본 크기에 대응해서 실험의 검정력이 역시 증가할 것임을 알 수 있다.</p>
+
+<p>하지만 위와 같은 parallel experiment platform에서는 한 가지 중요한 이슈가 발생하는데, 이는 바로 동일한 유저들이 서로 다른 실험에 동시에 참여하기 때문에 <strong>실험 간 교호 작용 (interaction effect) 이 발생할 수 있다는 점이다</strong>.</p>
+
+<p>만약 이처럼 각 실험에서 사용되는 표본(버켓)들이 서로 독립이 아닐 경우 이는 통계적으로 bias를 발생시켜 실험의 결과를 왜곡시킬 우려가 있다. 가령, 만약 첫번째 실험에서 대조군에 배정된 유저들이 두번째 실험에서도 대조군에 배정될 가능성이 높아진다면 A/B Test 필수 요소인 무작위 배정의 원칙이 깨지게 된다. 따라서 parallel experiment platform에서는 진행되는 실험들의 독립성이 보장될 수 있도록 각별한 주의가 필요하다.</p>
+
+<p> </p>
+
+<hr />
+
+<h1 id="2-independent-experiments">2. Independent Experiments</h1>
+
+<p>그렇다면 구체적으로 어떻게 하면 각 실험의 독립성을 보장하면서 유저들을 버켓에 무작위 배정할 수 있을지를 알아보기에 앞서, 각 실험이 서로 <strong>“독립”</strong>이라는 것의 의미에 대해 잠시 짚고 넘어가도록 하자. 좀 더 자세한 설명은 해당 <a href="">포스트</a>를 참고하라.</p>
+
+<p>실험이 독립적이라는 것은, 한마디로 <strong>특정한 실험의 결과가 다른 실험에 영향을 미치지 않는 것</strong>을 의미한다. 설명의 편의를 위해 다음의 상황을 가정하겠다.</p>
+
+<ul>
+  <li>첫번째 실험 <strong>$P_1$ 에서는 기대수익이 $A$ 만큼 증가</strong>하고, 두번째 실험 <strong>$P_2$ 에서는 기대수익이 $B$ 만큼 증가</strong>한다.</li>
+  <li>실험 <strong>$P_1$과 $P_2$는 서로 독립이다</strong>.</li>
+</ul>
+
+<p>위와 같은 상황에서 실험 $P_1, P_2$에 대해, 버켓의 가능한 모든 조합별 기대수익의 증가량은 다음과 같습니다:</p>
+
+<center>
+  <img src="/images/abtest/52.png" width="500" height="500" /> 
+ <br />
+ <em><span style="color:grey"></span></em>
+</center>
+
+<p> </p>
+
+<hr />
+
+<p>&lt;/center&gt;</p>
+
+<p> </p>
+
+<hr />
+
+<h1 id="reference">Reference</h1>
+
+<ul>
+  <li>Casella, G., &amp; Berger, R. L. (2002). <em>Statistical inference.</em> 2nd ed. Australia ; Pacific Grove, CA: Thomson Learning.</li>
+</ul>
+
+:ET

@@ -323,8 +323,8 @@ $$
 
 ## Reference
 
-- https://bytepawn.com/early-stopping-in-ab-testing.html
-- https://www.aarondefazio.com/tangentially/?p=83
+- [https://bytepawn.com/early-stopping-in-ab-testing.html](https://bytepawn.com/early-stopping-in-ab-testing.html)
+- [https://www.aarondefazio.com/tangentially/?p=83](https://www.aarondefazio.com/tangentially/?p=83)
 - STUART J. POCOCK, Group sequential methods in the design and analysis of clinical trials, *Biometrika*, Volume 64, Issue 2, August 1977, Pages 191–199, https://doi.org/10.1093/biomet/64.2.191
 - O'Brien PC, Fleming TR. A multiple testing procedure for clinical trials. Biometrics. 1979 Sep;35(3):549-56. PMID: 497341.
 - K. K. Gordon Lan, & DeMets, D. L. (1983). Discrete Sequential Boundaries for Clinical Trials. *Biometrika*, *70*(3), 659–663. https://doi.org/10.2307/2336502

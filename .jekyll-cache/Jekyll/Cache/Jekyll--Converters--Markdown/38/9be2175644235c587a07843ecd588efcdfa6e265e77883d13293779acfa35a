@@ -1,0 +1,2 @@
+I"=<p><a href="https://domug.github.io/2022/06/22/ABTest_multi_layer/">앞서</a>, 여러개의 실험이 동일한 population에 대해서 동시에 수행될 수 있도록 하는 (i.e. <strong>multi-layer experiments</strong>) 해시 함수를 이용한 randomization algorithm에 대해서 살펴보았습니다.</p>
+:ET
