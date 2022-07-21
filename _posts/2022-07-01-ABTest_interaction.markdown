@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[A/B Test] Interaction effects of experiments"
+title: "[A/B Test] Interaction effects in experiments"
 date: 2022-07-01 00:00:00
 image: abtest11.jpg
 tags: [abtest, multi layer experiments, interaction effect]
