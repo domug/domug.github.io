@@ -1,0 +1,173 @@
+I"%F<p>해당 포스트에서는 아웃라이어 탐지 과제 (Outlier Detection Task) 의 개괄적인 내용과 주된 특징 몇가지를 정리해볼 예정이다. 여기서 간략하게 소개한 내용들은 이후 포스트들에서 개별적으로 자세히 다룰 예정이다.</p>
+
+<p> </p>
+
+<hr />
+
+<h2 id="1-definition-of-outliers">1. Definition of Outliers</h2>
+
+<p>통계학에서는 데이터를 특정한 확률 분포로부터 발생한 것으로 간주한다. 그렇기 때문에 전통적인 통계학에서는 우리에게 관측된 데이터를 바탕으로 내제된 데이터 생성 매커니즘 (i.e. <strong>underlying generative process</strong>) 을 확률 분포의 형태로 규명하는 것이 주된 관심사이다. 이러한 맥락에서 <strong>“아웃라이어”</strong>는 대부분의 <strong>“정상적인” 데이터와는 사뭇 다른 생성 매커니즘을 갖는 엔트리</strong>라고 포괄적으로 정의할 수 있다.</p>
+
+<p>물론 이 과정에서 데이터의 “정상성”을 규정하는 것은 데이터의 도메인과 과제의 목적에 따라 사뭇 다를 수 있다. 가령 비디오 데이터를 학습해서 만들어진 침입 방지 모형의 경우 데이터의 인풋값이 여러 시점의 값이 순차적으로 나열된 “sequential data”의 형태일 것이다. 이 때의 아웃라이어는 특정한 데이터 포인트에 국한되는 것이 아니라 여러 시점을 모두 고려한 <em>“collective outliers”</em> 가 된다. 또는 소셜 네트워크 데이터의 맥락에서 아웃라이어는 개별적인 유저 (node) 가 아니라 유저들의 커넥션, 즉 엣지 (edge) 를 바탕으로 정의된다. 이러한 맥락에서 추후 다양한 형태의 아웃라이어과 각각에 맞는 접근법을 살펴볼 예정이다.</p>
+
+<p> </p>
+
+<hr />
+
+<h2 id="2-the-outlier-detection-task">2. The Outlier Detection Task</h2>
+
+<p><strong>이상치 탐지 과제 (Outlier/Anomaly Detection Task)</strong> 는 단순히 이상치를 찾아내는 것을 넘어서, 해당 이상치들이 왜 발생했는지에 대한 구체적인 원인을 규명하는 작업까지를 포함한다. 대표적인 활용 사례로는 <em>“intrusion detection system”</em>, <em>“credit-card fraud detection”</em>, <em>“event sensoring”</em> 등이 있는데, 핵심은 주어진 데이터셋으로부터 <strong>정상적인 패턴을 모델링해서 특이한 generative process를 필터링 하는 작업이라고 할 수 있다</strong>.</p>
+
+<p>이러한 측면에서 거의 대부분의 경우 이상치 탐지 과제는 <strong>“정상 모형 (normal model)”</strong> 을 학습시키는 것으로부터 출발한다. 즉, 주어진 데이터의 일반적인 패턴을 학습하는 모형을 만든 다음, 해당 모형으로 잘 설명되지 않는 엔트리들을 아웃라이어로 간주하는 것이다. 이상치 탐지 과제를 수행하는 일반적인 목적 몇가지는 다음과 같다:</p>
+
+<ul>
+  <li>데이터 전처리의 과정에서 오류 또는 노이즈 값을 제거 (outlier filtering)</li>
+  <li>비정상 패턴을 보이는 값들을 필터링 (intrusion detection, fraud-detection)</li>
+  <li>특이한 패턴들에 대한 분석 (anomaly, event detection)</li>
+</ul>
+
+<p> </p>
+
+<hr />
+
+<h2 id="3-anomaly-vs-noise">3. “Anomaly” vs “Noise”</h2>
+
+<p>이처럼 이상치 탐지 과제는 단순히 <strong>“이상하고 잘못된”</strong> 값을 찾는 것이 아니라 <strong>“특이한 값 또는 패턴”</strong>을 찾는 것도 그 범주에 포함된다. 이러한 측면에서 일반적으로 사용되는 <strong>“아웃라이어”</strong>라는 용어는 <strong>“noise”</strong>와 <strong>“anomaly”</strong> 둘 다를 포함하는 굉장히 포괄적인 개념이다.</p>
+
+<p>설명의 편의를 위해 아래의 그림을 바탕으로 논의를 이어가겠다.</p>
+
+<center>
+  <img src="/images/outlier/1.png" width="700" height="500" /> 
+ <br />
+ <em><span style="color:grey">Figure 1: The difference between noise and anomaly</span></em>
+</center>
+
+<p> </p>
+
+<p>위 그림의 (a)와 (b)에서 동일한 위치에 있는 데이터 포인트 $A$ 를 살펴보자. 비록 main pattern 자체는 동일하나, 그림 (b)에서 $A$는 noise의 존재로 인해 (a)에 비해 아웃라이어로서 상대적으로 덜 부각된다. 즉, 데이터 자체에 noise가 많기 때문에 해당 경우 $A$ 자체에 대해 특별히 살펴볼 이유는 크게 없을 것이다.</p>
+
+<p>한편, 그림 (a)에서 데이터 포인트 $A$는 다른 데이터들로부터 확연히 떨어진 “특이한” 데이터이다. 분석가의 입장에서 이와 같은 값들은 그 자체로 특별한 인사이트를 얻을 가능성이 있기 때문에 별도의 분석 대상으로 정의될 수 있다. 이러한 점에서 <strong>“anomaly”</strong>는 단순히 일반적이지 않은 것을 넘어서서 <strong>“특이한 (interesting)” 값이어야 한다</strong>.</p>
+
+<center>
+  <img src="/images/outlier/1.png" width="700" height="500" /> 
+ <br />
+ <em><span style="color:grey">Figure 2: The spectrum from normal data to outliers</span></em>
+</center>
+
+<p> </p>
+
+<p>그럼에도 불구하고 일반적으로 “noise”와 “anomaly”를 구분하는 것은 그 경계가 뚜렷하지 않다 (위 그림 참고). 따라서 이상치 탐지 과제의 결과로 얻은 엔트리들을 어떻게 파악할지는 데이터 도메인에서의 축적된 경험적 지식을 바탕으로 분석가의 재량에 달려있다. 여기서 핵심은 <strong>비록 사용되는 방법론은 동일할지라도, noise 또는 anomaly 중 어느 부분에 포커스를 맞추냐에 따라 결과의 해석과 과제의 성격이 달라질 수 있다는 점이다</strong>.</p>
+
+<ul>
+  <li><strong>Anomaly Detection</strong>: 새로운 인사이트 도출</li>
+  <li><strong>Noise Detection</strong>: (일반적으로) 노이즈를 제거해서 더 깨끗한 결과를 도출</li>
+</ul>
+
+<p> </p>
+
+<hr />
+
+<h2 id="4-the-outlier-model">4. The Outlier Model</h2>
+
+<p>앞서 거의 모든 이상치 탐지 과제는 <strong>“정상 모형 (normal model)”</strong>을 바탕으로 수행된다는 점을 언급했다. 그리고 이를 위해서는 당연하게도 어떤 것을 <strong>“정상”</strong>으로 규정할지에 대한 <strong>“가정”</strong>이 필요하다.</p>
+
+<p>이상치 탐지를 위한 모형은 통계학, 컴퓨터 공학, 정보학 등의 도메인에 걸쳐 다양한 방법론이 연구되고 제안되었다. 가령, 대표적으로 거리를 기반으로 하는 distance-based 알고리즘의 경우 특정한 데이터 포인트와 가장 가까운 $k$개 값들의 거리를 outlier score로 활용하는 반면, 통계학의 gaussian mixture model에서는 확률 밀도 함수를 바탕으로 outlier score를 정의한다. 일반적인 측면에서 이상치 탐지 방법론 (모형) 은 크게 다음의 네가지 카테고리로 분류될 수 있는데, 각 카테고리에 속하는 방법론들의 구체적인 특징과 장단점은 이후 포스트에서 개별적으로 살펴볼 예정이다.</p>
+
+<ul>
+  <li><strong>Probabilistic and Statistical Models</strong></li>
+  <li><strong>Regression Models</strong></li>
+  <li><strong>Proximity-Based Models</strong></li>
+  <li><strong>Information-Theoretic Models</strong></li>
+</ul>
+
+<p> </p>
+
+<p>당연하게도, 이상치 탐지 과제의 성과는 주어진 데이터에 맞는 <strong>“적합한 모형 (data model)”</strong>을 사용했는지 여부와 크게 관련이 있다. 설명의 편의를 위해 다음의 예시를 살펴보자.</p>
+
+<center>
+  <img src="/images/outlier/3.png" width="700" height="500" /> 
+ <br />
+ <em><span style="color:grey">Figure 3: Linearly Correlated Data</span></em>
+</center>
+
+<p> </p>
+
+<p>위 예시의 특징은 정상적인 데이터가 특정한 저차원의 초평면 (hyperplane) 에 분포한다는 점이다. 이러한 맥락에서 위 데이터에 적합한 모형은 회귀 기반의 모형 (regression-based model) 이라고 할 수 있다.</p>
+
+<p>그러나 현실에서 마주하는 고차원 데이터의 경우, 위 예시처럼 데이터의 패턴을 사전에 알 수 있는 경우가 거의 드물다. 바로 이러한 점이 일반적인 분류 문제 (classification task) 에 비해 이상치 탐지 과제를 까다롭게 만드는 주된 원인이다. 따라서 실제 이상치 탐지 과제에서는 데이터 도메인에 대한 분석가의 심도 있는 이해가 요구된다. 앞서 살펴본 것처럼 특이한 값이 단순히 노이즈인지 아니면 anomaly 인지를 판단하는 것은 결국 분석가의 역량이기 때문이다.</p>
+
+<p>한편, 일반적으로 이상치 탐지를 위한 모형은 그 성격에 따라 <strong><em>“instance-based learning method”</em></strong> 와 <strong><em>“explicit generalization method”</em></strong> 의 두 카테고리로 구분된다. 우선 <em>explicit generalization method</em> 의 경우, 우리가 일반적으로 생각하는 모델링 작업이라고 할 수 있다. 즉, 주어진 데이터를 요약하는 패턴을 먼저 학습시킨 다음 이를 바탕으로 아웃라이어를 구분하려는 것이다. 이와는 반대로 <em>instance-based learning method</em> 는 어떠한 일반화 (generalization) 도 수행하지 하지 않은채, 단순히 학습에 사용된 데이터를 임시로 메모리에 저장해둔 다음 새로운 데이터를 해당 데이터에 비교해서 아웃라이어를 판별한다. 해당 모형들을 classification 도메인에서는 <em>“lazy learner”</em>, 추천 시스템에서는 <em>“memory-based methods”</em> 라고도 표현하는데, 대표적인 예시는 $k$-nearest neighbor detectors, Local Outlier Factor (LOF) 등이 있다.</p>
+
+<p> </p>
+
+<hr />
+
+<h2 id="5-connections-with-classification-task">5. Connections with Classification Task</h2>
+
+<p>추후 자세히 살펴볼 예정이지만, 일반적으로 이상치 탐지 과제는 분류 과제 (classification task) 의 특수한 케이스로 파악할 수 있다. 단 한가지 차이점이 있다면 이는 바로 이상치 탐지 과제는 반강제적으로 라벨이 없는 데이터를 바탕으로 수행되는 것, 즉 비지도학습 기반의 모형이 사용된다는 점이다. 그도 그럴 것이 이상치 탐지 과제에서 이상치가 무엇인지에 대한 라벨이 있는 경우는 극히 드물기 때문이다. 만약 이상치에 대한 라벨이 있는 경우, 해당 작업은 단순한 unbalanced classification task가 된다. 이러한 측면에서 이상치 탐지 과제는 한마디로 <strong><em>“one-class analog of the classification task”</em></strong> 라고 정의할 수 있으며, 따라서 classification task 도메인에서 등장하는 많은 개념들과 모형이 자연스레 이상치 탐지의 목적으로 활용 가능하다.</p>
+
+<p>일례로, 최근 이상치 탐지 분야에서 활발히 연구되고 있는 주제 중 하나는 바로 classification task에서 자주 활용되는 배깅, 부스팅 등의 <strong>앙상블 기법</strong>을 고차원 데이터셋에 적용시키는 것이다. 이는 독립적으로 학습된 모형들의 결과를 종합하는 것을 통해 데이터셋의 이상치를 여러 측면에서 파악하겠다는 아이디어로, 일반적으로 고차원 데이터셋에서 더 나은 퍼포먼스를 얻을 수 있다는 점이 알려져 있다. 이러한 측면에서 이상치 처리와 관련한 앙상블 기법은 크게 <strong><em>“sequential ensembles”</em></strong> 와 <strong><em>“independent ensembles”</em></strong> 의 두 가지로 분류될 수 있는데, 전자는 모형 학습의 과정에서 이전 단계의 결과를 참고하여 학습을 진행하는 것을 의미하며 후자는 모든 개별적인 모형이 독립적으로 학습되는 것을 의미한다. 이러한 앙상블 기법들에 대한 자세한 내용은 이후 포스트에서 구체적으로 다룰 예정이다.</p>
+
+<p> </p>
+
+<hr />
+
+<h2 id="6-training-outlier-models">6. Training Outlier Models</h2>
+
+<p>이상치 탐지 모형을 학습시키는 방법에는 여러가지가 있을 수 있다. 일반적인 분류 과제 (classification task) 의 언어를 빌려 설명하자면, 이는 크게 정상적인 데이터 (i.e. 인라이어) 를 바탕으로 학습을 진행하는 <strong>supervised task (지도 학습)</strong> 와, 인라이어와 아웃라이어가 혼재된 데이터를 바탕으로 학습을 진행하는 <strong>unsupervised task (비지도 학습)</strong> 로 구분된다. 일반적으로 인라이어 또는 아웃라이어에 대한 라벨이 있는 경우에는 지도 학습을 바탕으로 이상치를 필터링 하는 것에 특화된 탐지 모형을 만드는 것이 가장 효과적이다. 한편, 데이터에 라벨이 없는 비지도 학습의 경우 탐색적 데이터 분석 (EDA) 단계에서 특이한 값 (anomalies) 또는 노이즈를 판별해내기 위한 목적으로 이상치 탐지 모형을 구축할 수 있다. 이 과정에서 방법론의 특징에 따라 비지도 학습이 불가능한 경우도 있으므로 가용할 수 있는 데이터를 고려해서 방법론을 선택하는 것이 필요하다.</p>
+
+<p>이러한 맥락에서 <strong>“Supervised” Outlier Detection</strong> 이란 축적된 데이터를 바탕으로 <strong>이상치와 정상치에 대한 라벨이 있는 경우를 의미한다</strong>. 이상치들을 사전에 알 수 있다는 것은 모델을 학습시키는 과정에서 이상치들의 구체적인 패턴에 대한 대한 가이드라인이 있다는 것과 동일하기 때문에 일반적으로 unsupervised learning 에 비해 더 높은 성능을 기대할 수 있다. 따라서 어떠한 형태로든 라벨이 있는 경우에는 이를 적극 활용하는 것이 좋다.</p>
+
+<p>한편, 그럼에도 불구하고 이는 결코 쉬운 작업은 아니다. 이상치에 대한 라벨이 있는 경우의 supervised outlier detection은 <strong>라벨의 비율이 굉장히 불균형한 데이터</strong>를 바탕으로 분류기 (classifier) 를 학습시키는 것과 일맥상통하다. 이는 모델의 성능을 객관적으로 평가하기 위한 지표 선정을 까다롭게 만드는데, 가령 평가 지표를 단순히 정확도 (accuracy) 등으로 설정할 경우 단순히 모든 데이터를 정상치로 분류하는 것이 더 높은 정확도를 반환하는 경우가 발생할 수 있다. 이처럼 이상치 탐지에서는 거짓 양성 (false negative) 을 컨트롤하는 것이 굉장히 중요하다. 이에 대한 한가지 해결 방안은 모형의 성능에 대한 평가 지표에 오분류에 대해서 가중치가 적용된 패널티를 사용하는 것이다. 이를 <strong><em>“cost-sensitive learning”</em></strong> 이라고 한다.</p>
+
+<p>이 밖에도 supervised outlier detection에서 발생할 수 있는 몇가지 이슈는 다음과 같다.</p>
+
+<ul>
+  <li>실제 데이터의 경우 라벨이 있다하더라도 <strong>인라이어에 대한 라벨이 혼재된 (contaminated) 된 경우</strong>가 많다. 이를 classification 도메인에서는 <em>Positive-Unlabeled Classification (PUC)</em> 문제라고 표현한다.</li>
+  <li>훈련용 데이터에 포함된 <strong>outlier 라벨이 전체 모집단을 대표하지 못하는 경우</strong>가 있다. 가령 웹 도메인의 fraud detection task에서는 새로운 매크로가 지속해서 개발되고 등장하기 때문에 이러한 경우 “semi”-supervised learning (e.g. 레이블 전파) 방법론을 적용해야 한다.</li>
+</ul>
+
+<p> </p>
+
+<hr />
+
+<h2 id="7-output-of-outlier-models">7. Output of Outlier Models</h2>
+
+<p>모든 이상치 탐지 모형은 <strong>“Outlier score”</strong> 또는 <strong>“Binary label”</strong> 의 형태로 결과를 제시한다. 첫 번째로, <strong>outlier score</strong>는 말 그대로 데이터별로 아웃라이어인 정도 (또는 가능성?) 를 구체적인 값으로 나타낸 지표이다. 일반적으로 해당 값이 크면 클수록 아웃라이어일 가능성이 높아지나, 문제는 구체적으로 어떠한 값 이상을 아웃라이어로 판단할지에 대한 기준이 다소 애매모호할 수 있다. 따라서 일반적인 이상치 탐지 모형에서는 특정한 로직을 바탕으로 구해진 outlier score를 inlier/outlier 의 두가지의 <strong>binary label</strong> 값으로 변환하는 작업이 포함된다.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center"> </th>
+      <th style="text-align: center">Outlier Score</th>
+      <th style="text-align: center">Binary Label</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center"><strong>장점</strong></td>
+      <td style="text-align: center">불확실성을 구체적으로 수치화 가능</td>
+      <td style="text-align: center">의사결정이 용이</td>
+    </tr>
+    <tr>
+      <td style="text-align: center"><strong>단점</strong></td>
+      <td style="text-align: center">concise한 summary를 제공하지 못함</td>
+      <td style="text-align: center">불확실성이 고려되지 못함 (정보량이 낮음)</td>
+    </tr>
+  </tbody>
+</table>
+
+<p> </p>
+
+<p> </p>
+
+<hr />
+
+<h1 id="reference">Reference</h1>
+
+<ul>
+  <li>PAUL R. ROSENBAUM, DONALD B. RUBIN, The central role of the propensity score in observational studies for causal effects, <em>Biometrika</em>, Volume 70, Issue 1, April 1983, Pages 41–55, https://doi.org/10.1093/biomet/70.1.41</li>
+  <li>Imbens, G., &amp; Rubin, D. (2015). <em>Causal Inference for Statistics, Social, and Biomedical Sciences: An Introduction</em>. Cambridge: Cambridge University Press. doi:10.1017/CBO9781139025751</li>
+</ul>
+
+:ET

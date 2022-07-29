@@ -1,0 +1,81 @@
+I"�<p>컴퓨팅 기술이 고도화됨에 따라 알고리즘적인 접근이 많이 사용되긴 하지만, 그럼에도 불구하고 통계학의 확률적 모형들 역시 지금까지도 이상치 탐지 분야에서 상당히 유용하게 사용된다. 이러한 통계적 방법론들의 기원은 19세기까지 거슬러 올라가는데, 해당 포스트에서는 전통적인 통계적 기법들이 어떻게 이상치 탐지 분야에 자연스레 활용될 수 있는지를 살펴볼 예정이다.</p>
+
+<p>이상치 탐지와 관련해서 가장 많이 쓰이는 통계적 방법론은 <strong><em>extreme univariate test</em></strong> 와 관련이 있다. 얼핏보면 단순히 1차원에서의 이상치 탐지가 뭐 그리 대수냐라고 할 수 있겠으나, 조금만 생각해보면 이는 굉장히 유용하게 활용될 여지가 있다는 사실을 깨달을 수 있다. 가령, 대부분의 이상치 탐지 알고리즘은 각 데이터 인스턴스마다 1개씩 <strong>일차원의 outlier score</strong>를 반환한다. 이후 이러한 outlier score 들로부터 극단값을 판단한 다음 최종적으로 outlier threshold를 설정하게 되는데, 이 과정에서 자연스럽게 extreme value test가 활용될 수 있다.</p>
+
+<p>물론 이러한 univariate test 이외에도 아예 직접적으로 확률 모형을 이상치 탐지에 활용할 수도 있다. 그 중에서도 특히나 유용한 것은 <strong>혼합 모형 (mixture models)</strong> 인데, 이는 일종의 “통계적” 클러스터링 기법이라고 볼 수 있다. 이러한 혼합 모형의 큰 장점은 mixture component 만 잘 정의된다면 비교적 다양한 구조의 데이터에 폭넓게 활용될 수 있다는 점이다. 또한 해당 모형은 generative model이기 때문에 자연스럽게 likelihood를 outlier score로 활용할 수 있다.</p>
+
+<p> </p>
+
+<h3 id="목차">&lt;목차&gt;</h3>
+
+<p><strong>1. Extreme-value analysis for univariate data</strong></p>
+
+<p><strong>2. Extreme-value analysis for multivariate data</strong></p>
+
+<p><strong>3. Probabilistic modeling of outliers</strong></p>
+
+<p><strong>4. Limitations of probabilistic models for outlier analysis</strong></p>
+
+<p> </p>
+
+<hr />
+
+<h2 id="1-extreme-value-analysis-for-univariate-data">1. Extreme-value analysis for univariate data</h2>
+
+<p>통계학에서 이상치에 대한 연구는 특정한 분포에서 꼬리의 성질을 바탕으로 (tail property) 일차원 데이터에서 이상치를 파악하려는 시도로부터 출발했다. 이와 관련해 <strong>“extreme-value analysis”</strong> 란, 특정한 통계 분포의 분포적 꼬리 (i.e. <strong><em>distribution tail</em></strong> ) 를 규명하려는 작업을 의미한다. 직관적으로, 통계 분포에서 낮은 확률값 (likelihood) 을 갖는 부분은 이상치로 정의하는 것이 자연스러울 것이다.</p>
+
+<p>한편, 실제 상황에서는 데이터의 분포를 가정하는 것이 쉽지 않을 수 있다. 이러한 경우 사용될 수 있는 한가지 유용한 수학적 도구는 바로 <strong>“tail inequalities”</strong> 인데, 이를 바탕으로 분포의 형태와 무관하게 어떠한 확률 변수의 값이 가질 수 있는 이론적 확률에 대한 범위를 제한시킬 수 있다. 이렇게 얻어진 boundary 이상의 값은 정상적인 매커니즘이 아닌 “다른 프로세스”로 부터 발생된 것으로 간주할 수 있으며,</p>
+
+<p>동일한 확률 분포에서 생성된 데이터의 이론적 바운더리를 제시한다. 따라서 해당 tail bound 이상의 값은 “다른 프로세스”로 부터 발생된 것으로 간주할 수 있으며, 이는 우리가 찾고자 하는 이상치들이다.</p>
+
+<p>기본적으로, 더 강한 가정이 사용될 수록 더 좁은 (tight 한) 범위로 확률 변수의 값을 제한할 수 있다. 이러한 맥락에서 여기서는 구체적으로 네 가지의 부등식을 살펴보도록 하겠다.</p>
+
+<p>한편, tail inequality는 가정 사항에 따라서 그 강도가 다르다. 다시 말해, 별다른 가정사항이 없는 inequality의 경우 범용성은 넓을 수 있으나 tail의 bound가 더 넓다는 단점이 있으며, 반대로 보수적인 tail bound를 잡기 위해서는 더욱 strong한 condition이 필요하다.</p>
+
+<p> </p>
+
+<h3 id="11-markov-inequality">1.1 Markov Inequality</h3>
+
+<p>가장 기초적인 부등식으로, <strong>양의 실수에서 정의되는 확률 변수</strong> $X$ 에 대해 평균이 $\mathbb{E}[X]$ 일 경우 어떠한 상수 $\alpha$ 에 대해 다음이 성립한다.</p>
+
+<p> </p>
+
+<center>
+
+$$
+P(X &gt; \alpha) \leq \frac{\mathbb{E}[X]}{\alpha}
+$$
+
+</center>
+
+<p> </p>
+
+<p>이는 가정 사항이 확률 변수가 양수의 범위에서 정의된다는 것만을 필요로 하는 상당히 일반적인 형태의 부등식이다.</p>
+
+<p>파악할 수 있다.</p>
+
+<p>을 이상치로 정의할 수 있을 것이다.</p>
+
+<hr />
+
+<center>
+  <img src="/images/abtest/32.png" width="800" height="500" /> 
+ <br />
+ <em><span style="color:grey"></span></em>
+</center>
+
+<p> </p>
+
+<p> </p>
+
+<p> </p>
+
+<hr />
+
+<h1 id="reference">Reference</h1>
+
+<ul>
+  <li>Aggarwal, C. C. (2013). <em>Outlier Analysis</em>. Springer. ISBN: 978-1-4614-6396-2</li>
+</ul>
+
+:ET

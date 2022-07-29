@@ -1,0 +1,26 @@
+I"�<hr />
+
+<center>
+  <img src="/images/abtest/32.png" width="700" height="500" /> 
+ <br />
+ <em><span style="color:grey"></span></em>
+</center>
+
+<p> </p>
+
+<p>##</p>
+
+<p> </p>
+
+<p> </p>
+
+<hr />
+
+<h1 id="reference">Reference</h1>
+
+<ul>
+  <li>PAUL R. ROSENBAUM, DONALD B. RUBIN, The central role of the propensity score in observational studies for causal effects, <em>Biometrika</em>, Volume 70, Issue 1, April 1983, Pages 41–55, https://doi.org/10.1093/biomet/70.1.41</li>
+  <li>Imbens, G., &amp; Rubin, D. (2015). <em>Causal Inference for Statistics, Social, and Biomedical Sciences: An Introduction</em>. Cambridge: Cambridge University Press. doi:10.1017/CBO9781139025751</li>
+</ul>
+
+:ET
