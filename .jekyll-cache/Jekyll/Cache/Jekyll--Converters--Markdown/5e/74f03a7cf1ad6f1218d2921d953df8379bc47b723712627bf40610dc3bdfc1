@@ -1,0 +1,31 @@
+I":<p>대부분의 현실적인 이상치 탐지 시나리오에서 우리는 고차원 데이터셋을 다루게 된다. 많게는 수백, 수천개의 차원을 갖고 있는 데이터에서 우리가 앞서 살펴본 다양한 이상치 탐지 기법들은 제대로 작동하지 않을 수 있는데, 이는 소위 말하는 <strong>차원의 저주 (curse of dimensionality)</strong> 에 의해 데이터가 고차원 공간의 매우 국소적인 부분 공간 (local subspace) 에 분포하기 때문이다. 이를 “data sparsity” 또는 “distance concentration” 이라고 한다.</p>
+
+<p>가령, 이상치 탐지에 흔히 활용되는 LOF 등의 거리 기반 알고리즘을 생각해보자. 해당 방법론들에서 아웃라이어는 다른 데이터들에 비해 상대적으로 “멀리” 위치한 값들로 정의되는데, 고차원 공간에서 거리라는 측돈느</p>
+
+<p>을 아웃라이어로 정의하는데, 위와 같은 고차원 공간에서는 여러개의</p>
+
+<hr />
+
+<center>
+  <img src="/images/abtest/32.png" width="700" height="500" /> 
+ <br />
+ <em><span style="color:grey"></span></em>
+</center>
+
+<p> </p>
+
+<p>##</p>
+
+<p> </p>
+
+<p> </p>
+
+<hr />
+
+<h1 id="reference">Reference</h1>
+
+<ul>
+  <li>Aggarwal, C. C. (2013). <em>Outlier Analysis</em>. Springer. ISBN: 978-1-4614-6396-2</li>
+</ul>
+
+:ET
