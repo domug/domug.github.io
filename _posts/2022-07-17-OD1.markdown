@@ -3,7 +3,7 @@ layout: post
 title: "[Outlier Analysis] Introduction"
 date: 2022-07-17 00:00:00
 image: outlier2.png
-tags: [outlier]
+tags: [outlier-analysis]
 categories: outlier
 use_math: true
 ---

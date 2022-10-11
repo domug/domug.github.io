@@ -3,7 +3,7 @@ layout: post
 title: "Variable Selection Methods"
 date: 2020-12-04 00:00:00
 image: thumbnail2.png
-tags: [statistics, multicollinearity, ridge, lasso]
+tags: [multicollinearity, ridge-regression, lasso-regression]
 categories: statistics
 use_math: True
 ---

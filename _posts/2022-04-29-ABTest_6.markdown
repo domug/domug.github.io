@@ -3,7 +3,7 @@ layout: post
 title: "[A/B Test] 다중 검정의 통계적 보정"
 date: 2022-04-29 00:00:00
 image: abtest6.jpg
-tags: [abtest, multiple testing, segment analysis, fallback procedure]
+tags: [ab-test, multiple-testing, segment-analysis, fallback-procedure]
 categories: abtest
 use_math: true
 ---

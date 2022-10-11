@@ -3,8 +3,8 @@ layout: post
 title: "Ch1. Introduction to Spatial Data"
 date: 2021-10-06 00:00:00
 image: 9.jpg
-tags: [sda]
-categories: sda
+tags: [spatial-statistics, variogram]
+categories: statistics
 use_math: true
 ---
 

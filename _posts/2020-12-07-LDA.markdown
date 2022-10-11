@@ -3,7 +3,7 @@ layout: post
 title: "Discriminant Analysis"
 date: 2020-12-07 00:00:00
 image: thumbnail_lda.png
-tags: [statistics, dimensionreduction, lda]
+tags: [dimension-reduction, discriminant-analysis]
 categories: [statistics]
 ---
 

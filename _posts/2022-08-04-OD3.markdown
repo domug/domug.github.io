@@ -3,7 +3,7 @@ layout: post
 title: "[Outlier Analysis] High-dimensional Outlier Detection"
 date: 2022-08-04 00:00:00
 image: outlier3.jpg
-tags: [outlier, bagging, ensemble, isolation forest, subspace sampling]
+tags: [outlier-analysis, bagging, ensemble-analysis, isolation-forest]
 categories: outlier
 use_math: true
 ---

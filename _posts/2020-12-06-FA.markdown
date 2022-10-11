@@ -3,7 +3,7 @@ layout: post
 title: "Factor Analysis"
 date: 2020-12-06 00:00:00
 image: thumbnail_fa.png
-tags: [statistics, dimensionreduction, faa]
+tags: [dimension-reduction, factor-analysis]
 categories: [statistics]
 use_math: True
 ---

@@ -3,7 +3,7 @@ layout: post
 title: "[Bayesian Statistics] Hamiltonian Monte Carlo"
 date: 2021-03-12 00:00:00
 image: 3.jpg
-tags: [bayesian]
+tags: [bayesian-statistics, MCMC, hamiltonian-monte-carlo]
 categories: bayesian
 use_math: true
 ---

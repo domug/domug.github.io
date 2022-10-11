@@ -3,7 +3,7 @@ layout: post
 title: "[MathStat] 3. Large Sample Theory"
 date: 2022-04-23 00:00:00
 image: mathstat3.jpg
-tags: [statistics]
+tags: [mathematical-statistics, central-limit-theorem]
 categories: statistics
 use_math: true
 ---

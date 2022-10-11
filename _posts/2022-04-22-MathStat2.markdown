@@ -3,7 +3,7 @@ layout: post
 title: "[MathStat] 2. Statistical Inequalities"
 date: 2022-04-22 00:00:00
 image: mathstat2.jpg
-tags: [statistics]
+tags: [mathematical-statistics, statistical-inequalities]
 categories: statistics
 use_math: true
 ---

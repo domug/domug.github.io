@@ -6,8 +6,8 @@ url: "domug.github.io" # the base hostname & protocol for your site, e.g. http:/
 # Author
 author-name:    Dongwook Kim
 author-image:   profile.jpg
-author-job:     Graduate Student, Yonsei University Korea
-author-email:   https://formspree.io/domugii@yonsei.ac.kr # Add your email for contant form.
+author-job:     Statistics and Data Science
+author-email:   domugii@yonsei.ac.kr # Add your email for contant form.
 author-twitter:  # Add your twitter account
 about-author:    
 
@@ -16,7 +16,7 @@ social-twitter:
 social-facebook:  
 social-github:    domug
 social-pinterest: 
-social-instagram: domugii__
+social-instagram: 
 social-youtube:
 social-vk:   
 social-linkedin:

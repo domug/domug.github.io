@@ -3,7 +3,7 @@ layout: post
 title: "[A/B Test] 아웃라이어 핸들링"
 date: 2022-04-01 00:00:00
 image: abtest9.jpg
-tags: [abtest, cuped, otpsm, outlier]
+tags: [ab-test, cuped, otpsm, outlier]
 categories: abtest
 use_math: true
 ---

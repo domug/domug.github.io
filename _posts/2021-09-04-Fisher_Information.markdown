@@ -3,7 +3,7 @@ layout: post
 title: "Fisher Information"
 date: 2021-09-04 00:00:00
 image: 7.jpg
-tags: [statistics]
+tags: [fisher-information]
 categories: statistics
 use_math: true
 ---

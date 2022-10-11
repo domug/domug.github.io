@@ -3,7 +3,7 @@ layout: post
 title: "[MathStat] 1. Foundations of Statistics"
 date: 2022-04-21 00:00:00
 image: mathstat1.jpg
-tags: [statistics]
+tags: [mathematical-statistics]
 categories: statistics
 use_math: true
 ---

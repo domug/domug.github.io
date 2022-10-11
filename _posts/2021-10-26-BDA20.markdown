@@ -3,7 +3,7 @@ layout: post
 title: "[Bayesian Statistics] Basis Function Models"
 date: 2021-10-26 00:00:00
 image: 15.jpg
-tags: [bayesian]
+tags: [bayesian-statistics, basis-expansion]
 categories: bayesian
 use_math: true
 ---

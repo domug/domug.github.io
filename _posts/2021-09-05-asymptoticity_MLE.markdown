@@ -3,7 +3,7 @@ layout: post
 title: "Asymptoticity of Maximum Likelihood Estimator"
 date: 2021-09-05 00:00:00
 image: 10.jpg
-tags: [statistics]
+tags: [MLE]
 categories: statistics
 use_math: true
 ---

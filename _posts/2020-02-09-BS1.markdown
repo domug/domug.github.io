@@ -3,7 +3,7 @@ layout: post
 title: "[Bayesian Statistics] Basics"
 date: 2021-02-09 00:00:00
 image: thumbnail_bayes.png
-tags: [bayesian]
+tags: [bayesian-statistics]
 categories: bayesian
 use_math: true
 ---

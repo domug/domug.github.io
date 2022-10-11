@@ -19,16 +19,16 @@ permalink: /tags/
   </div>
 </header>
 <section class="c-blog-tags o-opacity">
-  <h1>Tags in Blog</h1>
+  <h1>Topics in Blog</h1>
   <ul class="c-tag__list">
   {% for item in (0..site.tags.size) %}{% unless forloop.last %}
     {% capture this_word %}{{ tag_words[item] | strip_newlines }}{% endcapture %}
-    <li><a href="#{{ this_word | cgi_escape }}" class="c-tag">{{ this_word }} <span>({{ site.tags[this_word].size }})</span></a></li>
+    <li><a href="#{{ this_word | cgi_escape }}" class="c-tag">{{ this_word | replace: "-"," " }} <span>({{ site.tags[this_word].size }})</span></a></li>
   {% endunless %}{% endfor %}
   </ul>
   {% for item in (0..site.tags.size) %}{% unless forloop.last %}
     {% capture this_word %}{{ tag_words[item] | strip_newlines }}{% endcapture %}
-  <h2 id="{{ this_word | cgi_escape }}">{{ this_word }}</h2>
+  <h2 id="{{ this_word | cgi_escape }}">{{ this_word | replace: "-"," " }}</h2>
     {% for post in site.tags[this_word] %}{% if post.title != null %}
     <div class="c-tag__item">
         <span>{% if post.image %}<img class="c-tag__image" src="{{"/images/" | prepend: site.baseurl | append : post.image}}" alt="{{post.title}}">{% else %}{% endif %} <a href="{{ post.url }}">{{ post.title }}</a></span>

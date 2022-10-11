@@ -3,7 +3,7 @@ layout: post
 title: "[A/B Test] Multi-layer Experiments"
 date: 2022-06-22 00:00:00
 image: abtest10.jpg
-tags: [abtest, randomization, multi layer experiments, hash function]
+tags: [ab-test, randomization, multi-layer-experiments, hash-function]
 categories: abtest
 use_math: true
 ---

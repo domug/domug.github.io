@@ -3,7 +3,7 @@ layout: post
 title: "[MathStat] 4. Statistical Estimation"
 date: 2022-04-24 00:00:00
 image: mathstat4.jpg
-tags: [statistics]
+tags: [mathematical-statistics, MLE]
 categories: statistics
 use_math: true
 ---

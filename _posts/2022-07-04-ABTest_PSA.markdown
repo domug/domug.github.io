@@ -3,7 +3,7 @@ layout: post
 title: "[A/B Test] 관찰 연구에서의 인과적 추론 (Observational Causal Studies)"
 date: 2022-07-04 00:00:00
 image: abtest8.jpg
-tags: [abtest, randomization, counterfactual, causal inference, propensity score analysis]
+tags: [abtest, randomization, counterfactual-analysis, causal-inference, propensity-score-analysis]
 categories: abtest
 use_math: true
 ---

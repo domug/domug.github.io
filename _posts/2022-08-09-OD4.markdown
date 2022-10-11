@@ -3,7 +3,7 @@ layout: post
 title: "[Outlier Analysis] Outlier Ensembles"
 date: 2022-08-09 00:00:00
 image: outlier4.jpg
-tags: [outlier, ensemble]
+tags: [outlier-analysis, ensemble-analysis]
 categories: outlier
 use_math: true
 ---

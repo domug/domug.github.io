@@ -3,7 +3,7 @@ layout: post
 title: "[A/B Test] 다중 검정 (Multiple Testing)"
 date: 2022-04-25 04:00:00
 image: abtest5.jpg
-tags: [abtest, multiple testing, bonferroni, sidak, holm, benjamini hochberg]
+tags: [ab-test, multiple-testing, bonferroni-correction, hochberg-benjamini-correction]
 categories: abtest
 use_math: true
 ---

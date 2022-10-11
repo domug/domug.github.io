@@ -3,7 +3,7 @@ layout: post
 title: "Statistical Inference"
 date: 2020-12-03 00:00:00
 image: 6.jpg
-tags: [statistics, estimation, testing]
+tags: [statistical-estimation, hypothesis-testing]
 categories: statistics
 use_math: True
 ---

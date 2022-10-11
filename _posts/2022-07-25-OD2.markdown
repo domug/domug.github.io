@@ -3,7 +3,7 @@ layout: post
 title: "[Outlier Analysis] Probabilistic and Statistical Models"
 date: 2022-07-25 00:00:00
 image: outlier1.png
-tags: [outlier detection, extreme value analysis, mixture models]
+tags: [outlier-analysis, extreme-value-analysis, mixture-models]
 categories: outlier
 use_math: true
 ---

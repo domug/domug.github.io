@@ -3,7 +3,7 @@ layout: post
 title: "[A/B Test] 베이지안 A/B Test"
 date: 2022-05-10 00:00:00
 image: thumbnail_bayes.png
-tags: [bayesian ab test]
+tags: [ab-test]
 categories: abtest
 use_math: true
 ---

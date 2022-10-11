@@ -3,7 +3,7 @@ layout: post
 title: "[Bayesian Statistics] Gaussian Process Models (2)"
 date: 2021-11-29 00:00:00
 image: 17.jpg
-tags: [bayesian]
+tags: [bayesian-statistics, gaussian-process]
 categories: bayesian
 use_math: true
 ---

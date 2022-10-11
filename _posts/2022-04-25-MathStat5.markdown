@@ -3,7 +3,7 @@ layout: post
 title: "[MathStat] 5. Hypothesis Testing"
 date: 2022-04-25 02:00:00
 image: mathstat5.jpg
-tags: [statistics]
+tags: [hypothesis-testing, mathematical-statistics, neyman-pearson-test]
 categories: statistics
 use_math: true
 ---

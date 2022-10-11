@@ -3,7 +3,7 @@ layout: post
 title: "[Bayesian Statistics] Modeling and Monte Carlo Estimation"
 date: 2021-02-20 00:00:00
 image: 8.jpg
-tags: [bayesian]
+tags: [bayesian-statistics, monte-carlo]
 categories: bayesian
 use_math: true
 ---

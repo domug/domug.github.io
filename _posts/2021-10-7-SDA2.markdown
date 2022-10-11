@@ -3,8 +3,8 @@ layout: post
 title: "Ch2. Classic Geostatistical Inferences"
 date: 2021-10-07 00:00:00
 image: 13.jpg
-tags: [sda]
-categories: sda
+tags: [spatial-statistics, krigging]
+categories: statistics
 use_math: true
 ---
 

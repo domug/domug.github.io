@@ -3,7 +3,7 @@ layout: post
 title: "Statistical Tests for Clinical Trials"
 date: 2022-04-18 00:00:00
 image: thumbnail_cl_tests.jpg
-tags: [statistics, clinical_trials]
+tags: [hypothesis-testing]
 categories: [statistics]
 use_math: True
 

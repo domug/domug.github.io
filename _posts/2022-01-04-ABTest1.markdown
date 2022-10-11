@@ -3,7 +3,7 @@ layout: post
 title: "[A/B Test] 데이터 수집과 인과관계"
 date: 2022-01-04 00:00:00
 image: abtest1.jpg
-tags: [abtest]
+tags: [ab-test]
 categories: abtest
 use_math: true
 ---
