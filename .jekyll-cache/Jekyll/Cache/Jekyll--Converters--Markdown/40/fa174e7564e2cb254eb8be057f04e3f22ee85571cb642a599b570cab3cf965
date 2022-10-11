@@ -1,0 +1,37 @@
+I"<p>해당 포스트에서는 생존 자료 (survival data)의 개괄적인 특징과 이를 고려한 통계적 접근법에 대해서 살펴볼 예정이다.</p>
+
+<p> </p>
+
+<hr />
+
+<h1 id="1-time-to-event-data">1. Time-to-event data</h1>
+
+<p><strong>“생존 자료”</strong>란 한마디로 특정한 사건이 발생하기까지 걸리는 <strong>“시간”</strong>을 의미한다.</p>
+
+<p>생존 자료 분석 (survival analysis)는</p>
+
+<hr />
+
+<center>
+  <img src="/images/abtest/32.png" width="700" height="500" /> 
+ <br />
+ <em><span style="color:grey"></span></em>
+</center>
+
+<p> </p>
+
+<p>##</p>
+
+<p> </p>
+
+<p> </p>
+
+<hr />
+
+<h1 id="reference">Reference</h1>
+
+<ul>
+  <li>Aggarwal, C. C. (2013). <em>Outlier Analysis</em>. Springer. ISBN: 978-1-4614-6396-2</li>
+</ul>
+
+:ET
